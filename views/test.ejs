@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <%- include('./generalPartials/_head.ejs') %>
+            <title></title>
+            <link rel="stylesheet" href="/css/userStyle.css">
+    </head>
+    <body style="display: flex; flex-direction: column; justify-content: center; align-items: center;height: 100vh">
+
+        <!-- Button trigger modal -->
+        <button id="openModalButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            Launch demo modal
+        </button>
+        
+        
+
+        <%- include("./generalPartials/_bootstrapJS.ejs") %>
+        <!-- <script src="/js/emailPhoneDiffer.js"></script> -->
+
+        <script>
+             // window.addEventListener('load', function () {
+              //      var modal = document.getElementById('exampleModal');
+            //        modal.classList.add('show');
+             //       modal.style.display = 'block';
+             //   }); 
+             $("#exampleModal").modal();
+        </script>
+    </body>
+</html>

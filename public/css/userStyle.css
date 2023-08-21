@@ -1,0 +1,101 @@
+body{
+    font-family: 'Outfit';
+}
+
+
+
+/* UTILITY STARTS HERE */
+.h-100vh{
+    height : 100vh;
+}
+.h-95{
+    height: 95%;
+}
+.bg-background{
+    background-color: #ECECEC;
+}
+.bg-white{
+    background-color: white;
+}
+
+.width-80{
+    width: 80%;
+}
+.border-20{
+    border-radius: 20px;
+}
+/* UTILITY ENDS HERE */
+
+.form-header p{
+    font-size: 12px;
+    color: gray;
+}
+
+.form-input{
+    /* padding: 10px 20px; */
+    border: none;
+    outline: none; 
+    flex: 1;
+}
+.error-icon{
+    color: red;
+}
+.form-input::placeholder{
+    font-weight: 400;
+}
+
+.google-auth span{
+    font-size: 16px;
+}
+
+.left-section{
+    flex: 1;
+}
+
+.forgot-password-btn{
+    text-decoration: none;
+    color: black;
+    font-weight: block;
+}
+
+
+.input-field-group{
+    display: flex;
+    border: 1px solid lightgray;
+    border-radius: 20px;
+}
+
+
+#country-code-value{
+    width:90px;
+    outline: none;
+    border: 1px solid gray;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+#otpValidationForm{
+    position: relative;
+}
+.resendBtnContainer{
+    position: absolute;
+    bottom: 0; 
+    left: 0;
+}
+#resendBtn{
+    text-decoration: none;
+}
+#resendBtn:focus{
+    color: gray; 
+}
+
+.otpFieldError{
+    border: 1px solid red;
+}
+
+@media (min-width: 768px){
+    .left-section{
+        flex: .6;
+    }
+}
+

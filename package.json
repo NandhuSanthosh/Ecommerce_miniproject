@@ -1,0 +1,28 @@
+{
+  "name": "zmini-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "infobip": "^0.1.0",
+    "jsonwebtoken": "^9.0.1",
+    "mailgen": "^2.0.27",
+    "mongoose": "^7.4.3",
+    "nodemailer": "^6.9.4",
+    "phone": "^3.1.39",
+    "twilio": "^4.15.0",
+    "validator": "^13.11.0"
+  }
+}

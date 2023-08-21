@@ -1,0 +1,50 @@
+
+<div class="form-content w-100">
+<div class="form-header text-center">
+    <h1>Sign up</h1>
+    <p>Shop Smarter, Shop Easier: Your One-Step Online Marketplace</p>
+</div>
+<div class="form bg-white p-4 border-20">
+    <form>
+
+        <%- include('./_signupEmailMobileField.ejs') %>
+
+        <div class="form-group d-flex form-control mb-3 " id="fullName">
+            <input type="text" class=" form-input" 
+                aria-describedby="fullName" placeholder="Full name">
+            <span class="d-none">
+                <i class="bi bi-exclamation-circle-fill error-icon"></i>
+            </span>
+        </div>
+        <div class="form-group d-flex form-control mb-3" id="password">
+            <input type="password" class="form-input" 
+                placeholder="Password">
+            <span  class="d-none">
+                <i class="bi bi-exclamation-circle-fill error-icon"></i>
+            </span>
+        </div>
+        <div class="form-group d-flex form-control mb-3" id="confirmPassword">
+            <input type="password" class="form-input" 
+                placeholder="Confirm Password">
+            <span class="d-none">
+                <i class="bi bi-exclamation-circle-fill error-icon"></i>
+            </span>
+        </div>
+        <button type="submit" class="btn btn-primary w-100" id="signupBtn">Sign up</button>
+    </form>
+    <!-- <hr>
+    <div class="border google-auth">
+        <a class="btn btn-lg btn-google btn-block btn-outline d-flex align-items-center"
+            href="#"><img src="https://img.icons8.com/color/16/000000/google-logo.png">
+            <span class="ms-auto me-auto">Continue with Google</span>
+        </a>
+    </div> -->
+    <div class="mt-3 d-flex justify-content-end">
+        <span>Already have an account?
+        </span>
+        <a class="ms-2" href="/login">Login</a>
+    </div>
+</div>
+
+</div>
+<script src="/js/emailPhoneDiffer.js"></script>
