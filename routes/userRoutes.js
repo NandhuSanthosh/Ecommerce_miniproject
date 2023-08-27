@@ -4,7 +4,8 @@ const router = express.Router();
 const jwt = require('jsonwebtoken')
 
 const userControllers = require('../controllers/userControllers');
-const { isNotLogged, isRegestered, isLogged } = require('../Middleware/autherization');
+const { isNotLogged, isRegestered, isLogged } = require('../Middleware/userAutherization');
+
 
 
 router.get('/', isLogged, userControllers.get_home)
@@ -16,8 +17,9 @@ router.route('/login').all(isNotLogged).get(userControllers.get_login).post(user
 
 router.route('/otp-Auth').get(isRegestered, userControllers.get_otpAuthPage)
 router.route('/request-otp').get(isRegestered, userControllers.get_otp)
+router.route('/login-verify-otp').post(isRegestered, userControllers.post_loginVerifyOtp)
 router.post('/verify-otp',isRegestered, userControllers.post_verifyOtp)
 
-
+    
 
 module.exports = router;

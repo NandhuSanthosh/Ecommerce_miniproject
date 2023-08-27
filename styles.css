@@ -1,0 +1,24 @@
+.text-container {
+    max-width: 100%;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.responsive-text {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.responsive-text .minimize{
+    -webkit-line-clamp: 2;
+}
+
+/* .responsive-text::after {
+    content: "...";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to right, transparent, white 50%);
+    padding: 0 0.5em;
+} */

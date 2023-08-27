@@ -6,7 +6,13 @@
     <link rel="stylesheet" href="/css/userStyle.css">
     <link rel="stylesheet" href="/css/tooltipStyles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script>
+        const associate = '<%= locals.associate %>'
+        const page = '<%= locals.page %>'
+        const superSet = '<%= locals.superSet %>'
+    </script>
 </head>
+
 
 <body>
     <main class="bg-background">
@@ -29,28 +35,14 @@
     </main>
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-body" id="modelContent">
-                    Email is associated with another account.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <%- include('../utilityViews/alertModel.ejs') %>
+    
 
-    <script src="/js/formValidation.js"></script>
+    <%- include('../generalPartials/_jqueryJs.ejs') %>
     <%- include("../generalPartials/_bootstrapJS.ejs") %>
+    <script src="/js/formValidation.js"></script>
 
-    <script>
-        function displayModel(){
-            $("#exampleModal").modal();
-        }
-    </script>
+
 </body>
 
 </html>

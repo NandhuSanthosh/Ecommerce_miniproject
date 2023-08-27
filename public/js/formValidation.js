@@ -7,33 +7,60 @@ loginBtn?.addEventListener('click',  (e)=>{
 
     const emailMobileValidationFunction = emailMobileObjectCreater(emailMobile);
 
-    let status = validaityForm([{
-        field: emailMobile, 
-        validityFunction: emailMobileValidationFunction
-    }, {
+    // we are keeping this object to credentials
+    // if the associate(the person who uses) is admin, admin is only allowed to use email
+    // and if associate is user then we are calling a function to figure out which validate function to use
+    let credentialValidateObject = {};
+    if(associate == 'user'){
+        credentialValidateObject = {
+            field: emailMobile, 
+            validityFunction: emailMobileValidationFunction
+        }
+    }
+    else if(associate == 'admin'){
+        credentialValidateObject = {
+            field: emailMobile, 
+            validityFunction: validateEmail
+        }
+    }
+
+
+    // this is a function which return true/false based on the user input
+    // the function accepts a array of object which contains the field referance and function to validate
+    let status = validaityForm([credentialValidateObject, {
         field: password, 
         validityFunction: validatePassword
     }])
 
+    // if the validityForm result is positive(true) we will submit the form
     if(status){
+        // we keep a object named credentials to keep track of the credential details
+        // we are using this because the user can login using email and mobile
         let credentials;
-        console.log(isEmail)
         if(!isEmail){
             credentials = {
-                mobile: extractValue(emailMobile)
+                mobile: {
+                    number: extractValue(emailMobile)
+                }
             }
         }
         else{
             credentials = {
-                email: extractValue(emailMobile)
+                email: extractValue(emailMobile).toLowerCase().trim()
             }
         }
+
+
         let body = {
             credentials, 
             password: extractValue(password)
         }
-        console.log(body);
-        fetch("http://localhost:3000/login", {
+
+        // gives url to send login request and url to the page to load after the request is successful 
+        // based on associate   
+        const {reqUrl, successUrl} = getLoginUrl();
+        console.log(successUrl)
+        fetch(reqUrl, {
             method: "post", 
             headers: {
                 'Content-Type': 'application/json'
@@ -44,17 +71,30 @@ loginBtn?.addEventListener('click',  (e)=>{
         .then( d => {
             console.log(d)
             if(d.isSuccess){
-                location.assign("/");
+                location.assign(successUrl);
             }
             else{
                 showModel(d.errorMessage);
             }
         })
     }
-    else{
-        console.log("something wrong with you details");
-    }
 })
+
+
+function getLoginUrl(){
+    if(associate == "user"){
+        return {
+            reqUrl: "http://localhost:3000/login", 
+            successUrl: "http://localhost:3000/otp-auth?superSet=login"
+        }
+    }
+    return {
+        reqUrl: "http://localhost:3000/admin/login", 
+        successUrl: "http://localhost:3000/admin/otp-auth?superSet=login"
+    }
+}
+
+
 
 signupBtn?.addEventListener('click', (e)=>{
     e.preventDefault();
@@ -96,6 +136,7 @@ signupBtn?.addEventListener('click', (e)=>{
             credentials,
             password: extractValue(password)
         }
+        console.log(superSet)
         fetch('http://localhost:3000/signin', {
             method: 'post', 
             headers: {
@@ -106,7 +147,8 @@ signupBtn?.addEventListener('click', (e)=>{
         .then(response => response.json())
         .then( d=> {
             if(d.isSuccess){
-                location.assign("/otp-Auth")
+                    console.log('here')
+                    location.assign("http://localhost:3000/otp-Auth?superSet="+superSet)
             }
             else{
                 showModel(d.errorMessage)
@@ -116,8 +158,12 @@ signupBtn?.addEventListener('click', (e)=>{
 
 })
 
+
+
+
+
 function emailMobileObjectCreater(field){
-    if(isMobile(extractValue(field))){
+    if(isMobile(extractValue(field).trim())){
         isEmail = false;
         return validateMobile
     }
@@ -129,7 +175,7 @@ function validaityForm(validationObject){
     let status = true;
     let validationResult;
     validationObject.forEach( x => {
-        validationResult = x.validityFunction(x.field, extractValue(x.field));
+        validationResult = x.validityFunction(x.field, extractValue(x.field).trim());
         status &&= validationResult;
     })
     return status;

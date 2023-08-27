@@ -111,20 +111,6 @@ userSchema.statics.validatePhoneNumber = function(phoneNumber, countryCode){
     return validationResult.isValid;
 }
 
-userSchema.pre('save', async function(next){
-    await this.constructor.isAlreadyUsed(this);
-    this.password = await bcrypt.hash(this.password, 10);
-    next();
-})
-
-function validateFullName(fullName){
-    var regName = /^[a-zA-Z]+ [a-zA-Z]+$/;
-    if(regName.test(fullName)){
-        return true;
-    }
-    return false;
-}
-
 userSchema.statics.validatePassword = function(password){
 
     if(!password) return false
@@ -162,6 +148,29 @@ userSchema.statics.validatePassword = function(password){
     return true;
 }
 
+userSchema.statics.getAllUsers = async function(){
+    try {
+        const users = await this.find({}, {password: 0, createdAt: 0, __v: 0})
+        return users;
+    } catch (error) {
+        throw error
+    }
+}
+
+userSchema.pre('save', async function(next){
+    await this.constructor.isAlreadyUsed(this);
+    this.password = await bcrypt.hash(this.password, 10);
+    next();
+})
+
+function validateFullName(fullName){
+    var regName = /^[a-zA-Z]+ [a-zA-Z]+$/;
+    if(regName.test(fullName)){
+        return true;
+    }
+    return false;
+}
+
 userSchema.statics.login = async function(credentials, password){
     if(!credentials.email && !credentials.mobile){
         throw new Error("Please provide all the necessary data!");
@@ -172,7 +181,8 @@ userSchema.statics.login = async function(credentials, password){
         user = await this.findOne({"credentials.email": credentials.email})
     }
     else{
-        user = await this.findOne({"credentials.mobile.number": credentials.mobile.number})
+        user = await this.findOne({"credentials.mobile.number": credentials.mobile.number})       
+        console.log(user)  
     }
     if(user){
         result = await bcrypt.compare(password, user.password);
@@ -184,6 +194,20 @@ userSchema.statics.login = async function(credentials, password){
     else{
         return user;
     }
+}
+
+userSchema.statics.blockUser = async function(id){
+    const filter = {_id: id}
+    let user = await this.findOne(filter)
+    if(!user) throw new Error("No document matched");
+
+    console.log(user.credentials);
+    const update = {isBlocked: !user.isBlocked}
+    let status = await this.updateOne(filter, update);
+
+    if(!status.modifiedCount) throw new Error("Something went wrong")
+    return {status: user.isBlocked? "User succesfully unblocked" : "User succesfully blocked"}
+
 }
 
 

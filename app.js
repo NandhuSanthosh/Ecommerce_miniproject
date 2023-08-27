@@ -8,9 +8,9 @@ const cookieParser = require('cookie-parser');
 
 
 const userRoutes = require('./routes/userRoutes')
+const adminRoutes = require('./routes/adminRoutes')
 const utilityRoutes = require('./routes/utilityRoutes')
 
-const testController = require('./controllers/testController.js')
 
 app.use(express.json())
 app.use(cookieParser())
@@ -19,17 +19,18 @@ app.use(express.static('./public'))
 
 
 app.use('/', userRoutes);
+app.use('/admin', adminRoutes)
 app.use('/utility', utilityRoutes);
 
 
 app.get("/test", (req, res)=>{
-    res.render('test')
+    res.render("test")
 })
 
 mongoose.connect(process.env.DB_URI)
 .then( d => console.log("Database connection established"))
-.catch( e => console.log("Something went wrong"))
+.catch( e => console.log("Couldn't establish database connection: something went wrong"))
 
-app.listen(process.env.PORT_NUMBER ,()=>{
+app.listen(process.env.PORT_NUMBER , '0.0.0.0', ()=>{
     console.log("Server up on port : " , process.env.PORT_NUMBER)
 })

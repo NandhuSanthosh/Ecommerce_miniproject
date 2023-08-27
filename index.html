@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Responsive Text</title>
+</head>
+
+<body>
+    <div class="text-container">
+        <p class="responsive-text">
+            Your long text goes here. Replace this with your actual long text content. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus accusamus tempore, eius consectetur incidunt ex accusantium similique. Est, provident enim.
+        </p>
+    </div>
+
+    <script>
+        const textContainer = document.querySelector('.responsive-text');
+
+            textContainer.addEventListener('click', function () {
+                this.classList.toggle('minimize');
+            });
+
+    </script>
+</body>
+
+</html>

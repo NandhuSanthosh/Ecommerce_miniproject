@@ -13,6 +13,10 @@ const otpSchema = new mongoose.Schema({
         unique: true, 
         required: true
     },
+    associate: {
+        require: true, 
+        type: String
+    },
     otpAttempts: {
         type: Number, 
         default: 1

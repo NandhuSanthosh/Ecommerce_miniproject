@@ -1,0 +1,41 @@
+<div class="userSectionContainer">
+
+    <div class="userSectionHeader d-flex align-items-center justify-content-between mx-5 my-2">
+        <div class="headerText">
+            Users
+        </div>
+        <div class="userTableControllers">
+            <!-- search tab -->
+            <div class="userTableSearch">
+                    <input id="userSearchInput" class="form-control rounded" placeholder='Search'
+                        style="min-width: 225px" />
+                    <i class="bi bi-search search-icon" id="userSearchButton"></i>
+            </div>
+            <!-- blocked/unblocked -->
+        </div>
+    </div>
+
+
+    <table class="table userTable">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Credential</th>
+                <th scope="col">Blocked</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody">
+            <!-- <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>nandhusanthosh87@gmail.com</td>
+            </tr> -->
+
+        </tbody>
+    </table>
+</div>
+
+<%- include("./userDetailsModal") %>

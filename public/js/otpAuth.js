@@ -1,29 +1,138 @@
+
 const sendOtpBtn = document.getElementById('sendOtpBtn');
 const otpValidationForm  = document.getElementById('otpValidationForm');
 
 let isFirstAttempt = true;
 let timerInterval;
 
+
+console.log(superSet, associate, page)
+
 sendOtpBtn?.addEventListener('click', (e)=> {
     e.preventDefault();
 
     if(isFirstAttempt){
         requestOtp();
-        enableInputFields();
-        configureResendButton();
-        updateSendButton();
-        isFirstAttempt = false;
+        
     }
     else{
         // verify otp
         sendOtpVerificationRequest();
     }
 })
+  
+
+
+
+async function requestOtp(){
+    const url = getRequestOtpUrl();
+    fetch(url)
+    .then( response => response.json())
+    .then( data => {
+        console.log(data)
+        if(!data.isSuccess){
+            showModel(data.message)
+        }
+        else{
+            enableInputFields();
+            configureResendButton();
+            isFirstAttempt = false;
+            updateSendButton();
+            showModel("Otp successfully send.")
+        }
+    })
+}
+
+function getRequestOtpUrl(){
+    if(associate == 'user'){
+        return 'http://localhost:3000/request-otp'
+    }
+    else if(associate == 'admin'){
+        return 'http://localhost:3000/admin/request-otp'
+    }
+}
+
+
+function sendOtpVerificationRequest(){
+    const userOtpInput = validateOtpFields();
+    if(userOtpInput){
+        console.log(userOtpInput)
+        const {requestUrl, successUrl} = getOtpVerificationUrls();
+
+        console.log(requestUrl, successUrl)
+        fetch(requestUrl, {
+            method: 'post', 
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ otp: userOtpInput})
+        })
+        .then( response => response.json())
+        .then( data => {
+            if(data.isSuccess){
+                location.assign(successUrl );
+            }
+            else{
+                showModel(data.errorMessage)
+            }
+        })
+    }
+}
+
+function getOtpVerificationUrls(){
+    if(associate == 'admin'){
+        return {
+            requestUrl : "http://localhost:3000/admin/verify-otp?superSet=" + superSet, 
+            successUrl : "http://localhost:3000/admin/"
+        }
+    }
+    else if(associate == 'user'){
+        return {
+            requestUrl : "http://localhost:3000/verify-otp?superSet=" + superSet,
+            successUrl : "http://localhost:3000/"
+        }
+    }
+}
+
 
 
 function updateSendButton(){
     sendOtpBtn.innerHTML = 'Verify';
 }
+
+// validate whether all the fields are  filled
+// if filled returns otp
+function validateOtpFields(){
+    const otpFields = getOtpFields();
+    let isAllFieldsFilled = true;
+    let userOtpInput = "";
+    otpFields.forEach( x=> {
+        if(x.value){
+            correctErrorOtp(x);
+            userOtpInput += x.value;
+        }
+        else{
+            setErrorOtp(x);
+            isAllFieldsFilled = false;
+        }
+    })
+    if(isAllFieldsFilled){
+        return userOtpInput;
+    }
+}
+
+function correctErrorOtp(field){
+    field.classList.remove('otpFieldError')
+}
+
+function setErrorOtp(field){
+    field.classList.add('otpFieldError');
+}
+
+function getOtpFields(){
+    return otp.querySelectorAll('input')
+}
+
 
 
 // based to the attempt(whether first time or not) the reset button and timer is updated
@@ -68,7 +177,6 @@ function resendButtonEvent(){
     requestOtp();
 }
 
-// starts timer
 function startTimer(...[timerElement, timeLimitInMinutes]) {
     displayTimer();
     var timeLimitInSeconds = timeLimitInMinutes * 60;
@@ -116,81 +224,3 @@ document.addEventListener("DOMContentLoaded", function (event) {
         for (let i = 0; i < inputs.length; i++) { inputs[i].addEventListener('keydown', function (event) { if (event.key === "Backspace") { inputs[i].value = ''; if (i !== 0) inputs[i - 1].focus(); } else { if (i === inputs.length - 1 && inputs[i].value !== '') { return true; } else if (event.keyCode > 47 && event.keyCode < 58) { inputs[i].value = event.key; if (i !== inputs.length - 1) inputs[i + 1].focus(); event.preventDefault(); } else if (event.keyCode > 64 && event.keyCode < 91) { inputs[i].value = String.fromCharCode(event.keyCode); if (i !== inputs.length - 1) inputs[i + 1].focus(); event.preventDefault(); } } }); }
     } OTPInput();
 });
-
-
-
-
-async function requestOtp(){
-    fetch('http://localhost:3000/request-otp')
-    .then( response => response.json())
-    .then( data => {
-        console.log(data)
-        if(!data.isSuccess){
-            showModel("Session expired")
-        }
-        else{
-            showModel("Otp successfully send.")
-        }
-    })
-}
-
-// sends to request to verify otp
-function sendOtpVerificationRequest(){
-    const userOtpInput = validateOtpFields();
-    if(userOtpInput){
-        console.log(userOtpInput)
-        fetch('http://localhost:3000/verify-otp', {
-            method: 'post', 
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ otp: userOtpInput})
-        })
-        .then( response => response.json())
-        .then( data => {
-            console.log(data)
-            if(data.isSuccess){
-                location.assign('/');
-            }
-            else{
-                showModel(data.errorMessage)
-            }
-        })
-    }
-}
-
-// validate whether all the fields are  filled
-// if filled returns otp
-function validateOtpFields(){
-    const otpFields = getOtpFields();
-    let isAllFieldsFilled = true;
-    let userOtpInput = "";
-    otpFields.forEach( x=> {
-        if(x.value){
-            correctErrorOtp(x);
-            userOtpInput += x.value;
-        }
-        else{
-            setErrorOtp(x);
-            isAllFieldsFilled = false;
-        }
-    })
-    if(isAllFieldsFilled){
-        return userOtpInput;
-    }
-}
-
-// remove error from otp fields
-function correctErrorOtp(field){
-    field.classList.remove('otpFieldError')
-}
-
-// set error to otp fields
-function setErrorOtp(field){
-    field.classList.add('otpFieldError');
-}
-
-// return all the otp fields
-function getOtpFields(){
-    return otp.querySelectorAll('input')
-}

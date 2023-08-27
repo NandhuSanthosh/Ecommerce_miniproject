@@ -34,9 +34,6 @@ exports.isLogged = async function(req, res, next){
 
 }
 
-
-
-
 async function user_is_logged_in(req){
     let result = {};
     if(req.userDetails){
@@ -73,7 +70,7 @@ async function user_is_registered(req){
         }
     }
 
-    if(result.status == "registration"){
+    if(result.status == "awaiting-otp"){
         req.userDetails = result;
         return true;        
     }
