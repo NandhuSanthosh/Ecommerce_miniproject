@@ -1,3 +1,8 @@
-const n = "1000000";
+const value = {
+    currentPrice1 : -1, 
+    actualPrice1: -1
+}
 
-console.log(parseInt(n).toLocaleString())
+if(value.currentPrice < 0 || value.actualPrice < 0){
+    console.log("not today")
+}

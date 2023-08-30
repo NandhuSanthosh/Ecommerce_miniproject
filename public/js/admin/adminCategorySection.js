@@ -22,19 +22,17 @@ class CategoryHandler{
         this.displayCategoryAdd();
     }
 
-    addCategoryEvent(){
+    async addCategoryEvent(){
         // verify that all the necessary fields are there
         const cate = addCategory.value;
         const desc = addDescription.value;
         const url = "http://localhost:3000/admin/create_category";
         try {
-            console.log(cate, desc);
             if(cate == "" || desc == "") {
                 const errorMessage = `Please provide all the necessary information : ${!cate ? "category " : ""} ${!desc? "discription" : ""} `
                 throw new Error(errorMessage)
             }
-            console.log("the fuck");
-            fetch(url, {
+            const response = await fetch(url, {
                 method: "post", 
                 headers: {
                     'Content-Type': 'application/json'
@@ -44,18 +42,16 @@ class CategoryHandler{
                     description: desc
                 })
             })
-            .then( response => response.json())
-            .then( data => {
-                console.log(data);
-                if(!data.isSuccess){
-                    throw new Error("ERROR: " + data.errorMessage);
-                }
-                else{
-                    showModel("Category successfully created");
-                    this.updateCurrentCategoryListAdd(data.createdCategory)
-                    this.populateCategoryTable(this.currentCategorySet)
-                }
-            })
+            const data = await response.json()
+                
+            if(!data.isSuccess){
+                throw new Error("ERROR: " + data.errorMessage);
+            }
+            else{
+                showModel("Category successfully created");
+                this.updateCurrentCategoryListAdd(data.createdCategory)
+                this.populateCategoryTable(this.currentCategorySet)
+            }
             
         } catch (error) {
             showModel(error.message)

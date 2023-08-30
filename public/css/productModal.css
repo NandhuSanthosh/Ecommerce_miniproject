@@ -1,0 +1,76 @@
+:root{
+    --primary-bg: #F1E7D5;
+    --green-shade-one: #CCDAC3;
+    --green-shade-two: #485D6D;
+    --green-shade-three: #004050;
+}
+
+.bg-shade-two{
+    background-color: var(--green-shade-two);
+}
+.bg-shade-three{
+    background-color: var(--green-shade-three);
+    color: white;
+}
+
+
+ .modal-content img {
+     width: 100%;
+ }
+
+ .modal-header,
+ .modal-footer {
+     padding: 0px;
+     overflow: hidden;
+ }
+
+ .modal-body,
+ .modal-footer,
+ .modal-body li {
+     background-color: var(--primary-bg);
+ }
+
+ .modal-body li {
+     padding: 0;
+ }
+
+ .modal-title {
+     color: var(--green-shade-three);
+     font-size: 22px;
+     font-weight: bold;
+ }
+
+ .input-field,
+ .input-field:hover,
+ .input-field:active,
+ .input-field:focus {
+     background: transparent;
+     border: none;
+     border-bottom: 8px solid var(--green-shade-one);
+     margin-bottom: 20px;
+ }
+
+ .list-group li {
+     margin-bottom: 50px;
+     border: none;
+ }
+
+ .file_input_label {
+     width: 100%;
+ }
+
+ .form-checkbox {
+     width: 30px;
+     height: 30px;
+     background-color: var(--green-shade-one);
+ }
+
+ .form-checkbox[type="checkbox"]:checked {
+     background-color: var(--green-shade-two);
+ }
+
+.file_intput_button{
+    background-color: var(--green-shade-one);
+    padding: 10px;
+    border-radius: 10px 10px 0 0;
+}

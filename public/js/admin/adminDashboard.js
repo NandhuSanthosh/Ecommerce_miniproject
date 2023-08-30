@@ -47,7 +47,8 @@ function configure(dashboardItems){
     dashboardItems.forEach( (item, index) => {
         let button = createDashboardItemTile(item);
         if(index == 0){
-            currentSelectedButton = button;
+            currentSelectedButton = button
+            button.setAttribute('aria-current', "page")
         }
         dashboardContainer.append(button);
     })
@@ -67,7 +68,7 @@ function sidebarToggleEvenHandler(){
 function createDashboardItemTile(item){
 
     const aTag = document.createElement('a');
-    aTag.classList.add("sidebar-buttons", "sidebar-buttons", 'py-2', 'ripple');
+    aTag.classList.add("sidebar-buttons", 'py-2', 'ripple');
     aTag.addEventListener('click', sidebarButtonClickEvent(aTag, item))
 
     const iTag = document.createElement('i');
@@ -84,6 +85,7 @@ function createDashboardItemTile(item){
 
 function sidebarButtonClickEvent(button, item){
     return function(){
+
         currentSelectedButton?.removeAttribute('aria-current');
         currentActiveSection?.removeAttribute('aria-current')
 
@@ -92,6 +94,7 @@ function sidebarButtonClickEvent(button, item){
         currentSelectedButton = button;
         
         newSection.setAttribute("aria-current", "page");
+        button.setAttribute('aria-current', "page")
 
         item.renderObject.render();
         sidebarToggleEvenHandler()

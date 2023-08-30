@@ -37,7 +37,7 @@ class ProductHandlers{
     addProductBtnEvent = ()=>{
             // fetch user address using the id
         this.updateModalData({}, "Create Product", "add");
-        this.displayUserDetails();
+        this.displayProductModal();
     }
 
 
@@ -72,6 +72,7 @@ class ProductHandlers{
                     showModel("Product successfully careated");
                     this.updateCurrentProductCreate(data.newProduct)
                     this.populateProductTable(this.currentProductSet)
+                    this.hideProductModal();
                 }
                 else{
                     showModel(data.errorMessage)
@@ -90,13 +91,13 @@ class ProductHandlers{
         }
 
         const {value} =  this.getAllUpdatedValue({});
-        const status = this.checkProductRequiredFields(value);
+        const {status, error} = this.checkProductRequiredFields(value);
         if(status){
             formData = this.convertToFormData(value);
             getAllCroppedImages();
         }
         else{
-            showModel("Please enter all the necessary fields")
+            showModel(error)
         }
 
         
@@ -108,7 +109,19 @@ class ProductHandlers{
         return formData;
     }
     checkProductRequiredFields(value){
-        return value.name && value.brand && value.modelName && value.actualPrice && (value.discount || value.currentPrice)
+        if(!(value.name && value.brand && value.modelName && value.actualPrice && (value.discount || value.currentPrice))){
+            return {status: false, error: "Error: Please enter all required fields"};
+        }
+        if(value.currentPrice <= 0 || value.actualPrice <= 0 ){
+            return {status: false, error: "Error: Please check the price fields and retry. Price values cannot be negative"};
+        }
+        if(value.currentPrice > value.actualPrice){
+            return {status: false, error: "Error: Current price cannot be greater than actual price!"}
+        }
+        if(value.discount < 0 ||value.discount > 100){
+            return {status: false, error: "Error: Discount have to be in the range 0 to 100"}
+        }
+        return {status: true}
     }
 
     // update product
@@ -467,9 +480,10 @@ class ProductHandlers{
         return ()=>{
             // fetch user address using the id
             this.updateModalData(value, "Product Details", "view");
-            this.displayUserDetails();
+            this.displayProductModal();
         }
     }
+
     updateModalData(value, heading, purpose){
         modalheader.innerHTML = heading
 
@@ -508,6 +522,7 @@ class ProductHandlers{
             addProduct.addEventListener('click', this.addProductHandler);
         }
     }
+
     updateFieldValue(value){
         const updateObject = [{
             field: product_name, 
@@ -562,9 +577,15 @@ class ProductHandlers{
             field.checked = value;
         }
     }
-    displayUserDetails(){
+
+    displayProductModal(){
         $("#productModal").modal();
     }
+    
+    hideProductModal(){
+        $('#productModal').modal('hide');
+    }
+
     updateImageModel(value){
         imageConatiner.innerHTML = ""
         value.images?.forEach(x => {
@@ -572,18 +593,23 @@ class ProductHandlers{
             imageConatiner.append(imageTile)
         })
     }
+
     setTextExtendFeature(){
         this.classList.toggle('minimize');
     }
+
     hideButton(button){
         button.classList.add('d-none')
     }
+
     showButton(button){
         button.classList.remove('d-none')
     }
+
     resetInputFieldValue(){
         imageInput.value = ""
     }
+
     resetInput(){
         addImageBtn.classList.add('disabled');
     }
