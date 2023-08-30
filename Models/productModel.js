@@ -123,6 +123,17 @@ productSchema.statics.get_single_product_details = async function(id){
     else throw new Error("No such product listed.")
 }
 
+productSchema.statics.get_search_result = async function(searchKey, page){
+    const docPerPage = 3;
+    const query = {
+        $or: [
+            { name: { $regex: searchKey, $options: 'i' } }, // Case-insensitive search on name}, // Case-insensitive search on description
+        ], isDeleted: false};
+    
+    const result = await this.find(query).skip(page * docPerPage).limit(docPerPage);
+    return result;
+}
+
 function imageValidation(val){
     return val.length >= 1
 }

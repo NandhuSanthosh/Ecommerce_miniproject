@@ -94,3 +94,19 @@ exports.get_product_details = async function(req, res, next){
     }
 }
 
+exports.get_product_searchPage = async function(req, res, next){
+    res.render('./authViews/userHome.ejs', {page: 'search-page'})
+}
+
+exports.get_serach_result = async function(req, res, next){
+    try {
+        const searchKey = req.query.searchKey;
+        const page = req.query.p;
+        if(!searchKey) throw new Error("Please provide necessary informations")
+        const products = await productModel.get_search_result(searchKey, page)
+        res.send(products);
+    } catch (error) {
+        next(error)
+    }
+}
+
