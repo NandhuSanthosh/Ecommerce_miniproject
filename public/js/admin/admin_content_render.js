@@ -7,6 +7,7 @@ function removeExcessiveEventListeners(blockUser){
     var old_element = blockUser
     var new_element = old_element.cloneNode(true);
     old_element.parentNode.replaceChild(new_element, old_element);
+    return new_element;
 }
 
 class RenderMethods{
@@ -14,9 +15,7 @@ class RenderMethods{
         this.renderDashboard = renderDashboardFunction
         this.renderUser = new UserHandlers();       
         this.renderCategories = new CategoryHandler();
-    }
-    renderProducts(){
-        console.log("render products");
+        this.renderProducts = new ProductHandlers();
     }
     renderOrders(){
         console.log("render orders");

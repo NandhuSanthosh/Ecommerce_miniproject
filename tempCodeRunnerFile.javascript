@@ -1,7 +1,3 @@
-function a(h){
-    return ()=>{
-        console.log(h);
-    }
-}
+const n = "1000000";
 
-a("wtf")();
+console.log(parseInt(n).toLocaleString())

@@ -2,26 +2,79 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Responsive Text</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=1">
+    <title>Home</title>
+
+    <style>
+        *,*:after,*:before{
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+}
+body{
+	font-family: arial;
+	font-size: 16px;
+	margin: 0;
+	background: #fff;
+	min-height: 100vh;
+	background:#020819;
+	background-repeat: no-repeat;
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+}
+
+figure{
+	width: 2000px;
+	height: 2000px;
+	overflow:hidden;
+	border:3px solid #fff;
+	position: relative;
+}
+figure img{
+	max-width: 100%;
+	min-width: 100%;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%,-50%);
+	z-index: 10;
+	pointer-events: none;
+}
+
+
+    </style>
 </head>
 
 <body>
-    <div class="text-container">
-        <p class="responsive-text">
-            Your long text goes here. Replace this with your actual long text content. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus accusamus tempore, eius consectetur incidunt ex accusantium similique. Est, provident enim.
-        </p>
-    </div>
+
+    <figure id="magnifying_area">
+        <img id="magnifying_img" src="https://res.cloudinary.com/dh1e66m8m/image/upload/v1693295316/1693295311769.png">
+    </figure>
+
 
     <script>
-        const textContainer = document.querySelector('.responsive-text');
+        var magnifying_area = document.getElementById("magnifying_area");
+            var magnifying_img = document.getElementById("magnifying_img");
 
-            textContainer.addEventListener('click', function () {
-                this.classList.toggle('minimize');
-            });
+            magnifying_area.addEventListener("mousemove", function (event) {
+                clientX = event.clientX - magnifying_area.offsetLeft
+                clientY = event.clientY - magnifying_area.offsetTop
 
+                var mWidth = magnifying_area.offsetWidth
+                var mHeight = magnifying_area.offsetHeight
+                clientX = clientX / mWidth * 100
+                clientY = clientY / mHeight * 100
+
+                //magnifying_img.style.transform = 'translate(-50%,-50%) scale(2)'
+                magnifying_img.style.transform = 'translate(-' + clientX + '%, -' + clientY + '%) scale(2)'
+            })
+
+            magnifying_area.addEventListener("mouseleave", function () {
+                magnifying_img.style.transform = 'translate(-50%,-50%) scale(1)'
+            })
     </script>
 </body>
 

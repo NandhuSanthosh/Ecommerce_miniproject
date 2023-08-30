@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken')
 
 const userControllers = require('../controllers/userControllers');
 const { isNotLogged, isRegestered, isLogged } = require('../Middleware/userAutherization');
+const { get_product_details } = require('../controllers/productControllers');
+
 
 
 
@@ -19,6 +21,9 @@ router.route('/otp-Auth').get(isRegestered, userControllers.get_otpAuthPage)
 router.route('/request-otp').get(isRegestered, userControllers.get_otp)
 router.route('/login-verify-otp').post(isRegestered, userControllers.post_loginVerifyOtp)
 router.post('/verify-otp',isRegestered, userControllers.post_verifyOtp)
+
+
+router.get('/product_details/:id', isLogged, get_product_details);
 
     
 

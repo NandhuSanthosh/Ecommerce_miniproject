@@ -11,6 +11,10 @@ const userRoutes = require('./routes/userRoutes')
 const adminRoutes = require('./routes/adminRoutes')
 const utilityRoutes = require('./routes/utilityRoutes')
 
+const {errorHandler} = require('./Middleware/errorHandler');
+
+
+
 
 app.use(express.json())
 app.use(cookieParser())
@@ -22,10 +26,15 @@ app.use('/', userRoutes);
 app.use('/admin', adminRoutes)
 app.use('/utility', utilityRoutes);
 
+app.use(errorHandler)
 
-app.get("/test", (req, res)=>{
-    res.render("test")
-})
+// TEST STARTING
+const testControllers = require('./testController');
+
+app.use('/test', testControllers)
+
+// TEST ENDING
+
 
 mongoose.connect(process.env.DB_URI)
 .then( d => console.log("Database connection established"))
