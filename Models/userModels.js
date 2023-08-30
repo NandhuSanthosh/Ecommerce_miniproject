@@ -47,11 +47,14 @@ const userSchema = new mongoose.Schema({
         type: Boolean, 
         default: false
     }
+    ,isVerified: {
+        type: Boolean, 
+        default: false
+    }
     
 })
 
 userSchema.statics.validation = async function (userDetails) {
-    let existingUser;
 
     try {
         // validating name
@@ -66,7 +69,6 @@ userSchema.statics.validation = async function (userDetails) {
             }
         }
         else{
-            console.log();
             let mobile = userDetails.credentials.mobile;
             if(!this.validatePhoneNumber(mobile.number, mobile.countryCode)){
                 throw new Error("Please enter a valid mobile number!")
@@ -158,7 +160,7 @@ userSchema.statics.getAllUsers = async function(){
 }
 
 userSchema.pre('save', async function(next){
-    await this.constructor.isAlreadyUsed(this);
+    await this.constructor.validate(this);
     this.password = await bcrypt.hash(this.password, 10);
     next();
 })
@@ -208,6 +210,12 @@ userSchema.statics.blockUser = async function(id){
     if(!status.modifiedCount) throw new Error("Something went wrong")
     return {status: user.isBlocked? "User succesfully unblocked" : "User succesfully blocked"}
 
+}
+
+userSchema.statics.verify = async function(id){
+    console.log(id);
+    const result = await this.updateOne({_id: id}, {$set: {isVerified: true}});
+    console.log(result);
 }
 
 

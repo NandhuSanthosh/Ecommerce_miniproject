@@ -27,16 +27,20 @@ function createToken(userDetails, maxAge, status, id){
     })
 }
 
+// verified
 exports.get_login = (req, res)=>{
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.render("authViews/signup-login", {page: "login", associate})
 }
 
+// 
 exports.get_signup = (req, res)=>{
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.render('authViews/signup-login', {page : "signup", associate, superSet: "signup"})
 }
 
+
+// verified
 exports.post_login = async(req, res)=> {
     const {credentials, password} = req.body;
     try {
@@ -52,7 +56,7 @@ exports.post_login = async(req, res)=> {
     }
 }
 
-
+// verified
 exports.get_otpAuthPage = async (req, res)=>{
     const superSet = req.query.superSet
     console.log(superSet)
@@ -60,18 +64,19 @@ exports.get_otpAuthPage = async (req, res)=>{
     res.render('authViews/signup-login', {page: "otpAuth", associate, superSet})
 }
 
-exports.post_signin = async(req, res) => {
+// verified
+exports.post_signin = async(req, res, next) => {
     const userDetails = req.body;
     try{
-        await userModel.validation(userDetails);
-        const jwtToken = createToken(userDetails, twoPFiveSeconds, "awaiting-otp");
+        const user = await userModel.create(userDetails);
+        console.log(user)
+
+        const jwtToken = createToken(user, twoPFiveSeconds, "awaiting-otp");
         res.cookie('uDAO', jwtToken, { maxAge: twoPFiveSeconds * 1000 ,  httpOnly: true});                
         res.send({isSuccess: true, jwtToken})
     }
     catch(error){
-        const e = Object.keys(error.errors)
-        const errorMessage = error.errors[e[0]].properties.message
-        res.send({isSuccess: false, errorMessage})
+        next(error);
     }
     
     // res.send("here")
@@ -107,18 +112,19 @@ exports.get_otp = async(req, res) => {
     }
 }
 
-exports.post_loginVerifyOtp = async(req, res)=>{
-    const {otp} = req.body
-     try {
-        const result = req.userDetails;
-        const otpDoc = await otpModel.findDoc(result.id, otp);
-        const jwtToken = createToken(result.userDetails, threeDaysSeconds, "loggedIn");
-        res.cookie('uDAO', jwtToken, { maxAge: 3 * 24 * 60 * 60 * 1000 ,  httpOnly: true});
-        res.send({isSuccess: true})
-    } catch (error) {
-        res.send({isSuccess: false, errorMessage: error.message})
-    }
-}
+// exports.post_loginVerifyOtp = async(req, res)=>{
+//     const {otp} = req.body
+//     console.log("the fuck ")
+//      try {
+//         const result = req.userDetails;
+//         const otpDoc = await otpModel.findDoc(result.id, otp);
+//         const jwtToken = createToken(result.userDetails, threeDaysSeconds, "loggedIn");
+//         res.cookie('uDAO', jwtToken, { maxAge: 3 * 24 * 60 * 60 * 1000 ,  httpOnly: true});
+//         res.send({isSuccess: true})
+//     } catch (error) {
+//         res.send({isSuccess: false, errorMessage: error.message})
+//     }
+// }
 
 
 exports.post_verifyOtp = async(req, res) => {
@@ -129,11 +135,13 @@ exports.post_verifyOtp = async(req, res) => {
     try {
         const result = req.userDetails;
         const otpDoc = await otpModel.findDoc(result.id, otp);
-        if(req.query.superSet == 'signup'){
-            const isAlreadyUsed = await userModel.isAlreadyUsed(result.userDetails);
-            await userModel.create(result.userDetails)
+
+        console.log("form otp verification : " ,result)
+        const {userDetails} = result;
+        if(!userDetails.isVerified){
+            userModel.verify(userDetails._id)
         }
-        const jwtToken = createToken(result.userDetails, threeDaysSeconds, "loggedIn");
+        const jwtToken = createToken(userDetails, threeDaysSeconds, "loggedIn");
         res.cookie('uDAO', jwtToken, { maxAge: 3 * 24 * 60 * 60 * 1000 ,  httpOnly: true});
         res.send({isSuccess: true})
     } catch (error) {
