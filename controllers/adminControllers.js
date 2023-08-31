@@ -33,9 +33,12 @@ exports.post_adminLogin = async function (req, res){
         if(!credentials.email || !password) throw new Error("Provide proper details");
         const user = await adminModel.login(credentials, password);
         // set jwt token
-        const token = createToken(user, threeDaysSeconds, awaitingOtpStatus)
-        res.cookie('aDAO', token)
-        res.send({isSuccess: true})
+        const {id, response} = await setOtpHelper({userDetails: user});
+        response.then( d=> {
+            const token = createToken(user, threeDaysSeconds, awaitingOtpStatus, id)
+            res.cookie('aDAO', token)
+            res.send({isSuccess: true})
+        })
     } catch (error) {
         res.send({isSuccess: false, errorMessage: error.message})
     }
@@ -59,9 +62,8 @@ exports.get_otpAuth = async function (req, res){
 exports.get_otp = async function (req, res){
     const {adminDetails} = req
     try{
-        const {id, otp} = await createOtpDocument(adminDetails.userDetails.email, "admin")
-        const message = `${otp} is the One Time Password(OTP) for registration. OTP is valid for next 2 minutes and 30 seconds. Plese do not share with anyone`;
-        sendResponseMail(message, otp, adminDetails.userDetails.email, adminDetails.userDetails.name)
+        const{ id, response} = await setOtpHelper(adminDetails);
+        response
         .then( d => {
             const jwtToken = createToken(adminDetails.userDetails, twoPFiveSeconds, awaitingOtpStatus, id);
             res.cookie('aDAO', jwtToken, { maxAge: twoPFiveSeconds * 1000 ,  httpOnly: true});                
@@ -72,6 +74,12 @@ exports.get_otp = async function (req, res){
         res.send({isSuccess: false, errorMessage: error.message})
     }
 
+}
+
+async function setOtpHelper(adminDetails){
+    const {id, otp} = await createOtpDocument(adminDetails.userDetails.email, "admin")
+    const message = `${otp} is the One Time Password(OTP) for registration. OTP is valid for next 2 minutes and 30 seconds. Plese do not share with anyone`;
+    return {id, response: sendResponseMail(message, otp, adminDetails.userDetails.email, adminDetails.userDetails.name)}
 }
 
 exports.post_verifyOtp = async function(req, res){
