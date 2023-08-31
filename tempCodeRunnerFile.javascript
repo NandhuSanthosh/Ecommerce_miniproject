@@ -1,15 +1,10 @@
-async function a(){
-    
+const v = {
+    a: b()
 }
 
-try {
-    a()
-    .then( ()=>{
-        throw new Error();
-    })
-    .catch((e)=>{
-        throw e
-    })
-} catch (error) {
-    console.log('wtf');
+function b(){
+    console.log('k');
+    return "a";
 }
+
+// console.log(v.a)

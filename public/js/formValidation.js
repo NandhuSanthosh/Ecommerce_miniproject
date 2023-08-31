@@ -1,36 +1,67 @@
 const loginBtn = document.getElementById('loginBtn');
 const signupBtn = document.getElementById('signupBtn');
 let isEmail;
+let validationIntegrateObj = [];
+
+
+addOnchangeValidations();
+
+
+function addOnchangeValidations(){
+    if(page == 'login' || page == 'signup'){
+        validationIntegrateObj = [{
+            field : emailMobile,
+            validityFunction: emailMobileObjectCreater
+        }]
+    
+        if(page == 'signup'){
+            const additionalFields = [{
+                    field: fullName, 
+                    validityFunction: validateFullName
+                },{
+                    field: password, 
+                    validityFunction: validatePasswordOne(confirmPassword)
+                }
+                , {
+                    field: confirmPassword, 
+                    validityFunction: validateConfirmPassword(password)
+                }
+            ]
+            validationIntegrateObj.push(...additionalFields)
+        }
+        else{
+            const passwordObj = {
+                field : password, 
+                validityFunction: validatePasswordOne()
+            }
+            validationIntegrateObj.push(passwordObj);
+        }
+    
+        validationIntegrateObj.forEach( field => {
+            field.field.addEventListener('input', field.validityFunction(field.field))
+        })
+    }
+}
 
 loginBtn?.addEventListener('click',  (e)=>{
     e.preventDefault();
 
-    const emailMobileValidationFunction = emailMobileObjectCreater(emailMobile);
-
-    // we are keeping this object to credentials
-    // if the associate(the person who uses) is admin, admin is only allowed to use email
-    // and if associate is user then we are calling a function to figure out which validate function to use
     let credentialValidateObject = {};
     if(associate == 'user'){
-        credentialValidateObject = {
-            field: emailMobile, 
-            validityFunction: emailMobileValidationFunction
-        }
+        credentialValidateObject = validationIntegrateObj
     }
     else if(associate == 'admin'){
         credentialValidateObject = {
             field: emailMobile, 
-            validityFunction: validateEmail
+            validityFunction: validateEmail(emailMobile)
         }
     }
 
 
     // this is a function which return true/false based on the user input
     // the function accepts a array of object which contains the field referance and function to validate
-    let status = validaityForm([credentialValidateObject, {
-        field: password, 
-        validityFunction: validatePassword
-    }])
+    console.log(credentialValidateObject);
+    let status = validaityForm(credentialValidateObject)
 
     // if the validityForm result is positive(true) we will submit the form
     if(status){
@@ -94,26 +125,11 @@ function getLoginUrl(){
     }
 }
 
-
-
 signupBtn?.addEventListener('click', (e)=>{
     e.preventDefault();
 
-    const emailMobileValidationFunction = emailMobileObjectCreater(emailMobile);
 
-    let status = validaityForm([{
-        field : emailMobile,
-        validityFunction: emailMobileValidationFunction
-    },{
-        field : password, 
-        validityFunction: validatePassword
-    }, {
-        field : fullName, 
-        validityFunction: validateFullName
-    }])
-
-    // checking whether password and confirm password are equal
-    status = validateConfirmPassword(password, confirmPassword) && status;
+    let status = validaityForm(validationIntegrateObj)
 
     
     if(status){
@@ -163,31 +179,38 @@ signupBtn?.addEventListener('click', (e)=>{
 
 
 function emailMobileObjectCreater(field){
-    if(isMobile(extractValue(field).trim())){
-        isEmail = false;
-        return validateMobile
+    return ()=>{
+        const value = extractValue(field);
+        const isMobileResult = isMobile(value);
+            if(isMobileResult){
+            isEmail = false;
+            return validateMobile(field, value)
+        }
+        isEmail = true;
+        return validateEmail(field, value);
     }
-    isEmail = true;
-    return validateEmail;
 }
 
 function validaityForm(validationObject){
     let status = true;
     let validationResult;
     validationObject.forEach( x => {
-        validationResult = x.validityFunction(x.field, extractValue(x.field).trim());
+        validationResult = x.validityFunction(x.field)();
         status &&= validationResult;
     })
-    return status;
+        return status;
 }
 
-function validateFullName(field, fullName){
-    var regName = /^[a-zA-Z]+ [a-zA-Z]+$/;
-    if(regName.test(fullName)){
-        errorCorrection(field);
-        return true;
+function validateFullName(field){
+    return ()=>{
+        fullName = extractValue(field)
+        var regName = /^[a-zA-Z]+ [a-zA-Z]+$/;
+        if(regName.test(fullName)){
+            errorCorrection(field);
+            return true;
+        }
+        setError(field, "Invalid Name")
     }
-    setError(field, "Invalid Name")
 }
 
 function validateEmail(field, email){
@@ -200,61 +223,78 @@ function validateEmail(field, email){
     return false;
 }
 
-function validatePassword(field, password){
-    //check empty password field  
-
-    const regexSpecialChar = /[^a-zA-Z0-9\s]/;
-    const regexNumber = /\d/;
-
-    const regexUppercase = /[A-Z]/;
-    const regexLowercase = /[a-z]/;
-
-    if(password == "") {  
-        setError(field, "Fill the password!")
-        return false;  
-    }  
-
-    if(password.length < 8) {  
-        setError(field,"Password length must be atleast 8 characters");  
-        return false;  
+function validatePasswordOne(confirmPassword){
+    return (field)=>{
+        return ()=>{
+            if(confirmPassword && extractValue(confirmPassword) != ""){
+                validateConfirmPassword(field)(confirmPassword)();
+            }   
+            return validatePassword(field);
+        }
     }
-    
-    if(password.length > 15) {  
-        setError(field, "Password length must not exceed 15 characters");  
-        return false;  
-    }  
-    
-    if( !(regexUppercase.test(password) && regexLowercase.test(password))){
-        setError(field, "Must contain uppercase and lowercase characters")
-        return false;
-    }
-
-    if( !(regexNumber.test(password))){
-        setError(field, "Must contain at one number")
-        return false;
-    }
-
-    if( !regexSpecialChar.test(password)){
-        setError(field, "Must contain at lease one special character.")
-        return false;
-    }
-
-    errorCorrection(field);
-    return true;
 }
 
-function validateConfirmPassword(password, confirmPassword){
+// general function which validate both password and confirmpassword
+// this is called from validatePasswordOne and validateConfirmPassword
+function validatePassword(field){
+    //check empty password field  
+        let password = extractValue(field);
+        const regexSpecialChar = /[^a-zA-Z0-9\s]/;
+        const regexNumber = /\d/;
+    
+        const regexUppercase = /[A-Z]/;
+        const regexLowercase = /[a-z]/;
+    
+        if(password == "") {  
+            setError(field, "Fill the password!")
+            return false;  
+        }  
+    
+        if(password.length < 8) {  
+            setError(field,"Password length must be atleast 8 characters");  
+            return false;  
+        }
+        
+        if(password.length > 15) {  
+            setError(field, "Password length must not exceed 15 characters");  
+            return false;  
+        }  
+        
+        if( !(regexUppercase.test(password) && regexLowercase.test(password))){
+            setError(field, "Must contain uppercase and lowercase characters")
+            return false;
+        }
+    
+        if( !(regexNumber.test(password))){
+            setError(field, "Must contain at one number")
+            return false;
+        }
+    
+        if( !regexSpecialChar.test(password)){
+            setError(field, "Must contain at lease one special character.")
+            return false;
+        }
+        
+        errorCorrection(field);
+        return true;
+}
 
-    if(!validatePassword(confirmPassword, extractValue(confirmPassword))){
-        return false;
+function validateConfirmPassword(password){
+    return (confirmPassword)=>{
+        return()=>{
+            if(!validatePassword(confirmPassword)){
+                setError(confirmPassword, "Not a valid password")
+                return false;
+            }
+        
+            if(extractValue(password) !== extractValue(confirmPassword)){
+                setError(confirmPassword, "Passwords doesn't match")
+                return false;
+            }
+            errorCorrection(confirmPassword);
+            return true;
+        }
     }
-
-    if(extractValue(password) !== extractValue(confirmPassword)){
-        setError(confirmPassword, "Passwords doesn't match")
-        return false;
-    }
-    errorCorrection(confirmPassword);
-    return true;
 }
 
 function validateMobile(field, mobile){
@@ -270,6 +310,7 @@ function validateMobile(field, mobile){
 
 // to extract a value form the input contianer
 function extractValue(container){
+    console.log(container)
     return container.querySelector('input').value;
 }
 
