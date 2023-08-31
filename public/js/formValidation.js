@@ -51,16 +51,18 @@ loginBtn?.addEventListener('click',  (e)=>{
         credentialValidateObject = validationIntegrateObj
     }
     else if(associate == 'admin'){
-        credentialValidateObject = {
+        credentialValidateObject = [{
             field: emailMobile, 
-            validityFunction: validateEmail(emailMobile)
-        }
+            validityFunction: adminValidationEmail(emailMobile)
+        }, {
+            field: password, 
+            validityFunction: validatePasswordOne()(password)
+        }]
     }
 
 
     // this is a function which return true/false based on the user input
     // the function accepts a array of object which contains the field referance and function to validate
-    console.log(credentialValidateObject);
     let status = validaityForm(credentialValidateObject)
 
     // if the validityForm result is positive(true) we will submit the form
@@ -195,7 +197,7 @@ function validaityForm(validationObject){
     let status = true;
     let validationResult;
     validationObject.forEach( x => {
-        validationResult = x.validityFunction(x.field)();
+        validationResult = x.validityFunction(x.field);
         status &&= validationResult;
     })
         return status;
@@ -210,6 +212,12 @@ function validateFullName(field){
             return true;
         }
         setError(field, "Invalid Name")
+    }
+}
+
+function adminValidationEmail(field){
+    return ()=>{
+        return validateEmail(field, extractValue(field));
     }
 }
 
