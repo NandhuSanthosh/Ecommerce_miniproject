@@ -1,8 +1,15 @@
-const value = {
-    currentPrice1 : -1, 
-    actualPrice1: -1
+async function a(){
+    
 }
 
-if(value.currentPrice < 0 || value.actualPrice < 0){
-    console.log("not today")
+try {
+    a()
+    .then( ()=>{
+        throw new Error();
+    })
+    .catch((e)=>{
+        throw e
+    })
+} catch (error) {
+    console.log('wtf');
 }

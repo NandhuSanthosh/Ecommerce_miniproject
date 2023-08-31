@@ -1,28 +1,44 @@
 
 const sendOtpBtn = document.getElementById('sendOtpBtn');
 const otpValidationForm  = document.getElementById('otpValidationForm');
-
+const backBtn = document.querySelector('.back-btn');
 let isFirstAttempt = true;
 let timerInterval;
 
 
-console.log(superSet, associate, page)
-
 sendOtpBtn?.addEventListener('click', (e)=> {
     e.preventDefault();
+    sendOtpVerificationRequest();
+})
 
-    if(isFirstAttempt){
-        requestOtp();
-        
+backBtn.addEventListener('click', (e)=>{
+    redirectPage();
+})
+
+function redirectPage(){
+    const baseUrl = "http://localhost:3000/"
+    const logout = "/?bthp=true";
+    let route;
+    console.log(associate, superSet)
+    if(associate == 'user' && superSet == 'login'){
+        route = 'login'
+    }
+    else if(associate == 'user'){
+        route = 'signin'
     }
     else{
-        // verify otp
-        sendOtpVerificationRequest();
+        route =  "admin/login"
     }
-})
+    const url = baseUrl + route + logout
+    location.assign(url);
+}
   
 
-
+enableInputFields();
+configureResendButton();
+isFirstAttempt = false;
+updateSendButton();
+showModel("Otp successfully send.")
 
 async function requestOtp(){
     const url = getRequestOtpUrl();

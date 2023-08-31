@@ -10,7 +10,6 @@ const fromPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
 
 
 function sendOtp(message, toPhoneNumber = '+916238973581'){
-    
     return client.messages
       .create({
         body: message,

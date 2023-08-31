@@ -91,14 +91,14 @@ userSchema.statics.validation = async function (userDetails) {
 userSchema.statics.isAlreadyUsed = async function(userDetails){
         // validating email
         if(userDetails.credentials.email){
-            existingUser = await this.findOne({ 'credentials.email': userDetails.credentials.email });
+            let existingUser = await this.findOne({ 'credentials.email': userDetails.credentials.email });
             if(existingUser){
                 throw new Error("Email associated with another account.")
             }
         }
         else{
             let mobile = userDetails.credentials.mobile;
-            existingUser = await this.findOne({
+            let existingUser = await this.findOne({
                 'credentials.mobile' : mobile
             })
             if(existingUser){
@@ -160,7 +160,7 @@ userSchema.statics.getAllUsers = async function(){
 }
 
 userSchema.pre('save', async function(next){
-    await this.constructor.validate(this);
+    await this.constructor.validation(this);
     this.password = await bcrypt.hash(this.password, 10);
     next();
 })
@@ -183,8 +183,7 @@ userSchema.statics.login = async function(credentials, password){
         user = await this.findOne({"credentials.email": credentials.email})
     }
     else{
-        user = await this.findOne({"credentials.mobile.number": credentials.mobile.number})       
-        console.log(user)  
+        user = await this.findOne({"credentials.mobile.number": credentials.mobile.number})  
     }
     if(user){
         result = await bcrypt.compare(password, user.password);
@@ -203,7 +202,6 @@ userSchema.statics.blockUser = async function(id){
     let user = await this.findOne(filter)
     if(!user) throw new Error("No document matched");
 
-    console.log(user.credentials);
     const update = {isBlocked: !user.isBlocked}
     let status = await this.updateOne(filter, update);
 
@@ -213,9 +211,7 @@ userSchema.statics.blockUser = async function(id){
 }
 
 userSchema.statics.verify = async function(id){
-    console.log(id);
     const result = await this.updateOne({_id: id}, {$set: {isVerified: true}});
-    console.log(result);
 }
 
 

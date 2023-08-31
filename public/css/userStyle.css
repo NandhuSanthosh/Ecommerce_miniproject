@@ -100,4 +100,19 @@ body{
 }
 
 
+.back-btn{
+    position: absolute;
+    top: 10px;
+    left: 7px;
+    border: none;
+    color: #939393;
+    font-size: 30px;
+    transition: color .45s, font-size .45s;
+}
+.back-btn:hover{
+    font-size: 35px;
+    color: #868686;
+}
+
+
 

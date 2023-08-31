@@ -1,11 +1,17 @@
 const jwt = require('jsonwebtoken')
 
 exports.isNotLogged = async function(req, res, next){
-    if(await user_is_logged_in(req)){
-        return res.redirect('/')
+    const logoutStatus = req.query.bthp;
+    if(logoutStatus){
+        res.clearCookie('uDAO', { httpOnly: true, expires: new Date(0) });
     }
-    if(await user_is_registered(req)){
-        return res.redirect("/otp-Auth")
+    else{
+        if(await user_is_logged_in(req)){
+            return res.redirect('/')
+        }
+        if(await user_is_registered(req)){
+            return res.redirect("/otp-Auth")
+        }
     }
     next();
 }
