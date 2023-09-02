@@ -7,22 +7,72 @@ class ProductHandlers{
         // this.searchButtonConfig();
     }
     async render(){
-        const data = await fetchData(this.dataFetchApiEndPoint, 0);
+        const {data, totalProducts} = await fetchData(this.dataFetchApiEndPoint, 0);
         this.currentProductSet = data;
         this.populateProductTable(data)
         this.configureButton();
 
-        this.configurePagination(data.length);
-        // setpagintaion
-        // set 1 to active
-        // setPreviousNext()
+        this.configurePagination(totalProducts);
+
     }
 
-    configurePagination(length, currentButton = 0){
+    configurePagination(length, currentButton = 1){
         this.renderPaginationButtons(length, currentButton)
     }
 
-    this.renderPaginationButtons()
+    renderPaginationButtons(length, currentButton){
+        let pageCount = Math.ceil(length / 10);
+        if(pageCount < 2){
+            return;
+        }
+        const paginationButtonList = document.getElementById('pagination-group-list')
+        paginationButtonList.classList.remove('d-none')
+        paginationButtonList.innerHTML = "";
+
+        paginationButtonList.append(this.createPaginationTile('Previous', false, currentButton == 1, this.paginationHandler(currentButton-1)))
+
+        if(currentButton >= 2){
+            paginationButtonList.append(this.createPaginationTile(1));
+            if(currentButton > 2)
+            paginationButtonList.append('...')
+        }
+        
+        for(let i = currentButton; i<=pageCount && i < i+3; i++){
+            paginationButtonList.append(this.createPaginationTile(i, i==currentButton));
+        }
+
+        if(currentButton <= pageCount - 3){
+            paginationButtonList.append('...');
+            paginationButtonList.append(this.createPaginationTile(pageCount))
+        }
+
+        paginationButtonList.append(this.createPaginationTile('Next', false, currentButton == pageCount, this.paginationHandler(currentButton+1)))
+    }
+
+    createPaginationTile(count, status, isDisabled, callback){
+        const li = document.createElement('li');
+        li.classList.add("page-item");
+        if(status) li.classList.add("active")
+        li.innerHTML = `<a class="page-link" href="#">${count}</a>`
+        if(isDisabled)
+            li.querySelector('a').classList.add('disabled');
+        else
+            li.addEventListener('click', callback || this.paginationHandler(count))
+        return li
+    }
+
+    paginationHandler(count){
+        return async()=>{
+            // fetch Data
+            const data =await fetchData(this.dataFetchApiEndPoint + `?pno=${count-1}`);
+            this.currentProductSet = data.data;
+            this.configurePagination(data.totalProducts, count);
+            this.populateProductTable(this.currentProductSet)
+            // update current set
+            // populate table
+            // update pagination buttons
+        }
+    }
 
     configureButton(){
         addProductBtn.addEventListener('click', this.addProductBtnEvent);
@@ -34,7 +84,6 @@ class ProductHandlers{
                 const userTile = this.createProductTile(value, index);
                 productTableBody.append(userTile)
             })
-            console.log(data.length)
         }
         else{   
             // display no product

@@ -78,17 +78,21 @@ productSchema.statics.create_product = async function(productDetails){
     return newProduct;
 }
 
-productSchema.statics.get_products = async function(p=1){
-    const pageCount = 10;
-    const products = await this.aggregate([{$match : {isDeleted: false}}, 
-        {$lookup: {
-            from: 'categories', 
-            localField: 'category', 
-            foreignField: '_id', 
-            as: 'category'
-        }}]).skip(p*pageCount).limit(pageCount);
-    return products;
-}
+    productSchema.statics.get_products = async function(p=1){
+        const pageCount = 10;
+        const products = await this.aggregate([{$match : {isDeleted: false}}, 
+            {$lookup: {
+                from: 'categories', 
+                localField: 'category', 
+                foreignField: '_id', 
+                as: 'category'
+            }}]).skip(p*pageCount).limit(pageCount);
+
+        const totalProducts = await this.countDocuments({isDeleted: false})
+
+        return {products, totalProducts};
+    }
+
 
 productSchema.statics.delete_product = async function(id) {
     if(!id) throw new Error("Please provide necessary details")

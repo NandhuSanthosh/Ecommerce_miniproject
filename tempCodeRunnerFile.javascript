@@ -1,10 +1,3 @@
-const v = {
-    a: b()
-}
-
-function b(){
-    console.log('k');
-    return "a";
-}
-
-// console.log(v.a)
+const value = {};
+value[1] = true;
+console.log(value[1]);
