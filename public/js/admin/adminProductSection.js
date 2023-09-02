@@ -64,14 +64,10 @@ class ProductHandlers{
 
     paginationHandler(count){
         return async()=>{
-            // fetch Data
             const data =await fetchData(this.dataFetchApiEndPoint + `?pno=${count-1}`);
             this.currentProductSet = data.data;
             this.configurePagination(data.totalCount, count);
             this.populateProductTable(this.currentProductSet)
-            // update current set
-            // populate table
-            // update pagination buttons
         }
     }
 

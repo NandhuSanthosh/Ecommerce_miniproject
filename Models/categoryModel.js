@@ -19,8 +19,8 @@ const categorySchema = new mongoose.Schema({
     }]
 })
 
-categorySchema.statics.get_categories = async function(){
-    // const categories = await this.find()
+categorySchema.statics.get_categories = async function(p=0){
+    const docPerPage = 10;
     const categories = await this.aggregate([{
         $lookup: {
             from: "categories", 
@@ -40,8 +40,11 @@ categorySchema.statics.get_categories = async function(){
             subCategories: 0, 
             parentCategory: 0,
         }
-    }])
-    return categories;
+    }]).skip(p * docPerPage).limit(docPerPage);
+
+    const totalCount = await this.countDocuments()
+
+    return {categories, totalCount};
 }
 
 categorySchema.statics.delete_category = async function(id){

@@ -60,7 +60,7 @@ class UserHandlers{
         return async()=>{
             const data =await fetchData(this.dataFetchApiEndPoint + `?pno=${count-1}`);
             this.currentUserSet = data.data;
-            this.configurePagination(data.totalProducts, count);
+            this.configurePagination(data.totalCount, count);
             this.populateUserTable(this.currentUserSet)
         }
     }

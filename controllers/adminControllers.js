@@ -134,8 +134,9 @@ exports.patch_blockUser = async function(req, res){
 // CATEGORY RELATED CONTROLLERS
 exports.get_categories = async function(req, res){
     try {
-        const categories = await categoryModel.get_categories();
-        res.send({isSuccess: true, data: categories})
+        const pageNumber = req.query.pno
+        const {categories, totalCount} = await categoryModel.get_categories(pageNumber);
+        res.send({isSuccess: true, data: [...categories], totalCount})
     } catch (error) {
         res.send({isSuccess: false, errorMessage: error.message})
     }
