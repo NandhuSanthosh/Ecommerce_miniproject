@@ -1,6 +1,7 @@
 :root{
     --primary-bg: #F1E7D5;
     --green-shade-one: #CCDAC3;
+    --green-shade-one-dark: #92C4A7;
     --green-shade-two: #485D6D;
     --green-shade-three: #004050;
 }
@@ -73,4 +74,25 @@
     background-color: var(--green-shade-one);
     padding: 10px;
     border-radius: 10px 10px 0 0;
+}
+
+ #product_category {
+    width: 100%;
+    padding: 10px 20px;
+    background-color: var(--green-shade-one);
+    border: none;
+    border-radius: 10px 10px 0px 0px;
+}
+
+#product_category option:hover {
+    background-color: var(--green-shade-two);
+    color: white;
+}
+
+#product_category option:nth-child(odd) {
+    background-color: var(--green-shade-one);
+}
+
+#product_category option:nth-child(even) {
+    background-color: var(--green-shade-one-dark);
 }

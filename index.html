@@ -1,194 +1,59 @@
+<!DOCTYPE html>
 <html>
+	<head>
+		<title></title>
 
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Bootstrap demo</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
-		integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500&display=swap" rel="stylesheet">
+		<style>
+			:root{
+				--primary-bg: #F1E7D5;
+				--green-shade-one: #CCDAC3;
+				--green-shade-two: #92C4A7;
+				--green-shade-three: #004050;
+			}
+			 #category{
+				width: 100%;
+				padding: 10px 20px;
+				background-color: var(--green-shade-one);
+				border: none;
+				border-radius: 10px 10px 0px 0px;
+			}
+			#category option{
+				padding: 10px 20px;
+			}
+			#category option:nth-child(odd){
+				background-color: var(--green-shade-one);
+				padding: 10px 20px;
+			}
+			#category option:nth-child(even){
+				background-color: var(--green-shade-two);
+				padding: 10px 20px;
+			} 
+				
+		</style>
+	</head>
+	<body>
+		<select name="category" id="category">
+			<option value="">Choose category</option>
+			<option value="two">two</option>
+			<option value="three">three</option>
+			<option value="four">four</option>
+		</select>
+		<button onclick="show()">show magic</button>
 
-	<style>
-		.modal-content img{
-			width: 100%;
-		}
-		.modal-header, 
-		.modal-footer{
-			padding: 0px;
-			overflow: hidden;
-		}
-		.modal-body,
-		.modal-body li{
-			background-color: #F1E7D5;
-		}
-		.modal-body li{
-			padding: 0;
-		}
-		.modal-title{
-			color: #004050;
-			font-size: 22px; 
-			font-weight: bold;
-		}
-		.input-field,
-		.input-field:hover,
-		.input-field:active, 
-		.input-field:focus{
-			background: transparent;
-			border: none;
-			border-bottom: 8px solid #CCDAC3;
-			margin-bottom: 20px;
-		}
-		.list-group li{
-			margin-bottom: 50px;
-			border: none;
-		}
-		.file_input_label{
-			width: 100%;
-		}
 
-		.form-checkbox	{
-			width: 30px;
-			height: 30px;
-			background-color: #CCDAC3;
-		}
-
-		.form-checkbox[type="checkbox"]:checked {
-			background-color: #485D6D;
-		}
-	</style>
-</head>
-
-<body>
-
-	<!-- Modal -->
-	<div class="modal fade" id="productModal" data-backdrop="static" tabindex="-1" role="dialog"
-		aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered modal-lg"  role="document">
-			<div class="modal-content" >
-				<div class="modal-header">
-					<img src="../public/accets/form-bg3.png" alt="">
-				</div>
-				<div class="modal-body p-2 p-md-4 p-lg-5">
-					<div class="modal-body-header">
-						<h5 class="modal-title" id="modalheader">
-							Add Product
-						</h5>
-					</div>
-							<form>
-								<ul class="list-group list-group-flush">
-									<li class="list-group-item">
-										<div class="form-group">
-											<label for="category">Name</label>
-											<textarea class="form-control input-field" id="product_name"></textarea>
-										</div>
-										<div class="form-group">
-											<label for="description">Brand</label>
-											<input type="text" class="form-control input-field" id="product_brand" rows="3">
-										</div>
-										<div class="form-group">
-											<label for="description">Model Name</label>
-											<input type="text" class="form-control input-field" id="product_model" rows="3">
-										</div>
-										<div class="form-group">
-											<label for="description">Color</label>
-											<input type="text" class="form-control input-field" id="product_color" rows="3">
-										</div>
-									</li>
-									<li class="list-group-item">
-										<div class="form-group">
-											<label for="description">Actual Price</label>
-											<input type="text" class="form-control input-field" id="product_actualPrice" rows="3">
-										</div>
-										<div class="form-group">
-											<label for="description">Current Price</label>
-											<input type="text" class="form-control input-field" id="product_currentPrice" rows="3">
-										</div>
-										<div class="form-group">
-											<label for="description">Discount</label>
-											<input type="text" class="form-control input-field" id="product_discount" rows="3">
-										</div>
-									</li>
-									<li class="list-group-item">
-										<div class="row mb-3">
-											<div class="col-6 form-check d-flex align-items-center">
-												<input class="form-check-input form-checkbox" type="checkbox" id="product_isFreeDelivery">
-												<label class="form-check-label" for="flexCheckDefault">
-													Free Delivery
-												</label>
-											</div>
-											<div class="col-6 form-group  d-flex align-items-center">
-												<input type="checkbox" class="form-check-input form-checkbox"
-													id="product_isPayOnDelivery">
-												<label class="form-check-label" for="description">Pay on Delivery</label>
-											</div>
-										</div>
-										<div class="form-group">
-											<label for="description">Replacement</label>
-											<input type="text" class="form-control  input-field" id="product_replacement" rows="3">
-										</div>
-										<div class="form-group">
-											<label for="description">Warranty</label>
-											<input type="text" class="form-control input-field" id="product_warranty" rows="3">
-										</div>
-									</li>
-									<li class="list-group-item" id="imageConatiner">
-									</li>
-									<li class="list-group-item" id="addImageBtnContainer">
-										<div class="mb-3">
-											<label for="imageInput" class="form-label file_input_label input-field">
-												<span>Add Image</span>
-											</label>
-											<input id="imageInput" class="form-control d-none" type="file">
-											<button id="addImageBtn" type="button"
-												class="btn btn-primary disabled my-2">Add</button>
-											<div id="imagePreviewContainer"></div>
-										</div>
-									</li>
-								</ul>
-							</form>
-				</div>
-				<div class="modal-footer justify-content-between">
-					<!-- <div>
-						<button type="button" id="deleteProduct" class="btn btn-danger d-none"
-							data-dismiss="modal">Delete</button>
-						<button type="button" id="updateProduct" class="btn btn-warning d-none"
-							data-dismiss="modal">Update</button>
-						<button type="button" id="addProduct" class="btn btn-primary d-none">Add</button>
-					</div>
-					<div>
-						<button id="modalCloseBtn" type="button" class="btn btn-secondary"
-							data-dismiss="modal">Close</button> -->
-					<img class="m-0" src="../public/accets/form-bg3.png" alt="">
-						<!-- <button type="button" class="btn btn-primary">Save changes</button> -->
-					</div>
-				</div>
-			</div>
+		<div class="custom-dropdown">
+			<button class="dropdown-toggle">Select Category</button>
+			<ul class="dropdown-list">
+				<li>Category 1</li>
+				<li>Category 2</li>
+				<li>Category 3</li>
+			</ul>
 		</div>
-	</div>
 
-</body>
-
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-	integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-	crossorigin="anonymous"></script>
-
-	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
-		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-		crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
-		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-		crossorigin="anonymous"></script>
-<script>
-	function displayProductModal(){
-		console.log("wtf")
-		$("#productModal").modal();
-	}
-	displayProductModal();
-</script>
-
+	</body>
+	<script>
+		function show(){
+			console.log(category.value)
+		}
+	</script>
 </html>
-
-<!-- Modal -->

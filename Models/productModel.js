@@ -78,8 +78,15 @@ productSchema.statics.create_product = async function(productDetails){
     return newProduct;
 }
 
-productSchema.statics.get_products = async function(){
-    const products = await this.find({isDeleted: false});
+productSchema.statics.get_products = async function(p=1){
+    const pageCount = 10;
+    const products = await this.aggregate([{$match : {isDeleted: false}}, 
+        {$lookup: {
+            from: 'categories', 
+            localField: 'category', 
+            foreignField: '_id', 
+            as: 'category'
+        }}]).skip(p*pageCount).limit(pageCount);
     return products;
 }
 
@@ -111,7 +118,7 @@ productSchema.statics.add_image = async function(id, url){
 
 productSchema.statics.update_product = async function(id, updateObject){
     if(!id || !updateObject) throw new Error("Please provide all necessary data")
-    const updatedProduct = await this.findByIdAndUpdate(id,{ $set: updateObject },{ new: true })
+    const updatedProduct = await this.findByIdAndUpdate(id,{ $set: updateObject },{ new: true }).populate('category')
     console.log(updatedProduct);
     return updatedProduct;
 }

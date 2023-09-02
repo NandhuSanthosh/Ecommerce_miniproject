@@ -7,11 +7,23 @@ class ProductHandlers{
         // this.searchButtonConfig();
     }
     async render(){
-        const data = await fetchData(this.dataFetchApiEndPoint);
+        const data = await fetchData(this.dataFetchApiEndPoint, 0);
         this.currentProductSet = data;
         this.populateProductTable(data)
         this.configureButton();
+
+        this.configurePagination(data.length);
+        // setpagintaion
+        // set 1 to active
+        // setPreviousNext()
     }
+
+    configurePagination(length, currentButton = 0){
+        this.renderPaginationButtons(length, currentButton)
+    }
+
+    this.renderPaginationButtons()
+
     configureButton(){
         addProductBtn.addEventListener('click', this.addProductBtnEvent);
     }
@@ -22,14 +34,17 @@ class ProductHandlers{
                 const userTile = this.createProductTile(value, index);
                 productTableBody.append(userTile)
             })
+            console.log(data.length)
         }
         else{   
             // display no product
         }
     }
     async getAllCategory(){
-        this.category = await fetchData("http://localhost:3000/admin/get_categories")
-        console.log(this.category)
+        if(!this.category.length)
+            this.category = await fetchData("http://localhost:3000/admin/get_categories")
+        return this.category;
+        
     }
 
 
@@ -91,6 +106,7 @@ class ProductHandlers{
         }
 
         const {value} =  this.getAllUpdatedValue({});
+        console.log(value)
         const {status, error} = this.checkProductRequiredFields(value);
         if(status){
             formData = this.convertToFormData(value);
@@ -129,6 +145,7 @@ class ProductHandlers{
         // get all the changed value
         return ()=>{
             const {status, value} =this.getAllUpdatedValue(currentValue);
+            console.log(value)
             if(status){
                 const url = "http://localhost:3000/admin/update_product";
                 const body = {
@@ -146,6 +163,7 @@ class ProductHandlers{
                 .then( data => {
                     if(data.isSuccess){
                         showModel("Product Update Sucessful")
+                        console.log(data);
                         this.updateCurrentProductUpdate(data.data);
                         this.populateProductTable(this.currentProductSet)
                     }
@@ -250,6 +268,10 @@ class ProductHandlers{
             field: product_warranty, 
             value: value.warranty,
             name: "warranty"
+        }, {
+            field: product_category, 
+            value: value.category, 
+            name: "category"
         }]
 
         const checkBoxObject = [{
@@ -265,7 +287,7 @@ class ProductHandlers{
         const updatedValues = {};
         let isUpdated = false;
         updateObject.forEach( x => {
-            if(x.field.value != x.value && x.field.value != ""){
+            if(x.field.value != x.value && x.field.value != "" && x.field.value){
                 isUpdated = true;
                 updatedValues[x.name] = x.field.value
             }
@@ -433,6 +455,12 @@ class ProductHandlers{
 
         return tableRow
     }
+    createCategoryTile(category){
+        const option = document.createElement('option');
+        option.innerHTML = category.category
+        option.value = category._id
+        return option;
+    }
 
 
     // updates currentProductSet after specific operation
@@ -484,10 +512,11 @@ class ProductHandlers{
         }
     }
 
-    updateModalData(value, heading, purpose){
+    async updateModalData(value, heading, purpose){
         modalheader.innerHTML = heading
 
         this.updateFieldValue(value);
+        const category = await this.getAllCategory();
 
         const buttonsWithEvent = [addProduct, updateProduct, deleteProduct, imageInput, addImageBtn]
         buttonsWithEvent.forEach( x => {
@@ -509,6 +538,16 @@ class ProductHandlers{
             imageInput.multiple = false;
             addImageBtn.addEventListener('click', this.addSingleImageEvent(value._id))
             updateProduct.addEventListener('click', this.updateProductHandler(value))
+            
+            let categoryId;
+            if(Array.isArray(value.category)){
+                categoryId = value.category[0]._id;
+            }
+            else if(value.category){
+                categoryId = value.category._id;
+            }
+            this.injectCategory(category, categoryId);
+
         }
         else{
             // add and configure add button
@@ -520,6 +559,8 @@ class ProductHandlers{
             this.updateImageModel({})
             imageInput.multiple = true;
             addProduct.addEventListener('click', this.addProductHandler);
+            this.injectCategory(category);
+
         }
     }
 
@@ -576,6 +617,20 @@ class ProductHandlers{
         function checkBoxUpdater({field, value}){
             field.checked = value;
         }
+
+    }
+
+    injectCategory(categoryList, id){
+        console.log(id);
+        product_category.innerHTML = "";
+        product_category.append(this.createCategoryTile({category: "Choose category", value: ""}))
+        categoryList.forEach(curr => {
+            const tile = this.createCategoryTile(curr)
+            if(curr._id == id){
+                tile.selected = true;
+            }
+            product_category.append(tile);
+        })
     }
 
     displayProductModal(){
@@ -588,6 +643,7 @@ class ProductHandlers{
 
     updateImageModel(value){
         imageConatiner.innerHTML = ""
+
         value.images?.forEach(x => {
             const imageTile = this.createImageTile(x, value._id);
             imageConatiner.append(imageTile)

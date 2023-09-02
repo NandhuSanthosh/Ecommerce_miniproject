@@ -5,7 +5,9 @@ const {upload_single_image, upload_multiple_image} = require("../Middleware/uplo
 
 exports.get_products = async function(req, res, next){
     try {
-        const products = await productModel.get_products();
+        const pageCount = req.query.pno || 0
+        const products = await productModel.get_products(pageCount);
+        console.log(products.length)
         res.send({isSuccess: true, data: products});
     } catch (error) {
         next(error);
