@@ -78,7 +78,7 @@ productSchema.statics.create_product = async function(productDetails){
     return newProduct;
 }
 
-    productSchema.statics.get_products = async function(p=1){
+    productSchema.statics.get_products = async function(p=0){
         const pageCount = 10;
         const products = await this.aggregate([{$match : {isDeleted: false}}, 
             {$lookup: {

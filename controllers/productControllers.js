@@ -7,8 +7,7 @@ exports.get_products = async function(req, res, next){
     try {
         const pageCount = req.query.pno || 0
         const {products, totalProducts} = await productModel.get_products(pageCount);
-        console.log(products.length, totalProducts, pageCount)
-        res.send({isSuccess: true, data: products, totalProducts});
+        res.send({isSuccess: true, data: products, totalCount: totalProducts});
     } catch (error) {
         next(error);
     }

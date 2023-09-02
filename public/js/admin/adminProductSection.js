@@ -7,12 +7,13 @@ class ProductHandlers{
         // this.searchButtonConfig();
     }
     async render(){
-        const {data, totalProducts} = await fetchData(this.dataFetchApiEndPoint, 0);
+        const {data, totalCount} = await fetchData(this.dataFetchApiEndPoint, 0);
         this.currentProductSet = data;
         this.populateProductTable(data)
         this.configureButton();
 
-        this.configurePagination(totalProducts);
+        console.log(totalCount)
+        this.configurePagination(totalCount);
 
     }
 
@@ -66,7 +67,7 @@ class ProductHandlers{
             // fetch Data
             const data =await fetchData(this.dataFetchApiEndPoint + `?pno=${count-1}`);
             this.currentProductSet = data.data;
-            this.configurePagination(data.totalProducts, count);
+            this.configurePagination(data.totalCount, count);
             this.populateProductTable(this.currentProductSet)
             // update current set
             // populate table

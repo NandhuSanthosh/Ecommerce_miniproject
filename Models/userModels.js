@@ -150,10 +150,14 @@ userSchema.statics.validatePassword = function(password){
     return true;
 }
 
-userSchema.statics.getAllUsers = async function(){
+userSchema.statics.getAllUsers = async function(p=0){
     try {
+        const documentPerPageCount = 10;
         const users = await this.find({}, {password: 0, createdAt: 0, __v: 0})
-        return users;
+        .skip(p * documentPerPageCount).limit(documentPerPageCount);
+        
+        const totalUserCount = await this.countDocuments();
+        return {users, totalUserCount};
     } catch (error) {
         throw error
     }

@@ -34,8 +34,7 @@ async function fetchData(url){
         let response = await fetch(url);
         let data = await response.json()
         if(data.isSuccess){
-            console.log(data)
-            return {data : data.data,totalProducts: data.totalProducts}
+            return {data : data.data,totalCount: data.totalCount}
         }
         else{
             showModel(data.errorMessage)

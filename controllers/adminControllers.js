@@ -102,9 +102,10 @@ exports.post_verifyOtp = async function(req, res){
 // USER RELATED CONTROLLERS
 exports.get_users = async function(req, res){
     try {
-        const users = await userModels.getAllUsers();
+        const pageNumber = req.query.pno
+        const {users, totalUserCount} = await userModels.getAllUsers(pageNumber);
         if(users){
-            res.send({isSuccess: 1, data: users})
+            res.send({isSuccess: 1, data: users, totalCount: totalUserCount})
         }
         else
         throw new Error("Something went wrong")

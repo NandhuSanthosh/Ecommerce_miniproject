@@ -6,9 +6,63 @@ class UserHandlers{
     }
 
     async render(){
-        const data = await fetchData(this.dataFetchApiEndPoint);
+        const {data, totalCount} = await fetchData(this.dataFetchApiEndPoint);
         this.currentUserSet = data;
         this.populateUserTable(data)
+
+        this.configurePagination(totalCount)
+    }
+
+    // PAGINATION 
+    configurePagination(length, currentButton = 1){
+        this.renderPaginationButtons(length, currentButton)
+    }
+    renderPaginationButtons(length, currentButton){
+        let pageCount = Math.ceil(length / 10);
+        const paginationButtonList = document.getElementById('pagination-group-list')
+        paginationButtonList.innerHTML = "";
+        if(pageCount < 2){
+            return;
+        }
+        paginationButtonList.classList.remove('d-none')
+
+        paginationButtonList.append(this.createPaginationTile('Previous', false, currentButton == 1, this.paginationHandler(currentButton-1)))
+
+        if(currentButton >= 2){
+            paginationButtonList.append(this.createPaginationTile(1));
+            if(currentButton > 2)
+            paginationButtonList.append('...')
+        }
+        
+        for(let i = currentButton; i<=pageCount && i < currentButton+3; i++){
+            paginationButtonList.append(this.createPaginationTile(i, i==currentButton));
+        }
+
+        if(currentButton <= pageCount - 3){
+            paginationButtonList.append('...');
+            paginationButtonList.append(this.createPaginationTile(pageCount))
+        }
+
+        paginationButtonList.append(this.createPaginationTile('Next', false, currentButton == pageCount, this.paginationHandler(currentButton+1)))
+    }
+    createPaginationTile(count, status, isDisabled, callback){
+        const li = document.createElement('li');
+        li.classList.add("page-item");
+        if(status) li.classList.add("active")
+        li.innerHTML = `<a class="page-link" href="#">${count}</a>`
+        if(isDisabled)
+            li.querySelector('a').classList.add('disabled');
+        else
+            li.addEventListener('click', callback || this.paginationHandler(count))
+        return li
+    }
+    paginationHandler(count){
+        return async()=>{
+            const data =await fetchData(this.dataFetchApiEndPoint + `?pno=${count-1}`);
+            this.currentUserSet = data.data;
+            this.configurePagination(data.totalProducts, count);
+            this.populateUserTable(this.currentUserSet)
+        }
     }
 
     populateUserTable(data){
