@@ -28,7 +28,12 @@ router.get('/get_product_search_page', get_product_searchPage)
 router.get('/product_details/:id', get_product_details);
 router.get('/search_product', get_serach_result);
 
-
+// user settings
+router.get('/settings', isLogged, userControllers.get_settings)
+router.post('/add_address', isLogged, userControllers.post_addAddress)
+router.get('/get_allAddress', isLogged, userControllers.get_allAddress)
+router.delete('/delete_address/:id', isLogged, userControllers.delete_address)
+router.patch('/edit_address/:id', isLogged, userControllers.patch_address)
 router.use(errorHandler);
     
 

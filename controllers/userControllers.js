@@ -1,6 +1,7 @@
 const { generateOtp, createOtpDocument } = require("../Middleware/authUtilMiddleware");
 const { sendResponseMail } = require("../Middleware/sendMail");
 const sendOtp = require("../Middleware/sendOtp");
+const addressModel = require("../Models/addressModel");
 const otpModel = require("../Models/otpModel");
 const userModel = require("../Models/userModels")
 const jwt = require("jsonwebtoken")
@@ -133,6 +134,55 @@ exports.post_verifyOtp = async(req, res) => {
         res.send({isSuccess: true})
     } catch (error) {
         res.send({isSuccess: false, errorMessage: error.message})
+    }
+}
+
+
+exports.get_settings = async(req, res) =>{
+    res.render('authViews/settings', {userDetails: req.userDetails})
+}
+
+exports.post_addAddress = async(req, res, next)=>{
+    try {
+        const {addressDetails} = req.body;
+        const userId = req.userDetails.userDetails._id;
+        const newAddress = await addressModel.create(addressDetails);
+        const updatedUser = await userModel.addAddress(newAddress._id, userId);
+        res.send({isSuccess: true, newAddress, updatedUser});
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.get_allAddress = async (req, res, next)=>{
+    try {
+        const userId = req.userDetails.userDetails._id;
+        const addresses = await userModel.getAddress(userId);
+        res.send({isSuccess: true, addresses})
+    } catch (error) {
+        next(error);
+    }
+}
+
+exports.delete_address = async (req, res, next)=>{
+    try {
+        const userId = req.userDetails.userDetails._id;
+        const addressId = req.params.id
+        const result = await userModel.deleteAddress(userId, addressId);
+        res.send({isSuccess: true})
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.patch_address = async(req, res, next)=>{
+    try {
+        const addressId = req.params.id
+        const {updatedData} = req.body
+        const result = await addressModel.edit_address(addressId, updatedData)
+        res.send({isSuccess: true})
+    } catch (error) {
+        next(error)
     }
 }
 

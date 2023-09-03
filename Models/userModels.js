@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const validate = require('validator');
 const {phone} = require('phone');
-const bcrypt = require('bcrypt')
-
+const bcrypt = require('bcrypt');
+const ObjectId = mongoose.Types.ObjectId;
 // const mobileModel = mongoose.model('mobile', mobileSchema);
 
 const userSchema = new mongoose.Schema({
@@ -50,8 +50,11 @@ const userSchema = new mongoose.Schema({
     ,isVerified: {
         type: Boolean, 
         default: false
-    }
-    
+    },
+    address: [{
+        type: mongoose.Schema.Types.ObjectId, 
+        reference: "addresses"
+    }]
 })
 
 userSchema.statics.validation = async function (userDetails) {
@@ -216,6 +219,50 @@ userSchema.statics.blockUser = async function(id){
 
 userSchema.statics.verify = async function(id){
     const result = await this.updateOne({_id: id}, {$set: {isVerified: true}});
+}
+
+userSchema.statics.addAddress = async function(addressId, userId){
+    const result = await this.findByIdAndUpdate(userId, {$push : {address: addressId}}, {new: true});
+    return result;
+}
+
+userSchema.statics.getAddress = async function(id){
+    console.log(id)
+    const result = await this.aggregate([
+        { 
+            $match: { _id: new ObjectId(id) }
+        }, {
+            $unwind: {
+                path: "$address"
+            }
+        }, {
+            $lookup: {
+                from: "addresses", 
+                localField: "address", 
+                foreignField: "_id", 
+                as: "addresses"
+            }
+        }, {
+            $project: {
+                addresses: 1, 
+                _id: 0
+            }
+        }
+    ])
+    console.log(result)
+    const adderss = result.map(x => {
+        return x.addresses[0]
+    })
+    return adderss;
+}
+
+userSchema.statics.deleteAddress = async function(userId, addressId){
+    const result = await this.updateOne({_id: userId}, {$pull: {address: addressId}});
+    if(!result.modifiedCount){
+        if(result.matchedCount) throw new Error("The user doen't have such an address.")
+        else throw new Error("There isn't such a user.")
+    }
+    return true;
 }
 
 

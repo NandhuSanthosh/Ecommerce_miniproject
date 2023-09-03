@@ -1,3 +1,5 @@
-const value = {};
-value[1] = true;
-console.log(value[1]);
+function validatePhoneNumber(number){
+    const indianPhoneNumberRegex = /^[6789]\d{9}$/;
+    return indianPhoneNumberRegex.test(number);
+}
+console.log(validatePhoneNumber('6238973581'))
