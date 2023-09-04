@@ -37,7 +37,7 @@ router.patch('/edit_address/:id', isLogged, userControllers.patch_address)
 
 
 router.patch('/update_name', isLogged, userControllers.patch_updateName)
-
+router.patch('/change_password', isLogged, userControllers.patch_changePassword)
 
 router.use(errorHandler);
     

@@ -280,6 +280,18 @@ userSchema.statics.complete_userDetails = async function(id){
     return user;
 }
 
+userSchema.statics.change_password = async function(id, currPassword, newPassword){
+    if(!currPassword || !newPassword) throw new Error("Please provide all the necessary details.")
+    const {password} = await this.findById(id);
+    if(!password) throw new Error("Something went wrong: invalid user id")
+
+    const status = await bcrypt.compare(currPassword, password)
+    if(!status) throw new Error("Incorrect password: The current password you entered is incorrect.")
+    const newPasswordHash = await bcrypt.hash(newPassword, 10)
+    const user = await this.findByIdAndUpdate(id, {password: newPasswordHash}, {new: true})
+    return user;
+}
+
 
 
 module.exports = mongoose.model('Users', userSchema);

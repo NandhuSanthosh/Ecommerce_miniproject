@@ -101,6 +101,51 @@ hr{
     background-color: rgb(255, 255, 255);
 }
 
+.change-password input {
+    border: 2px solid #e0e0ff;
+}
+
+.change-password input.error{
+    border-color: #fa6767;
+}
+.change-password input.success{
+    border-color: #01c501;
+}
+.changePasswordBtn{
+    background-color: #6f6ff1;
+    color: white;
+    font-weight: 500;
+}
+
+.instructions .header{
+    font-size: 18px; 
+    font-weight: 500;
+}
+
+.line-through {
+    position: relative;
+    z-index: 2;
+    width: max-content  
+}
+.line-through.success{
+    color: #01c501;
+}
+.line-through::after {
+    content: "";
+    position: absolute;
+    height: 4%;
+    bottom: 40%;
+    left: -0.5rem;
+    right: calc(100% + 0.5rem);
+    background-color: #01c501;
+    transition: 300ms ease-in-out;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.line-through.success::after {
+    right: -.5rem;
+}
 @media (min-width: 576px) {
     .p-content{
         padding-block: 20px;

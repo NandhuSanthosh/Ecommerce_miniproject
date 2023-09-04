@@ -207,4 +207,15 @@ exports.patch_updateName = async(req, res, next)=>{
     }
 }
 
+exports.patch_changePassword = async(req, res, next)=>{
+    try {
+        const {currentPassword, newPassword} = req.body;
+        const result = await userModel.change_password(req.userDetails.userDetails._id, currentPassword, newPassword)
+        console.log(result)
+        res.send({isSuccess: true, result})
+    } catch (error) {
+        next(error)
+    }
+}
+
 
