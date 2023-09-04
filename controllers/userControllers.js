@@ -193,4 +193,18 @@ exports.patch_address = async(req, res, next)=>{
     }
 }
 
+exports.patch_updateName = async(req, res, next)=>{
+    try {
+        const id = req.userDetails.userDetails._id;
+        const newName = req.body.name;
+        console.log(newName)
+        const user = await userModel.update_name(id, newName);
+        const jwtToken = createToken(user,  threeDaysSeconds, "loggedIn");
+        res.cookie('uDAO', jwtToken, { maxAge: 3 * 24 * 60 * 60 * 1000 ,  httpOnly: true});
+        res.send({isSuccess: true, user})
+    } catch (error) {
+        next(error)
+    }
+}
+
 

@@ -191,7 +191,6 @@ class ButtonList{
     btnEventAdder(curr, action){
         return ()=>{
             // pop buttons
-            console.log("wtf")
             this.removeButtons(curr);
             console.log(action)
             action();
@@ -248,10 +247,33 @@ class Settings{
         username.addEventListener('input', this.userNameFieldEvent);
         addAddressBtn.addEventListener('click', this.editRemoveEventAdder("Add Address", this.addAddressBtnEvent));
         createNewAddressBtn.addEventListener('click', this.addAddressEventHandler.bind(this))
-        editCancelBtn.addEventListener('click', this.addressEditCancelBtn.bind(this, this.addAddressBtnEvent));     
+        editCancelBtn.addEventListener('click', this.addressEditCancelBtn.bind(this, this.addAddressBtnEvent));   
+        
+        nameUpdateBtn.addEventListener('click', this.updateNameEvent.bind(this));
     }
     
-
+    updateNameEvent(){
+        const newName = username.value.trim();
+        // request
+        fetch("http://localhost:3000/update_name", {
+            method: "PATCH", 
+            headers: {
+                'Content-Type': 'application/json'
+            }, 
+            body: JSON.stringify({name: newName})
+        })
+        .then( response => response.json())
+        .then( data => {
+            if(data.isSuccess){
+                showModal("Name sucessfully updated!");
+            }
+            else{
+                showModal(data.errorMessage)
+            }
+        })
+        // show success
+        // show failure
+    }
 
     addAddressBtnEvent(){
             this.updateView(editAddressContent)
@@ -368,7 +390,7 @@ class Settings{
                 }
             }
             return acc;
-        }, {})
+        }, {}) 
         if(isStatus){
             return {isValid: true, updatedFields: result}
         }
@@ -445,7 +467,8 @@ class Settings{
         createNewAddressBtn.classList.add('d-none')
     }
 
-    udpateFormValue(address){
+    udpateFormValue(address = this.currentAddress){
+        console.log(address)
         addressFullName.value = address.fullName || "";
         addressMobile.value = address.mobileNumber || "";
         addressPincode.value = address.pincode || "";
@@ -466,7 +489,7 @@ class Settings{
 
     userNameFieldEvent(e){
         const inputValue = e.target.value.trim();
-        if(inputValue == userDetails.name){
+        if(inputValue == userDetails.name || !validateFullName(inputValue).isValid){
             nameUpdateBtn.classList.add("disabled")
         }else{
             nameUpdateBtn.classList.remove("disabled")

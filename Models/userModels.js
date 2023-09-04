@@ -265,6 +265,14 @@ userSchema.statics.deleteAddress = async function(userId, addressId){
     return true;
 }
 
+userSchema.statics.update_name = async function(userId, newName){
+    if(!newName) throw new Error("Please provide necessary information");
+    if(!validateFullName(newName)) throw new Error("The name is not valid")
+    const user = await this.findByIdAndUpdate(userId, {name: newName}, {new : true});
+    if(!user) throw new Error("There is no such user.")
+    return user
+}
+
 
 
 module.exports = mongoose.model('Users', userSchema);

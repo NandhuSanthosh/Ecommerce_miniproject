@@ -34,6 +34,11 @@ router.post('/add_address', isLogged, userControllers.post_addAddress)
 router.get('/get_allAddress', isLogged, userControllers.get_allAddress)
 router.delete('/delete_address/:id', isLogged, userControllers.delete_address)
 router.patch('/edit_address/:id', isLogged, userControllers.patch_address)
+
+
+router.patch('/update_name', isLogged, userControllers.patch_updateName)
+
+
 router.use(errorHandler);
     
 
