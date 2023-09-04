@@ -508,10 +508,16 @@ class Settings{
     myDetailsBtnEvent(){
         this.updateView(myDetailsContent)
         this.renderAddress();
+        this.resetButtons(myDetailsBtn)
+    }
+    resetButtons(button){
+        sidebarBtnList.querySelector('.curr').classList.remove('curr');
+        button.classList.add('curr')
     }
 
     forgotPasswordBtnEvent(){
-        if(!this.updateView(forgotPasswordContent)) return;
+        this.updateView(forgotPasswordContent)
+        this.resetButtons(forgotPasswordBtn)
     }
 
     updateView(newPage){
