@@ -89,7 +89,7 @@ exports.get_product_details = async function(req, res, next){
         console.log('here');
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
         const product = await productModel.get_single_product_details(id);
-        res.render('./authViews/userHome.ejs', {page: 'product-details', product})
+        res.render('./authViews/userHome.ejs', {page: 'product-details', product: product})
     } catch (error) {
         next(error)
     }

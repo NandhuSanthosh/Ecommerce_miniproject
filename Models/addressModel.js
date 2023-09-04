@@ -51,13 +51,9 @@ addressSchema.pre('save', function(next){
 })
 
 addressSchema.statics.edit_address = async function(addressId, newDetails){
-    const result = await this.updateOne({_id: addressId}, {$set: {fullName: newDetails.fullName}});
-    console.log(result)
-    if(!result.acknowledged) throw new Error("Something went wrong.")
-    if(!result.modifiedCount){
-        if(result.matchedCount) throw new Error("Please provide valid data to update.")
-        else throw new Error("The is no such address.")
-    }
+    console.log(addressId, newDetails)
+    const result = await this.findOneAndUpdate({_id: addressId}, {$set: newDetails}, {new: true});
+    return result;
 }
 
 function validateFullName(fullName){

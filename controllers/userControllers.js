@@ -138,8 +138,15 @@ exports.post_verifyOtp = async(req, res) => {
 }
 
 
-exports.get_settings = async(req, res) =>{
-    res.render('authViews/settings', {userDetails: req.userDetails})
+exports.get_settings = async(req, res, next) =>{
+    try {
+        const userId = req.userDetails.userDetails._id;
+        const addresses = await userModel.getAddress(userId);
+        res.render('authViews/settings', {userDetails: req.userDetails.userDetails, addresses})
+    } catch (error) {
+        next(error);
+    }
+
 }
 
 exports.post_addAddress = async(req, res, next)=>{
@@ -180,7 +187,7 @@ exports.patch_address = async(req, res, next)=>{
         const addressId = req.params.id
         const {updatedData} = req.body
         const result = await addressModel.edit_address(addressId, updatedData)
-        res.send({isSuccess: true})
+        res.send({isSuccess: true, data: result})
     } catch (error) {
         next(error)
     }
