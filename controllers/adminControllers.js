@@ -114,6 +114,16 @@ exports.get_users = async function(req, res){
     }
 }
 
+exports.get_complete_userDetails = async function(req, res, next){
+    try {
+        const id = req.params.id;
+        const user = await userModels.complete_userDetails(id);
+        res.send({isSuccess: true, user});
+    } catch (error) {
+        next(error)
+    }
+}
+
 exports.patch_blockUser = async function(req, res){
     
     try {

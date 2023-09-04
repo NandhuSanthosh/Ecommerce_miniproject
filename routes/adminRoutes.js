@@ -1,4 +1,4 @@
-const { get_adminLogin , post_adminLogin, get_adminHome, get_otpAuth, get_otp, post_verifyOtp, get_users, patch_blockUser, get_categories, post_createCategory, delete_category, patch_updateRequest} = require('../controllers/adminControllers');
+const { get_adminLogin , post_adminLogin, get_adminHome, get_otpAuth, get_otp, post_verifyOtp, get_users, patch_blockUser, get_categories, post_createCategory, delete_category, patch_updateRequest, get_complete_userDetails} = require('../controllers/adminControllers');
 const { get_products, post_product, delete_product, delete_image, patch_updateProduct, patch_addImage } = require('../controllers/productControllers');
 const {isLogged, isNotLogged, parser, isAwaitingOtp} = require('../Middleware/adminAutherization')
 
@@ -20,6 +20,7 @@ const upload = multer({ dest: 'uploads/' })
 // USER
 router.get('/get_users', isLogged, get_users)
 router.patch('/block_user', isLogged, patch_blockUser)
+router.get('/complete_userDetails/:id', isLogged, get_complete_userDetails);
 
 
 // CATEGORY

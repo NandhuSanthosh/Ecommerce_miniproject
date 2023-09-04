@@ -117,12 +117,43 @@ class UserHandlers{
     }
 
     updateModalData(value){
-        userDetailsName.innterHTML = value.name
+        userDetailsName.innerHTML = value.name
         userDetailsCredentials.innerHTML = value.credentials.email ? value.credentials.email : value.credentials.mobile.countryCode + "  " +    value.credentials.mobile.number
 
+        fetch("http://localhost:3000/admin/complete_userDetails/" + value._id)
+        .then( response => response.json())
+        .then( data => {
+            if(data.isSuccess){
+                const addressesContainer = document.querySelector('.addressesContainer')
+                addressesContainer.innerHTML = ""
+                if(data.user.address.length > 0){
+                    data.user.address.forEach( x => {
+                        addressesContainer.append(this.creaateUserModalAddressTile(x));
+                    })
+                }
+                else{
+                    addressesContainer.innerHTML = "<p style='text-align:center'>User doesn't update address.<p>"
+                }
+            }
+            else{
+                showModel(data.errorMessage)
+            }
+        })
         this.updateBlockButton(value.isBlocked)
         removeExcessiveEventListeners(blockUser)
         blockUser.addEventListener('click', this.blockUserEvent(value._id, value.isBlocked));
+    }
+
+    creaateUserModalAddressTile(address){
+        const template = `<div><span class="address-fullname">${address.fullName}</span></div>
+            <div><span class="address-firstLine address-line">${address.addressLine1}</span></div>
+            <div><span class="address-secondLine address-line">${address.addressLine2}</span></div>
+            <div><span class="address-thridLine address-line">${address.state + " " +  address.pincode}  India</span></div>
+            <div><span class="address-phoneNumber address-line" >${address.mobileNumber}</span></div>`
+        const addressContainer = document.createElement('div');
+        addressContainer.classList.add('addressContainer', 'p-2', 'p-md-3', 'p-lg-4', 'mb-3');
+        addressContainer.innerHTML = template;
+        return addressContainer
     }
 
     blockUserEvent(id, isBlocked){

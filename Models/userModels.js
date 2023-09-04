@@ -53,7 +53,7 @@ const userSchema = new mongoose.Schema({
     },
     address: [{
         type: mongoose.Schema.Types.ObjectId, 
-        reference: "addresses"
+        ref: "address"
     }]
 })
 
@@ -271,6 +271,13 @@ userSchema.statics.update_name = async function(userId, newName){
     const user = await this.findByIdAndUpdate(userId, {name: newName}, {new : true});
     if(!user) throw new Error("There is no such user.")
     return user
+}
+
+userSchema.statics.complete_userDetails = async function(id){
+    if(!id) throw new Error("Please provide necessary information.");
+    const user = await this.findById(id).populate('address')
+    if(!user) throw new Error("There is no such user");
+    return user;
 }
 
 
