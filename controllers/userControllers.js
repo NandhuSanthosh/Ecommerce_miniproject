@@ -162,7 +162,7 @@ exports.get_resetPassword = async(req, res, next)=>{
         // take key
         const key = req.params.key
         const email = await forgotPasswordTokensModel.validate_key(key);
-        res.render('authViews/resetPasswordPage', {key});
+        res.render('authViews/resetPasswordPage', {key, associate});
     } catch (error) {
         next(error);
     }

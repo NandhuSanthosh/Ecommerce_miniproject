@@ -2,14 +2,16 @@ const jwt = require('jsonwebtoken')
 
 const adminModel = require('../Models/adminModel');
 const {  createOtpDocument } = require('../Middleware/authUtilMiddleware');
-const { sendResponseMail } = require("../Middleware/sendMail");
+const { sendResponseMail, sendPasswordResetMail } = require("../Middleware/sendMail");
 
 const otpModel = require('../Models/otpModel');
 const userModels = require('../Models/userModels');
 const categoryModel = require('../Models/categoryModel')
+const forgotPasswordTokensModel = require('../Models/forgotPasswordModel')
 
 const awaitingOtpStatus = "awaiting_otp";
 const loggedStats = "logged"
+const associate = 'admin'
 
 const twoPFiveSeconds = 2.5 * 60 // seconds
 const threeDaysSeconds = 3 * 24 * 60 * 60;
@@ -189,5 +191,49 @@ exports.patch_updateRequest = async function(req, res){
         res.send({isSuccess: true, category})
     } catch (error) {
         res.send({isSuccess: false, errorMessage: error.message})
+    }
+}
+
+
+// forgot password and reset password
+exports.get_forgotPassword = async(req, res) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.render("authViews/signup-login", {page: "forgot-password", associate})
+}
+
+exports.post_forgotPassword = async(req, res, next)=>{
+    try {
+        const {credentail} = req.body;
+        const userName = await adminModel.isValidCredentail(credentail.email);
+        const newToken = await forgotPasswordTokensModel.create_new_token(credentail.email)
+        const link = "http://localhost:3000/admin/reset_password/"+newToken.key
+        sendPasswordResetMail(userName, link, credentail.email)
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.get_resetPassword = async(req, res, next)=>{
+    try {
+        // take key
+        const key = req.params.key
+        const email = await forgotPasswordTokensModel.validate_key(key);
+        res.render('authViews/resetPasswordPage', {key, associate});
+    } catch (error) {
+        next(error);
+    }
+}
+
+exports.post_resetPassword = async(req, res, next)=>{
+    try {
+        const {newPassword} = req.body
+        const key = req.params.key
+        const credentail = await forgotPasswordTokensModel.validate_key(key)
+        const user = await adminModel.update_password(credentail, newPassword)
+        const jwtToken = createToken(user, threeDaysSeconds, "logged");
+        res.cookie('aDAO', jwtToken, { maxAge: 3 * 24 * 60 * 60 * 1000 ,  httpOnly: true});
+        res.send({isSuccess: true})
+    } catch (error) {
+        next(error)
     }
 }

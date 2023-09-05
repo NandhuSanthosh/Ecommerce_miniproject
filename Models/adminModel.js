@@ -44,5 +44,20 @@ adminSchema.statics.login = async function(credentials, password){
     }    
 }
 
+adminSchema.statics.isValidCredentail = async function(email){
+    if(!email) throw new Error("Please provide necessary information")
+    const admin =  await this.findOne({email});
+    if(!admin) throw new Error("The email is not associated with any admin account.")
+    return admin.name
+}
+
+adminSchema.statics.update_password = async function(email, newPassword){
+    if(!email || !newPassword) throw new Error("Please provide all necessary informations.")
+    const hashPassword = await bcrypt.hash(newPassword, 10);
+    const user = await this.findOneAndUpdate({email}, {$set: {password: hashPassword}}, {new: true})
+    if(!user) throw new Error("There is no admin associate with the account.")
+    return user;
+}
+
 
 module.exports = mongoose.model("admins", adminSchema)

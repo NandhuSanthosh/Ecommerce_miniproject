@@ -1,9 +1,15 @@
-const { get_adminLogin , post_adminLogin, get_adminHome, get_otpAuth, get_otp, post_verifyOtp, get_users, patch_blockUser, get_categories, post_createCategory, delete_category, patch_updateRequest, get_complete_userDetails} = require('../controllers/adminControllers');
+const { get_adminLogin , post_adminLogin, get_adminHome, get_otpAuth, 
+    get_otp, post_verifyOtp, get_users, patch_blockUser, get_categories, 
+    post_createCategory, delete_category, patch_updateRequest, 
+    get_complete_userDetails, get_forgotPassword, post_forgotPassword, 
+    get_resetPassword, post_resetPassword
+} = require('../controllers/adminControllers');
 const { get_products, post_product, delete_product, delete_image, patch_updateProduct, patch_addImage } = require('../controllers/productControllers');
 const {isLogged, isNotLogged, parser, isAwaitingOtp} = require('../Middleware/adminAutherization')
 
 const router = require('express').Router();
-const multer = require('multer')
+const multer = require('multer');
+const { errorHandler } = require('../Middleware/errorHandler');
 
 router.use(parser)
 
@@ -39,4 +45,16 @@ router.patch('/delete_image/:id', isLogged, delete_image)
 router.patch('/update_product', isLogged, patch_updateProduct)
 router.patch('/add_image/:id', isLogged, upload.single("image"),  patch_addImage)
 
+
+// forgot password
+router.route('/forgot_password')
+.get(isNotLogged, get_forgotPassword)
+.post(isNotLogged, post_forgotPassword)
+
+// reset password
+router.route('/reset_password/:key')
+.get(isNotLogged, get_resetPassword)
+.patch(isNotLogged, post_resetPassword)
+
+router.use(errorHandler);
 module.exports = router;

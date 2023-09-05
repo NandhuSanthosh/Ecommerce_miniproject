@@ -18,7 +18,9 @@ function forgotPasswordHandler(e){
         credentail.mobile = value;
     }
     if(status){
-        fetch('http://localhost:3000/forgot_password', {
+        const url = getRequestUrl();
+        console.log(url)
+        fetch( url, {
             method: "POST", 
             headers: {
                 'Content-Type': 'application/json'
@@ -42,9 +44,8 @@ function forgotPasswordHandler(e){
 function credentailInputEvent(field){
     return ()=>{
         const value = extractValue(field)
-        let status;
-        console.log("here")
-        if(isNaN(value[0])){
+        let status = false;
+        if(isNaN(value[0] )|| associate == 'admin'){
             status = validateEmail(field, value)
         }
         else{
@@ -61,6 +62,15 @@ function credentailInputEvent(field){
     }
 }
 
+
+function getRequestUrl(){
+    if(associate == 'admin'){
+        return 'http://localhost:3000/admin/forgot_password'
+    }
+    else{
+        return 'http://localhost:3000/forgot_password'
+    }
+}
 
 function extractValue(container){
     return container.querySelector('input').value;

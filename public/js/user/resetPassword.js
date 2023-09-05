@@ -5,7 +5,9 @@ changePasswordBtn.addEventListener('click', resetPasswordHandler)
 
 function resetPasswordHandler(){
     const newPass = newPassword.value.trim();
-    fetch("http://localhost:3000/reset_password/" + key, {
+    const {url, successUrl} = getUrls();
+    console.log(url)
+    fetch(url + key, {
         method: "PATCH",
         headers: {
             'Content-Type': 'application/json'
@@ -18,12 +20,25 @@ function resetPasswordHandler(){
     .then( data => {
         if(data.isSuccess){
             alert("Password sucessfully updated")
-            location.assign("http://localhost:3000/")
+            location.assign(successUrl)
         }
         else{
             showModal(data.errorMessage)
         }
     })
+}
+
+function getUrls(){
+    if(associate == 'admin'){
+        return {
+            url: "http://localhost:3000/admin/reset_password/",
+            successUrl : "http://localhost:3000/admin/"    
+        }
+    }
+    return {
+            url: "http://localhost:3000/reset_password/",
+            successUrl : "http://localhost:3000/"    
+        }
 }
 
 function changePasswordHandler(){

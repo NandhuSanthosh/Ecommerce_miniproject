@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 exports.parser = async function(req, res, next){
+    // console.log(req.cookies.aDAO)
     if(req.cookies.aDAO){
         req.adminDetails = await jwt.verify(req.cookies.aDAO, process.env.JWT_ADMIN_KEY)
     }
@@ -48,7 +49,9 @@ async function admin_is_awaiting_otp(req){
 
 async function admin_is_logged_in(req){
     if(req.adminDetails?.status == 'logged'){
+        console.log("logged")
         return true;
     }
+    console.log(req.adminDetails.status)
     return false;
 }
