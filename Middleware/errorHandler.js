@@ -9,6 +9,6 @@ exports.errorHandler = async (error, req, res, next)=> {
     }
     else{
         console.log(error);
-        res.status(500).send({isSuccess: false, errorMessage: error.message})
+        res.status(400).send({isSuccess: false, errorMessage: error.message})
     }
 }

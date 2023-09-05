@@ -23,6 +23,8 @@
                         <%- include('./partials/_signup.ejs') %>
                     <%} else if(locals.page == 'login') { %>
                         <%- include('./partials/_login.ejs') %>
+                    <%} else if(locals.page == 'forgot-password') {%>
+                        <%- include('./partials/_forgotPassword.ejs') %>
                     <% } else { %>
                         <%- include('./partials/_otpAuth.ejs') %>
                     <% } %>

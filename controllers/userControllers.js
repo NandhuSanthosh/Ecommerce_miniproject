@@ -1,9 +1,10 @@
 const { generateOtp, createOtpDocument } = require("../Middleware/authUtilMiddleware");
-const { sendResponseMail } = require("../Middleware/sendMail");
+const { sendResponseMail, sendMailWithButton, sendPasswordResetMail } = require("../Middleware/sendMail");
 const sendOtp = require("../Middleware/sendOtp");
 const addressModel = require("../Models/addressModel");
 const otpModel = require("../Models/otpModel");
 const userModel = require("../Models/userModels")
+const forgotPasswordTokensModel = require('../Models/forgotPasswordModel')
 const jwt = require("jsonwebtoken")
 
 const associate = "user";
@@ -136,6 +137,51 @@ exports.post_verifyOtp = async(req, res) => {
         res.send({isSuccess: false, errorMessage: error.message})
     }
 }
+
+exports.get_forgotPassword = async(req, res) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+    res.render("authViews/signup-login", {page: "forgot-password", associate})
+}
+
+exports.post_forgotPassword = async(req, res, next)=>{
+    try {
+        const {credentail} = req.body;
+        const userName = await userModel.isValidCredentail(credentail);
+        const newToken = await forgotPasswordTokensModel.create_new_token(credentail.email || credentail.mobile)
+        if(credentail.email){
+            const link = "http://localhost:3000/reset_password/"+newToken.key
+            sendPasswordResetMail(userName, link, credentail.email)
+        }
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.get_resetPassword = async(req, res, next)=>{
+    try {
+        // take key
+        const key = req.params.key
+        const email = await forgotPasswordTokensModel.validate_key(key);
+        res.render('authViews/resetPasswordPage', {key});
+    } catch (error) {
+        next(error);
+    }
+}
+
+exports.post_resetPassword = async(req, res, next)=>{
+    try {
+        const {newPassword} = req.body
+        const key = req.params.key
+        const credentail = await forgotPasswordTokensModel.validate_key(key)
+        const user = await userModel.update_password(credentail, newPassword)
+        const jwtToken = createToken(user, threeDaysSeconds, "loggedIn");
+        res.cookie('uDAO', jwtToken, { maxAge: 3 * 24 * 60 * 60 * 1000 ,  httpOnly: true});
+        res.send({isSuccess: true})
+    } catch (error) {
+        next(error)
+    }
+}
+
 
 
 exports.get_settings = async(req, res, next) =>{

@@ -306,19 +306,18 @@ function validateConfirmPassword(password){
 }
 
 function validateMobile(field, mobile){
-    const phoneRegex = /^(?:\+?\d{1,4}[ -]?)?(?:\(\d{1,4}\)[ -]?)?\d{1,4}[ -]?\d{1,4}[ -]?\d{1,4}$/;
+    const phoneRegex = /^[6789]\d{9}$/;
     if(phoneRegex.test(mobile)){
         errorCorrection(field)
         return true;
     }
     setError(field, "Invalid Mobile Number")
-    return true;
+    return false;
 }
 
 
 // to extract a value form the input contianer
 function extractValue(container){
-    console.log(container)
     return container.querySelector('input').value;
 }
 

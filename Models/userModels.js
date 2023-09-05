@@ -111,6 +111,26 @@ userSchema.statics.isAlreadyUsed = async function(userDetails){
         }
 }
 
+userSchema.statics.isValidCredentail = async function(credentail){
+    let existingUser
+    if(credentail.email){
+        existingUser = await this.findOne({ 'credentials.email': credentail.email });
+        if(!existingUser){
+            throw new Error("The email you provided is not associated with any account.")
+        }
+    }
+    else{
+        let mobile = credentail.mobile;
+        existingUser = await this.findOne({
+            'credentials.mobile.number' : mobile
+        })
+        if(!existingUser){
+            throw new Error("The mobile number you provided is not associated with any account.");
+        }
+    }
+    return existingUser.name
+}
+
 userSchema.statics.validatePhoneNumber = function(phoneNumber, countryCode){
     const validationResult = phone(phoneNumber, countryCode);
     return validationResult.isValid;
@@ -289,6 +309,21 @@ userSchema.statics.change_password = async function(id, currPassword, newPasswor
     if(!status) throw new Error("Incorrect password: The current password you entered is incorrect.")
     const newPasswordHash = await bcrypt.hash(newPassword, 10)
     const user = await this.findByIdAndUpdate(id, {password: newPasswordHash}, {new: true})
+    return user;
+}
+
+userSchema.statics.update_password = async function(crednetail, newPassword){
+    if(!crednetail || !newPassword) throw new Error("Please provide necessary details");
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    let searchQuery;
+    if(isNaN(crednetail[0])){
+        searchQuery = { "credentials.email" : crednetail}
+    }
+    else{
+        searchQuery = {"credentials.mobile.number" : crednetail}
+    }
+    const user = await this.findOneAndUpdate(searchQuery, {$set: {password: hashedNewPassword}}, {new: true})
+    if(!user) throw new Error("No such user, user credentail not valid")
     return user;
 }
 

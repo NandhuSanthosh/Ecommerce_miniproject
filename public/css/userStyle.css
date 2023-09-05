@@ -58,6 +58,10 @@ body{
     font-weight: block;
 }
 
+.back-to-login{
+    text-decoration: none;
+}
+
 
 .input-field-group{
     display: flex;

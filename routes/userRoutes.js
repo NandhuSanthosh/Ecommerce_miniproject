@@ -39,6 +39,14 @@ router.patch('/edit_address/:id', isLogged, userControllers.patch_address)
 router.patch('/update_name', isLogged, userControllers.patch_updateName)
 router.patch('/change_password', isLogged, userControllers.patch_changePassword)
 
+// forgot password
+router.route('/forgot_password')
+.get(isNotLogged, userControllers.get_forgotPassword)
+.post(isNotLogged, userControllers.post_forgotPassword)
+
+router.route('/reset_password/:key')
+.get(isNotLogged, userControllers.get_resetPassword)
+.patch(isNotLogged, userControllers.post_resetPassword)
 router.use(errorHandler);
     
 
