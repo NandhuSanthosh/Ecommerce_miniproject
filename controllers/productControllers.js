@@ -15,6 +15,7 @@ exports.get_products = async function(req, res, next){
 exports.post_product = async function(req, res, next){
     let {productDetails} = req.body
     productDetails = JSON.parse(productDetails)
+    console.log(productDetails)
     try {
         const result = await upload_multiple_image(req.files)
         console.log(result);

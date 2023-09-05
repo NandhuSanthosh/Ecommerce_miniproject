@@ -89,6 +89,7 @@ class ProductHandlers{
     async getAllCategory(){
         if(!this.category.length)
             this.category = await fetchData("http://localhost:3000/admin/get_categories")
+        console.log(this.category)
         return this.category;
         
     }
@@ -177,7 +178,9 @@ class ProductHandlers{
         if(value.currentPrice <= 0 || value.actualPrice <= 0 ){
             return {status: false, error: "Error: Please check the price fields and retry. Price values cannot be negative"};
         }
+        if(typeof value.currentPrice == 'String' || typeof value.actualPrice == "String")
         if(value.currentPrice > value.actualPrice){
+            console.log(value.currentPrice, vlaue.actualPrice)
             return {status: false, error: "Error: Current price cannot be greater than actual price!"}
         }
         if(value.discount < 0 ||value.discount > 100){
@@ -318,6 +321,10 @@ class ProductHandlers{
             field: product_category, 
             value: value.category, 
             name: "category"
+        }, {
+            field: product_quantity, 
+            value: value.stock, 
+            name: "stock"
         }]
 
         const checkBoxObject = [{
@@ -333,8 +340,9 @@ class ProductHandlers{
         const updatedValues = {};
         let isUpdated = false;
         updateObject.forEach( x => {
-            if(x.field.value != x.value && x.field.value != "" && x.field.value){
+            if(x.field.value != x.value && x.field.value != "" && x.field.value != 'undefined'){
                 isUpdated = true;
+                console.log(x.name, x.field.value)
                 updatedValues[x.name] = x.field.value
             }
         })
@@ -346,11 +354,55 @@ class ProductHandlers{
             }
         })
 
+        this.getAllAboutThisProduct(updatedValues, value.aboutThisItem);
+        console.log(updatedValues)
+        if(value.currentPrice){
+            if(isNaN(value.currentPrice))
+            value.currentPrice = Number(value.currentPrice)
+        }
+        if(value.actualPrice){
+            if(isNaN(value.actualPrice))
+            value.actualPrice = Number(value.actualPrice)
+        }
+
         return {status: isUpdated, value: updatedValues};
-        // check all fields and add updated fields to a object
-        // return the object
     }
 
+    getAllAboutThisProduct(value, ogValue){
+        // value.aboutThisItem = [];
+        // Array.from(aboutProdcutList.children).forEach( x => {
+        //     if(x.value.length >= 35){
+        //         value.aboutThisItem.push(x.value)
+        //     }
+        // })
+        // console.log(value)
+        const newValue = [];
+        Array.from(aboutProdcutList.children).forEach( x => {
+            if(x.value.length >= 35){
+                // value.aboutThisItem.push(x.value)
+                newValue.push(x.value);
+            }
+        })
+        
+        if(!ogValue || !ogValue.length){
+            value.aboutThisItem = newValue;
+        }
+        else{
+            console.log(newValue, ogValue)
+            if(ogValue.length == newValue.length){
+                ogValue.forEach( x => {
+                    console.log(newValue.includes(x))
+                    if(!newValue.includes(x)){
+                        value.aboutThisItem = newValue;
+                        return;
+                    }
+                })
+            }
+            else{
+                value.aboutThisItem = newValue;
+            }
+        }
+    }
     
 
     // adding a new image to a product
@@ -564,7 +616,7 @@ class ProductHandlers{
         this.updateFieldValue(value);
         const category = await this.getAllCategory();
 
-        const buttonsWithEvent = [addProduct, updateProduct, deleteProduct, imageInput, addImageBtn]
+        const buttonsWithEvent = [addProduct, updateProduct, deleteProduct, imageInput, addImageBtn, add_about]
         buttonsWithEvent.forEach( x => {
             removeExcessiveEventListeners(x);
         })
@@ -572,7 +624,9 @@ class ProductHandlers{
         this.resetInputFieldValue();
         imagePreviewContainer.innerHTML = ""
 
+        aboutProdcutList.innerHTML = ""
         imageInput.addEventListener('input', this.imageInputEvent);
+        add_about.addEventListener('click', this.addAboutFieldHandler.bind(this)())
         if(purpose== "view"){
             this.hideButton(addProduct)
             this.showButton(deleteProduct)
@@ -586,14 +640,16 @@ class ProductHandlers{
             updateProduct.addEventListener('click', this.updateProductHandler(value))
             
             let categoryId;
-            if(Array.isArray(value.category)){
+            if(value.category.length){
                 categoryId = value.category[0]._id;
             }
             else if(value.category){
                 categoryId = value.category._id;
             }
-            this.injectCategory(category, categoryId);
-
+            this.injectCategory(category.data, categoryId);
+            value.aboutThisItem.forEach(x => {
+                this.addAboutFieldHandler(x)()
+            })
         }
         else{
             // add and configure add button
@@ -605,8 +661,17 @@ class ProductHandlers{
             this.updateImageModel({})
             imageInput.multiple = true;
             addProduct.addEventListener('click', this.addProductHandler);
-            this.injectCategory(category);
+            this.injectCategory(category.data);
 
+        }
+    }
+
+    addAboutFieldHandler(value){
+        return()=>{
+            const input = document.createElement('textarea');
+            input.classList.add("form-control", "input-field")
+            input.value = value || ""
+            aboutProdcutList.append(input)
         }
     }
 
@@ -638,6 +703,9 @@ class ProductHandlers{
         }, {
             field: product_warranty, 
             value: value.warranty
+        }, {
+            field: product_quantity, 
+            value: value.stock
         }]
 
         const checkBoxObject = [{
@@ -667,9 +735,9 @@ class ProductHandlers{
     }
 
     injectCategory(categoryList, id){
-        console.log(id);
         product_category.innerHTML = "";
         product_category.append(this.createCategoryTile({category: "Choose category", value: ""}))
+        console.log(categoryList)
         categoryList.forEach(curr => {
             const tile = this.createCategoryTile(curr)
             if(curr._id == id){

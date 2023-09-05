@@ -84,7 +84,7 @@ function updateAboutThisItem(product){
     function updateHelper(first, second, aboutThisItem){
         aboutThisItem.forEach( (x, index)=>{
             const detailsLi = createTile(x);
-            if(index % 2){
+            if(index % 2 == 0){
                 first.append(detailsLi)
             }
             else{
