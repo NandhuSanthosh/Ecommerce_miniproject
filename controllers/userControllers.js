@@ -174,6 +174,7 @@ exports.post_resetPassword = async(req, res, next)=>{
         const key = req.params.key
         const credentail = await forgotPasswordTokensModel.validate_key(key)
         const user = await userModel.update_password(credentail, newPassword)
+        await forgotPasswordTokensModel.expire_token(credentail)
         const jwtToken = createToken(user, threeDaysSeconds, "loggedIn");
         res.cookie('uDAO', jwtToken, { maxAge: 3 * 24 * 60 * 60 * 1000 ,  httpOnly: true});
         res.send({isSuccess: true})

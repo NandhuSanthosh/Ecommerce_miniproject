@@ -52,6 +52,5 @@ async function admin_is_logged_in(req){
         console.log("logged")
         return true;
     }
-    console.log(req.adminDetails.status)
     return false;
 }

@@ -42,10 +42,16 @@ forgotPasswordTokenSchema.statics.create_new_token = async function(credentail){
 
 forgotPasswordTokenSchema.statics.validate_key = async function(key){
     const doc = await this.findOne({key});
-    if(doc){
-        return doc.credentail;
+    if(doc.used) throw new Error("This link is already used to change password")
+    if(!doc){
+        throw new Error("There is nothing to see here, invalid or expired link.")
     }
-    else throw new Error("There is nothing to see here, invalid or expired link.")
+    return doc.credentail;
+}
+
+forgotPasswordTokenSchema.statics.expire_token = async function(credentail){
+    if(!credentail) throw new Error("Please provide necessary information");
+    const token = await this.findOneAndUpdate({credentail}, {$set: {used: true}});
 }
 
 function generateRandomString(length) {
