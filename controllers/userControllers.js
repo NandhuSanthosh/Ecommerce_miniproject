@@ -11,7 +11,7 @@ const associate = "user";
 
 exports.get_home = async function(req, res){
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
-    res.render('./authViews/userHome.ejs')
+    res.render('./authViews/userHome.ejs', {product: {}})
 }
 
 
