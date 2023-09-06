@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser');
 const userRoutes = require('./routes/userRoutes')
 const adminRoutes = require('./routes/adminRoutes')
 const utilityRoutes = require('./routes/utilityRoutes')
+const cartRoutes = require('./routes/cartRoutes')
 
 const {errorHandler} = require('./Middleware/errorHandler');
 
@@ -23,6 +24,7 @@ app.use(express.static('./public'))
 
 
 app.use('/', userRoutes);
+app.use('/', cartRoutes);
 app.use('/admin', adminRoutes)
 app.use('/utility', utilityRoutes);
 

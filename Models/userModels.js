@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validate = require('validator');
 const {phone} = require('phone');
 const bcrypt = require('bcrypt');
+const userCartModel = require('./userCartModel');
 const ObjectId = mongoose.Types.ObjectId;
 // const mobileModel = mongoose.model('mobile', mobileSchema);
 
@@ -54,7 +55,11 @@ const userSchema = new mongoose.Schema({
     address: [{
         type: mongoose.Schema.Types.ObjectId, 
         ref: "address"
-    }]
+    }], 
+    cartId : {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Carts"
+    }
 })
 
 userSchema.statics.validation = async function (userDetails) {
@@ -325,6 +330,20 @@ userSchema.statics.update_password = async function(crednetail, newPassword){
     const user = await this.findOneAndUpdate(searchQuery, {$set: {password: hashedNewPassword}}, {new: true})
     if(!user) throw new Error("No such user, user credentail not valid")
     return user;
+}
+
+userSchema.statics.getCart = async function(userId){
+    if(!userId) throw new Error("Please provide necessary information.")
+    const userCart = await this.findById(userId, {cartId: 1, _id: 0});
+    if(userCart.cartId){
+        return userCart.cartId;
+    }
+    else{
+        const newCart = await userCartModel.create({});
+        console.log(newCart)
+        const user = await this.findByIdAndUpdate(userId, {$set: {cartId : newCart._id}})
+        return newCart._id;
+    }
 }
 
 

@@ -48,6 +48,8 @@ router.route('/reset_password/:key')
 .get(isNotLogged, userControllers.get_resetPassword)
 .patch(isNotLogged, userControllers.post_resetPassword)
 router.use(errorHandler);
+
+
     
 
 module.exports = router;    
