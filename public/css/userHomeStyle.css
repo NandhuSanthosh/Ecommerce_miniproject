@@ -162,6 +162,13 @@ figure img {
     font-size: 14px;
 }
 
+
+#quantitySelector{
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+
+
 @media (max-width: 576px){
     .flex-md-reverse{
         flex-wrap: wrap-reverse

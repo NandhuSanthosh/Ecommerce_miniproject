@@ -5,9 +5,10 @@
         <%- include('../generalPartials/_head.ejs') %>
             <link rel="stylesheet" href="/css/userHomeStyle.css">
             <link rel="stylesheet" href="/css/tooltipStyles.css">
+            <link rel="stylesheet" href="/css/cartPage.css">
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script>
-        const product = <%- JSON.stringify(locals.product) %>
+        let product = <%- JSON.stringify(locals.product) %>
     </script>
     </head>
         <body>
@@ -17,6 +18,8 @@
                     <%- include('./partials/_productDetails.ejs') %>
                 <% } else if(locals.page === "search-page") { %>
                     <%- include('./partials/_searchProduct.ejs') %>
+                <% } else if(locals.page === "cart-page") { %>
+                    <%- include('./partials/_cartPage.ejs') %>
                 <% } else {%>
                     <button class="button">this is the home page</button>
                 <% } %>
@@ -24,6 +27,11 @@
 
         </body>
 
+        <%- include('../utilityViews/alertModel.ejs') %>
+        
         <%- include("../generalPartials/_jqueryJs.ejs") %>
         <%- include("../generalPartials/_bootstrapJS.ejs")%>
+
+        <script src="js/user/cartPage.js"></script>
+
     </html>

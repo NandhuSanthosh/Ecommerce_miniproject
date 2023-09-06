@@ -29,7 +29,7 @@ cartSchema.statics.edit_product = async function(cartId, productId, quantity){
 }
 
 cartSchema.statics.get_cart_products = async function(cartId){
-    if(!cartId) throw new Error("Please provide necessary informations.")
+    if(!cartId) throw new Error("Please provide necessary informations. 3")
     const productDetails = await this.findById(cartId).populate('products.productId');
     return productDetails
 }

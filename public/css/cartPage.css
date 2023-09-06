@@ -1,0 +1,135 @@
+body{
+    background-color: #f2f2f2;
+}
+
+.cart-product-tile-container {
+    border: 1px solid #d2d2d2;
+    border-radius: 20px;
+    overflow: hidden
+    /* margin: 20px; */
+}
+
+.cartContiner{
+    margin-left: 5px;
+}
+.cartItemContainer{
+    background: white;
+    border-radius: 10px;
+}
+
+.cart-image{
+    width: max(15vw, 150px);
+    object-fit: cover;
+}
+.product-link{
+    text-decoration: none;
+}
+
+.currentprice{
+    font-size: 18px; 
+    color: rgb(37, 37, 37);
+    font-weight: bold; 
+
+}
+.cart-product-name{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    color: black;
+    max-width: 500px
+}
+
+.cart-btn-responsive-position{
+    
+}
+
+.cart-item-count::-webkit-outer-spin-button,
+.cart-item-count::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.cart-item-count{
+    width: 20px;
+    margin: 0px;
+}
+.incre-decre-btn button{
+    border: none;
+    background-color: #f4f4f4;
+    padding: 2px 10px   ;
+}
+.incre-decre-btn input{
+    background-color: rgb(255, 255, 255);
+    border: none;
+}
+.incre-decre-btn div{
+    border-inline: 1px solid gray;
+    height: 100%;
+    width: 25px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.incre-decre-btn{
+    border-radius: 7px;
+    border: 1px solid gray;
+    width: max-content;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+.spacalities_brand{
+    font-size: 13px;
+    color: #7e7e7e;
+}
+.vertical-line{
+    width: 1px;
+    height: 30px;
+    background-color: #00000059;
+}
+
+.btn-link{
+    padding: 0;
+    text-decoration: none;
+}
+
+.cart-insight-container{
+    border-radius: 10px;
+    height: max-content;
+}
+.discount-text{
+    color: gray;
+    font-weight: 500;
+    font-size: 14px;
+}
+.proceed-to-pay-btn{
+    background: #ffc000;
+    border: none;
+    width: 100%;
+    font-size: 14px;
+    border-radius: 5px;
+    padding: 4px 20px;
+}
+
+.success{
+    color: green;
+}
+.failure{
+    color: red;
+}
+
+
+.free-delivery-status .text-container{
+    font-size: 12px;
+    margin-left: 10px;
+}
+@media (max-width: 575px) {
+    .cart-btn-responsive-position{
+        position: absolute;
+        bottom: 10px; 
+        left: 30px
+    }
+}

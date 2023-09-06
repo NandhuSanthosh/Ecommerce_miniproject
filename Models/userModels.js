@@ -333,7 +333,7 @@ userSchema.statics.update_password = async function(crednetail, newPassword){
 }
 
 userSchema.statics.getCart = async function(userId){
-    if(!userId) throw new Error("Please provide necessary information.")
+    if(!userId) throw new Error("Please provide necessary information. 1")
     const userCart = await this.findById(userId, {cartId: 1, _id: 0});
     if(userCart.cartId){
         return userCart.cartId;

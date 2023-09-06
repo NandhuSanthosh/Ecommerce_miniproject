@@ -1,3 +1,35 @@
+addTOCartBtn.addEventListener('click', addToCartEventHandler)
+
+function addToCartEventHandler(){
+    const quantity = quantitySelector.value 
+    const productId = product._id;
+
+    // request
+    fetch("http://localhost:3000/add_routes", {
+        method: "POST", 
+        headers: {
+            "Content-Type" : "application/json"
+        }, 
+        body: JSON.stringify({
+            quantity, 
+            productId
+        })
+    })
+    .then( response => response.json())
+    .then( data => {
+        if(data.isSuccess){
+            // showModel
+            alert("Product sucessfully added")
+        }
+        else{
+            // showModel("no done")
+            alert(data.errorMessage)
+        }
+    })
+    // show success
+    // show failure
+}
+
 
 function injectData(){
     product_name.innerHTML = product.name;
@@ -9,6 +41,7 @@ function injectData(){
 
     updateSpacality(product);
     updateAboutThisItem(product)
+    updateQuantity(product.stock)
 
     magnifying_img.src = product.images[0];
     for(let i = 0; i<product.images.length && i<5; i++){
@@ -98,6 +131,15 @@ function updateAboutThisItem(product){
         li.innerHTML = `<p>${detail}</p>`
         return li;
     }
+}
+
+function updateQuantity(stock){
+    if(!stock){
+        stock = 1;
+    }
+    console.log(stock)
+    for(let i = 1; i<=stock; i++)
+        quantitySelector.insertAdjacentHTML('beforeend', `<option value=${i}>${i}</option>`)
 }
 
 
