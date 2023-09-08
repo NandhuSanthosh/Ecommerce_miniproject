@@ -131,9 +131,8 @@ signupBtn?.addEventListener('click', (e)=>{
     e.preventDefault();
 
 
+    console.log(fullName)
     let status = validaityForm(validationIntegrateObj)
-
-    
     if(status){
         let credentials;
         if(isEmail){
@@ -149,12 +148,14 @@ signupBtn?.addEventListener('click', (e)=>{
                 }
             }
         }
+
+        console.log(fullName)
         const body = {
             name: extractValue(fullName), 
             credentials,
             password: extractValue(password)
         }
-        console.log(superSet)
+
         fetch('http://localhost:3000/signin', {
             method: 'post', 
             headers: {
@@ -205,7 +206,7 @@ function validaityForm(validationObject){
 
 function validateFullName(field){
     return ()=>{
-        fullName = extractValue(field)
+        let fullName = extractValue(field)
         var regName = /^[a-zA-Z]+ [a-zA-Z]+$/;
         if(regName.test(fullName)){
             errorCorrection(field);
@@ -318,7 +319,7 @@ function validateMobile(field, mobile){
 
 // to extract a value form the input contianer
 function extractValue(container){
-    console.log(container)
+    console.log(fullName)
     return container.querySelector('input').value;
 }
 

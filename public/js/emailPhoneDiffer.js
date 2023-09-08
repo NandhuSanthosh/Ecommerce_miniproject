@@ -11,7 +11,7 @@ async function getAllCountryCode(){
 }
 
 emailMobileInputField.addEventListener('input', ()=>{
-
+    console.log(isMobile)
     if(isMobile(emailMobileInputField.value)){
         displayCountryCode();
     }
