@@ -1,0 +1,89 @@
+:root{
+    --link-font-color: #2D9DC2;
+}
+p{
+    margin: 0;
+}
+.header-text{
+    font-size: 26px;
+    font-weight: 500;
+}
+
+.filter-btns button{
+    color: var(--link-font-color);
+    font-size: 13px;
+}
+
+hr{
+    margin: 0;
+}
+
+.order-item-container{
+    border: 1px solid #cdcdcd;
+    border-radius: 7px;
+}
+
+.section-one{
+    border-bottom: 1px solid #cdcdcd;
+    background-color: #f0f0f0;
+}
+
+.section-one .section-content{
+    font-size: 13px;
+    color: #4d4d4d;
+}
+
+.section-one .section-value{
+    font-weight: 500;
+}
+
+.address-details-container{
+    top: calc(100% + 5px)
+}
+
+.address-details{
+    display: none;
+    background-color: white;
+    padding: 10px;
+    border: 2px solid #000000;
+    border-radius: 10px;
+    width: 200px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;;
+}
+
+.show-detials-on-hover .link{
+    text-decoration: underline;
+    color: var(--link-font-color);
+}
+
+.show-detials-on-hover:hover .address-details{
+    display: block
+}
+
+.arrow{
+    position: absolute;
+    background-color: black;
+    height: 9px;
+    width: 13px;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    bottom: 100%;
+}
+
+.section-two .header{
+    font-weight: bold;
+    font-size: 15px;
+}
+.section-two .name-container a{
+    color: var(--link-font-color);
+    font-size: 14px;
+}
+
+.remove-button{
+    background-color: white;
+    border: 1px solid rgb(233, 233, 233);
+    font-size: 12px;
+    padding: 5px 40px;
+    border-radius: 5px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    margin-right: 30px;
+}

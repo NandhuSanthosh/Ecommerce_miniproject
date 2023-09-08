@@ -1,4 +1,34 @@
 addTOCartBtn.addEventListener('click', addToCartEventHandler)
+buyButton.addEventListener('click', buyEventListener);
+
+function buyEventListener(){
+    const productId = product._id;
+    const quantity = quantitySelector.value;
+
+    const body = {
+        products: [{
+            product: productId, 
+            price: product.currentPrice,
+            quantity
+        }]}
+
+    fetch('http://localhost:3000/order/post_checkout', {
+        method: "POST", 
+        headers: {
+            "Content-Type" : "application/json"
+        }, 
+        body: JSON.stringify(body)
+    })
+    .then( response => response.json())
+    .then( data => {
+        if(data.isSuccess){
+            location.assign(data.redirect)
+        }
+        else{
+            alert(data.errorMessage)
+        }
+    })
+}
 
 function addToCartEventHandler(){
     const quantity = quantitySelector.value 

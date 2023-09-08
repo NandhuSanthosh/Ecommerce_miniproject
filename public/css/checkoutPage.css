@@ -1,0 +1,96 @@
+header{
+    background-color: rgb(243, 243, 243);
+    padding: 10px;
+    border-bottom: 1px solid rgb(214, 214, 214);
+}
+
+header .header-text{
+    font-size: 20px;
+    font-weight: 500;
+}
+
+section{
+    padding-top: 20px;
+}
+.section-header{
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.address-list-container{
+    border: 1px solid #80808066;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.address-list-header{
+    font-weight: bold;
+    font-size: 18px;
+}
+
+hr{
+    margin-block: 5px;
+}
+
+.address{
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: 1px solid rgb(215, 215, 215);
+    background-color: rgb(244, 244, 244);
+}
+.current{
+    background: #ff69001c;
+    border: 1px solid #ff690091;
+}
+
+.address button{
+    width: max-content;
+    height: max-content;
+    padding: 0px;
+    margin-left: 50px;
+    text-decoration: none;
+}
+
+.summary-container{
+    border: 1px solid #80808066;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 46px;
+}
+
+.summary-container .header{
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.summary-container .details div{
+    font-size: 13px;
+    margin-bottom: 2px;
+    font-weight: 500;
+}
+.summary-container .total {
+    color: #B83A1B;
+    font-weight: bold;
+    font-size: 19px;
+    margin-block: 10px;
+}
+.summary-container .discount{
+    color: #B83A1B;
+    font-weight: bold;
+    font-size: 14px;
+    margin: 0px;
+}
+
+.place-order-btn{
+    width: 90%;
+    border: none;
+    padding: 6px;
+    border-radius: 10px;
+    background-color: #ffc600;
+    margin: 10px;
+}
+.cross{
+    text-decoration: line-through;
+}

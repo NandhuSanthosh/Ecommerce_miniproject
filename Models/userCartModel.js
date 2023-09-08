@@ -34,4 +34,5 @@ cartSchema.statics.get_cart_products = async function(cartId){
     return productDetails
 }
 
+
 module.exports = mongoose.model("Carts", cartSchema)

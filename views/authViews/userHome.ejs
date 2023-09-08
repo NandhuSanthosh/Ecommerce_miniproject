@@ -32,6 +32,8 @@
         <%- include("../generalPartials/_jqueryJs.ejs") %>
         <%- include("../generalPartials/_bootstrapJS.ejs")%>
 
-        <script src="js/user/cartPage.js"></script>
+        <% if(locals.page === 'cart-page') { %> 
+            <script src="/js/user/cartPage.js"></script>
+        <% } %>
 
     </html>

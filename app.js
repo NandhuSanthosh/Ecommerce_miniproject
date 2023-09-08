@@ -11,6 +11,7 @@ const userRoutes = require('./routes/userRoutes')
 const adminRoutes = require('./routes/adminRoutes')
 const utilityRoutes = require('./routes/utilityRoutes')
 const cartRoutes = require('./routes/cartRoutes')
+const orderRoutes = require('./routes/orderRoutes')
 
 const {errorHandler} = require('./Middleware/errorHandler');
 
@@ -25,6 +26,7 @@ app.use(express.static('./public'))
 
 app.use('/', userRoutes);
 app.use('/', cartRoutes);
+app.use('/order', orderRoutes);
 app.use('/admin', adminRoutes)
 app.use('/utility', utilityRoutes);
 

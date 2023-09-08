@@ -318,6 +318,7 @@ function validateMobile(field, mobile){
 
 // to extract a value form the input contianer
 function extractValue(container){
+    console.log(container)
     return container.querySelector('input').value;
 }
 

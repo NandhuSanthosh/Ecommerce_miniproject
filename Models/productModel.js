@@ -160,4 +160,36 @@ function findCurrPrice(actualPrice, discount){
 function findDiscount(actualPrice, currentPrice){
     return Math.floor(((actualPrice - currentPrice) * 100) / actualPrice); 
 }
+
+productSchema.statics.find_total_price = async function(productArray){
+    if(!productArray) throw new Error("Please provide all the necessary fields");
+    if(productArray.length == 0) throw new Error("Product cannot be empty");
+    // const singleId = new mongoose.Types.ObjectId(productArray[0].products);
+    // console.log(singleId)
+    const resultProducts = await this.aggregate([{
+            $match: {
+                _id : {$in : productArray.map(x => new mongoose.Types.ObjectId(x.product))}
+            }
+        }])
+
+    // every product in
+    if(resultProducts.length != productArray.length) throw new Error("Something went wrong, couldn't add some produts to you order");
+    // calculate price 
+    const totalPrice = productArray.reduce( (acc, x) => {
+        for(let i = 0;i < resultProducts.length; i++){
+            if(x.product == resultProducts[i]._id) {
+                acc.payable += resultProducts[i].currentPrice * x.quantity;
+                acc.total += resultProducts[i].actualPrice * x.quantity; 
+                acc.isFreeDelivery &&= resultProducts[i].isFreeDelivery
+                return acc;
+            } 
+        }
+    }, {isFreeDelivery: true, payable: 0, total: 0})
+    // isFreeDelivery
+
+    console.log(totalPrice)
+    return totalPrice;
+}
+
+
 module.exports = mongoose.model('products', productSchema);

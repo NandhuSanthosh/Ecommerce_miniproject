@@ -150,9 +150,11 @@ function loader(){
     const productList = product.products;
     if(productList.length == 0){
         document.querySelector('.cart-insight-container').classList.add('d-none')
+        document.querySelector('.noProductMessage').classList.remove('d-none')
     }
     else{
         document.querySelector('.cart-insight-container').classList.remove('d-none')
+        document.querySelector('.noProductMessage').classList.add('d-none')
     }
     productList.forEach( (x, index)=> {
         console.log(x)
