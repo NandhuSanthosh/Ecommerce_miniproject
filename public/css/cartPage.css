@@ -154,7 +154,7 @@ body{
 @media (max-width: 575px) {
     .cart-btn-responsive-position{
         position: absolute;
-        bottom: 10px; 
+        bottom: 0;
         left: 30px
     }
 }

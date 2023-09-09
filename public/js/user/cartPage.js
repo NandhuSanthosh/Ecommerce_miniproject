@@ -4,7 +4,7 @@ function createTile(product, quantity, index){
     const template = `
             <div class=" product_container position-relative  cart-product-tile-container mb-3">
 
-                <div class="d-flex flex-sm-row mb-5 mb-sm-2">
+                <div class="d-flex flex-sm-row mb-5 mb-sm-0">
                     <div class="image_container d-flex">
                         <img src="${product.images[0]}" class="cart-image" alt="">
                     </div>
@@ -19,13 +19,13 @@ function createTile(product, quantity, index){
                         </div>
                         <div class="rating"></div>
                         <div class="prices d-flex gap-2">
-                            <div class="currentprice">₹${product.currentPrice}</div>
+                            <div class="currentprice">₹${(+product.currentPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                         </div>
                         <div class="spacalities_brand">
                             <div class="freedelivery">${product.freeDelivery ? "Free Delivery" : ""}</div>
                             <div class="warranty">${product.warranty} Year Warranty </div>
                         </div>
-                        <div class="cart-btn-responsive-position d-flex align-items-center mt-2 gap-3">
+                        <div class="cart-btn-responsive-position d-flex align-items-center mt-2 mb-2 gap-3">
                         <div class='position-relative'>
                             <div class="incre-decre-btn">
                                 <button class="item-count-reduce">-</button>
