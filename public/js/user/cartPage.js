@@ -2,7 +2,6 @@
 
 function createTile(product, quantity, index){
     const template = `
-            
             <div class=" product_container position-relative  cart-product-tile-container mb-3">
 
                 <div class="d-flex flex-sm-row mb-5 mb-sm-2">
@@ -27,12 +26,21 @@ function createTile(product, quantity, index){
                             <div class="warranty">${product.warranty} Year Warranty </div>
                         </div>
                         <div class="cart-btn-responsive-position d-flex align-items-center mt-2 gap-3">
+                        <div class='position-relative'>
                             <div class="incre-decre-btn">
                                 <button class="item-count-reduce">-</button>
                                 <div class='product-count'>${quantity}</div>
                                 <button class="item-count-increment">+</button>
                             </div>
-                            <div class="vertical-line"></div>
+                            <div class="increment-btn-tooltip incrementBtnTooltip d-none">
+                                <div class="position-relative ">
+                                    Maximum quantity reached.
+                                    <div class="left-arrow">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vertical-line"></div>
                             <div>
                                 <button class="btn btn-link delete-btn">Delete</button>
                             </div>
@@ -52,36 +60,69 @@ function createTile(product, quantity, index){
     const increBtn = div.querySelector('.item-count-increment')
     const productCount = div.querySelector('.product-count')
     deleteBtn.addEventListener('click', deleteCartItem(product._id, loader))
-    reduceBtn.addEventListener('click', editCartItem(  -1, productCount, reduceValidator, product, index))
+
+    reduceBtn.addEventListener('click', editCartItem(  -1, productCount, reduceValidator, product, index, increBtn))
     increBtn.addEventListener('click', editCartItem( +1, productCount, incrementValidator, product, index, increBtn))
+    if( quantity == product.stock){
+        increBtn.disabled = true;
+        addLimitReachedToolTip(increBtn, true)
+    }
 
     return div
+}
+
+function addLimitReachedToolTip(btn, isAdd){
+    if(isAdd){
+        btn.addEventListener('mouseover', addToolTip);
+        btn.addEventListener('mouseout', removeToolTip)
+    }
+    else{
+        btn.removeEventListener('mouseover', addToolTip)
+        btn.removeEventListener('mouseout', removeToolTip)
+    }
+    
+}
+function addToolTip(){
+    const toolTip = document.querySelector('.incrementBtnTooltip')
+    toolTip.classList.remove('d-none')
+}
+
+function removeToolTip(){
+    const toolTip = document.querySelector('.incrementBtnTooltip')
+    toolTip.classList.add('d-none')
 }
 
 function editCartItem(quantity, productCount, validation, productList, index, increBtn){
     return ()=>{
         const ogQuantity = product.products[index].quantity
         const newCount = ogQuantity + quantity
+
         if(validation(ogQuantity, productList.stock)){
             requestCartUpdate(productList._id, newCount)
             .then( response => response.json())
             .then( data => {
-                console.log("the fuck")
                 if(data.isSuccess){
                     productCount.innerHTML = newCount
+
                     if(newCount == 0){
                         // 
                         updateProductListDelete(productList._id);
                         loader();
                         return;
                     }
-                    else if( newCount == productList.stock){
+                    if( newCount == productList.stock){
                         increBtn.disabled = true;
+                        addLimitReachedToolTip(increBtn, true)
                     }
-                    if(newCount != 0)
-                    product.products[index].quantity = newCount;
+                    else{
+                        addLimitReachedToolTip(increBtn, false)
+                        increBtn.disabled = false;
+                    }
+                    if(newCount != 0){
+                        product.products[index].quantity = newCount;
+                    }
+
                     const insights = getInsight();
-                    console.log(insights)
                     udpateInsight(insights);
                 }
                 else{
@@ -90,7 +131,7 @@ function editCartItem(quantity, productCount, validation, productList, index, in
             })
         }
         else{
-            console.log('wtf')
+            console.log("Something went wrong")
         }
     }
 }
@@ -123,7 +164,6 @@ function updateProductListDelete(productId) {
     const productList = product.products;
     product.products = productList.filter( x => {
         if(x.productId._id != productId){ 
-            console.log(x.productId._id, productId)
             return true};
     })
 }
@@ -157,11 +197,9 @@ function loader(){
         document.querySelector('.noProductMessage').classList.add('d-none')
     }
     productList.forEach( (x, index)=> {
-        console.log(x)
         container.append( createTile(x.productId, x.quantity, index) )
     })
     const insights = getInsight();
-    console.log(insights)
     udpateInsight(insights);
 }
 

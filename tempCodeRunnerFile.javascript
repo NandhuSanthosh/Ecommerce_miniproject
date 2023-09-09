@@ -1,7 +1,8 @@
-const number = 1000;
-const formattedNumber = number.toLocaleString('en-US', {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2
-});
+const bcrypt = require('bcrypt')
+const hasPassword = 'Ruban@123';
 
-console.log(formattedNumber); 
+async function has() {
+    console.log(await bcrypt.hash(hasPassword, 10))
+}
+
+has();

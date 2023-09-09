@@ -126,6 +126,31 @@ body{
     font-size: 12px;
     margin-left: 10px;
 }
+
+
+.increment-btn-tooltip{
+    position: absolute;
+    border: 3px solid #c5c5c5;
+    padding: 3px 3px;
+    border-radius: 7px;
+    left: 110%;
+    top: 0%;
+    background-color: white;
+    width: 159px;
+    font-size: 11px;
+    color: gray;
+    font-weight: 500;
+}
+
+.left-arrow{
+    position: absolute;
+    clip-path: polygon(100% 0, 0 50%, 100% 100%);
+    width: 7px;
+    height: 12px;
+    background: black;  
+    right: 105%;
+    top: 13%;
+}
 @media (max-width: 575px) {
     .cart-btn-responsive-position{
         position: absolute;
