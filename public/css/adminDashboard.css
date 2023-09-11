@@ -141,3 +141,10 @@ main{
     border-radius: 10px;
 }
 
+
+.cancel-search-btn{
+    font-size: 10px !important;
+    background: #f3f3f3;
+    padding: 0px 9px;
+    border: 1px solid #8080802b;
+}

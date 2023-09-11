@@ -56,14 +56,17 @@ function configure(){
     console.log('here');
     productSearch = document.getElementById('productSearch')
     console.log(productSearch);
-   productSearch.addEventListener('click', getData) 
+    productSearch.addEventListener('click', getData) 
 }
+
+
 
 function getData(e){
     const searchKey = productSearchInput.value;
     
     if(searchKey && searchKey != ""){
-        const url = `http://localhost:3000/search_product?searchKey=${searchKey}&p=0`
+        const url = `http://localhost:3000/get_search_result?searchKey=${searchKey}&p=0`
+        console.log(url)
         fetch(url)
         .then( response => response.json())
         .then( data => {

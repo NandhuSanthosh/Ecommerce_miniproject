@@ -139,14 +139,14 @@ productSchema.statics.get_single_product_details = async function(id){
 }
 
 productSchema.statics.get_search_result = async function(searchKey, page){
-    const docPerPage = 3;
+    const docPerPage = 10;
     const query = {
-        $or: [
-            { name: { $regex: searchKey, $options: 'i' } }, // Case-insensitive search on name}, // Case-insensitive search on description
-        ], isDeleted: false};
+            name: { $regex: searchKey, $options: 'i' } // Case-insensitive search on name}, // Case-insensitive search on description
+            , isDeleted: false};
     
     const result = await this.find(query).skip(page * docPerPage).limit(docPerPage);
-    return result;
+    const totalProducts = await this.countDocuments(query)
+    return {products: result, totalProducts};
 }
 
 function imageValidation(val){

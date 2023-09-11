@@ -39,6 +39,7 @@ const dashboardItems = [{
 
 
 
+
 configure(dashboardItems);   
 
 
@@ -100,6 +101,8 @@ function sidebarButtonClickEvent(button, item){
         sidebarToggleEvenHandler()
     }
 }
+
+
 
 
 

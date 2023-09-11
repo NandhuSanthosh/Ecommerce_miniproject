@@ -4,12 +4,17 @@
         <div class="headerText">
             Products
         </div>
-        <div class="userTableControllers d-flex gap-4">
+        <div class="userTableControllers d-flex gap-2 align-items-center">
             <!-- search tab -->
-            <div class="userTableSearch">
+            <div class="productSeachCancel">
+                <button class="btn fs-6 cancel-search-btn d-none">
+                    search <span class="fw-bold">x</span>
+                </button>
+            </div>
+            <div class="userTableSearch me-3">
                 <input id="productSearchInput" class="form-control rounded" placeholder='Search'
                     style="min-width: 225px" />
-                <i class="bi bi-search search-icon" id="userSearchButton"></i>
+                <i class="bi bi-search search-icon" id="productSearchButton"></i>
             </div>
             <!-- Add Product -->
             <div>

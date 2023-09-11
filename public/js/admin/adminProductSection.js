@@ -1,6 +1,8 @@
 class ProductHandlers{
     constructor(){
-        this.dataFetchApiEndPoint = baseUrl + "admin/get_products"
+        // they dummy query parameters are added so that the pagination link doesn't break
+        this.defaultEndPoint = baseUrl + "admin/get_products" + "?dummy=dummy"
+        this.dataFetchApiEndPoint = this.defaultEndPoint
         this.currentProductSet = [];
         this.cropperArray = [];
         this.category = [];
@@ -22,11 +24,13 @@ class ProductHandlers{
     }
 
     renderPaginationButtons(length, currentButton){
+        console.log(length, currentButton);
         let pageCount = Math.ceil(length / 10);
+        const paginationButtonList = document.getElementById('pagination-group-list')
         if(pageCount < 2){
+            paginationButtonList.classList.add("d-none")
             return;
         }
-        const paginationButtonList = document.getElementById('pagination-group-list')
         paginationButtonList.classList.remove('d-none')
         paginationButtonList.innerHTML = "";
 
@@ -64,21 +68,62 @@ class ProductHandlers{
 
     paginationHandler(count){
         return async()=>{
-            const data =await fetchData(this.dataFetchApiEndPoint + `?pno=${count-1}`);
+            const url = this.dataFetchApiEndPoint + `&pno=${count-1}`
+            console.log(url)
+            const data =await fetchData(url);
             this.currentProductSet = data.data;
             this.configurePagination(data.totalCount, count);
-            this.populateProductTable(this.currentProductSet)
+            this.populateProductTable(this.currentProductSet, count)
         }
     }
 
-    configureButton(){
+    configureButton(e){
         addProductBtn.addEventListener('click', this.addProductBtnEvent);
+        productSearchInput.addEventListener('keydown', (e)=>{
+            if(e.key == "Enter"){
+                this.searchProductHandler();
+            }
+        })
+        productSearchButton.addEventListener('click', this.searchProductHandler.bind(this))
+        document.querySelector('.cancel-search-btn').addEventListener('click', this.removeSearch.bind(this))
+    }   
+
+    async removeSearch(){
+        this.dataFetchApiEndPoint = this.defaultEndPoint;
+        const {data, totalCount} = await fetchData(this.dataFetchApiEndPoint, 0);
+        this.currentProductSet = data;
+        this.populateProductTable(data)
+        document.querySelector('.cancel-search-btn').classList.add('d-none')
+        this.configurePagination(totalCount);
     }
-    populateProductTable(data){
+
+    searchProductHandler(){
+        const key = productSearchInput.value;
+        console.log(key)
+        const url = "http://localhost:3000/admin/search_product?searchKey=" + key
+        this.dataFetchApiEndPoint = url
+        fetch(url)
+        .then( response => response.json())
+        .then( data => {
+            console.log(data)
+            if(data.isSuccess){
+                this.populateProductTable(data.data)
+                this.configurePagination(data.totalCount)
+                document.querySelector('.cancel-search-btn').classList.remove('d-none')
+            }
+            else{
+                showModel(data.errorMessage)
+            }
+        })
+    }
+
+    populateProductTable(data, si = 1){
+        console.log(data)
+        si -= 1;
         productTableBody.innerHTML = ''
         if(data.length){
             data.forEach( (value, index)=>{
-                const userTile = this.createProductTile(value, index);
+                const userTile = this.createProductTile(value, si * 10 + index);
                 productTableBody.append(userTile)
             })
         }

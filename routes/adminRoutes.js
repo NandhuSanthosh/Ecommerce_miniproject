@@ -4,7 +4,7 @@ const { get_adminLogin , post_adminLogin, get_adminHome, get_otpAuth,
     get_complete_userDetails, get_forgotPassword, post_forgotPassword, 
     get_resetPassword, post_resetPassword
 } = require('../controllers/adminControllers');
-const { get_products, post_product, delete_product, delete_image, patch_updateProduct, patch_addImage } = require('../controllers/productControllers');
+const { get_products, post_product, delete_product, delete_image, patch_updateProduct, patch_addImage, get_serach_result } = require('../controllers/productControllers');
 const {isLogged, isNotLogged, parser, isAwaitingOtp} = require('../Middleware/adminAutherization')
 
 const router = require('express').Router();
@@ -44,6 +44,7 @@ router.delete('/delete_product/:id', isLogged, delete_product)
 router.patch('/delete_image/:id', isLogged, delete_image)
 router.patch('/update_product', isLogged, patch_updateProduct)
 router.patch('/add_image/:id', isLogged, upload.single("image"),  patch_addImage)
+router.get('/search_product', isLogged, get_serach_result)
 
 
 // forgot password

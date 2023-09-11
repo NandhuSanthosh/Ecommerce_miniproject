@@ -103,12 +103,23 @@ exports.get_product_searchPage = async function(req, res, next){
 exports.get_serach_result = async function(req, res, next){
     try {
         const searchKey = req.query.searchKey;
-        const page = req.query.p;
+        const page = req.query.pno;
+        console.log(req.query)
         if(!searchKey) throw new Error("Please provide necessary informations")
-        const products = await productModel.get_search_result(searchKey, page)
-        res.send(products);
+        const {products, totalProducts} = await productModel.get_search_result(searchKey, page)
+        res.send({isSuccess: true,data: products, totalCount : totalProducts});
     } catch (error) {
         next(error)
+    }
+}
+
+
+exports.get_admin_search_result = async function(req, res, next){
+    try {
+        const key = req.query.serachKey;
+        
+    } catch (error) {
+        
     }
 }
 

@@ -24,9 +24,14 @@ router.route('/request-otp').get(isRegestered, userControllers.get_otp)
 router.post('/verify-otp',isRegestered, userControllers.post_verifyOtp)
 
 
+router.use('get_search_result', (req, res, next)=>{
+    console.log(req.method, req.url)
+    next()
+})
+
 router.get('/get_product_search_page', get_product_searchPage)
 router.get('/product_details/:id', get_product_details);
-router.get('/search_product', get_serach_result);
+router.get('/get_search_result', get_serach_result);
 
 // user settings
 router.get('/settings', isLogged, userControllers.get_settings)
@@ -35,9 +40,9 @@ router.get('/get_allAddress', isLogged, userControllers.get_allAddress)
 router.delete('/delete_address/:id', isLogged, userControllers.delete_address)
 router.patch('/edit_address/:id', isLogged, userControllers.patch_address)
 
-
 router.patch('/update_name', isLogged, userControllers.patch_updateName)
 router.patch('/change_password', isLogged, userControllers.patch_changePassword)
+
 
 // forgot password
 router.route('/forgot_password')
