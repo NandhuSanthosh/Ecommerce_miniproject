@@ -4,8 +4,13 @@
         <div class="headerText">
             Users
         </div>
-        <div class="userTableControllers">
+        <div class="userTableControllers d-flex gap-3 align-items-center ">
             <!-- search tab -->
+            <div class="userSearchCancel">
+                <button class="btn fs-6 cancel-search-btn user d-none">
+                    search <span class="fw-bold">x</span>
+                </button>
+            </div>
             <div class="userTableSearch">
                     <input id="userSearchInput" class="form-control rounded" placeholder='Search'
                         style="min-width: 225px" />

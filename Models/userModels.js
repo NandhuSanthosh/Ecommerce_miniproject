@@ -180,6 +180,7 @@ userSchema.statics.validatePassword = function(password){
 
 userSchema.statics.getAllUsers = async function(p=0){
     try {
+        console.log(p)
         const documentPerPageCount = 10;
         const users = await this.find({}, {password: 0, createdAt: 0, __v: 0})
         .skip(p * documentPerPageCount).limit(documentPerPageCount);
@@ -344,6 +345,18 @@ userSchema.statics.getCart = async function(userId){
         const user = await this.findByIdAndUpdate(userId, {$set: {cartId : newCart._id}})
         return newCart._id;
     }
+}
+
+userSchema.statics.get_search_result = async function (searchKey, page = 0){
+    const docPerPage = 10;
+    const query = {
+            name: { $regex: searchKey, $options: 'i' } // Case-insensitive search on name}, // Case-insensitive search on description
+    };
+    console.log(page)
+    const result = await this.find(query).skip(page * docPerPage).limit(docPerPage);
+    console.log(result)
+    const totalUsers = await this.countDocuments(query)
+    return {user: result, totalCount : totalUsers};
 }
 
 

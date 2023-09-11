@@ -1,8 +1,10 @@
 class UserHandlers{
     constructor(){
-        this.dataFetchApiEndPoint = baseUrl + "admin/get_users"
+        this.defaultEndPoint = baseUrl + "admin/get_users?dummy:dummy"
+        this.dataFetchApiEndPoint = this.defaultEndPoint
         this.currentUserSet = [];
-        this.searchButtonConfig();
+        // this.searchButtonConfig();
+        this.configureButton();
     }
 
     async render(){
@@ -13,6 +15,45 @@ class UserHandlers{
         this.configurePagination(totalCount)
     }
 
+    configureButton(){
+        userSearchInput.addEventListener('keydown', (e)=>{
+            if(e.key == "Enter"){
+                this.searchUserHandler();
+            }
+        })
+        userSearchButton.addEventListener('click', this.searchUserHandler.bind(this))
+        document.querySelector('.cancel-search-btn.user').addEventListener('click', this.removeSearch.bind(this))
+    }
+
+    searchUserHandler(){
+        const key = userSearchInput.value;
+        console.log(key)
+        const url = "http://localhost:3000/admin/search_user?searchKey=" + key
+        this.dataFetchApiEndPoint = url
+        fetch(url)
+        .then( response => response.json())
+        .then( data => {
+            console.log(data)
+            if(data.isSuccess){
+                this.populateUserTable(data.data)
+                this.configurePagination(data.totalCount)
+                document.querySelector('.cancel-search-btn.user').classList.remove('d-none')
+            }
+            else{
+                showModel(data.errorMessage)
+            }
+        })
+    }
+
+    async removeSearch(){
+        this.dataFetchApiEndPoint = this.defaultEndPoint;
+        const {data, totalCount} = await fetchData(this.dataFetchApiEndPoint, 0);
+        this.currentUserSet = data;
+        this.populateUserTable(data)
+        document.querySelector('.cancel-search-btn.user').classList.add('d-none')
+        this.configurePagination(totalCount);
+    }
+ 
     // PAGINATION 
     configurePagination(length, currentButton = 1){
         this.renderPaginationButtons(length, currentButton)
@@ -58,18 +99,21 @@ class UserHandlers{
     }
     paginationHandler(count){
         return async()=>{
-            const data =await fetchData(this.dataFetchApiEndPoint + `?pno=${count-1}`);
+            console.log(this.dataFetchApiEndPoint)
+            const data =await fetchData(this.dataFetchApiEndPoint + `&pno=${count-1}`);
             this.currentUserSet = data.data;
+            console.log(data)
             this.configurePagination(data.totalCount, count);
-            this.populateUserTable(this.currentUserSet)
+            this.populateUserTable(this.currentUserSet, count - 1)
         }
     }
 
-    populateUserTable(data){
+    populateUserTable(data, count = 0){
         userTableBody.innerHTML = ''
         if(data.length){
             data.forEach( (value, index)=>{
-                const userTile = this.createUserTile(value, index);
+                console.log( count * 10 + index, count, index)
+                const userTile = this.createUserTile(value, count * 10 + index);
                 userTableBody.append(userTile)
             })
         }
@@ -90,7 +134,7 @@ class UserHandlers{
         }
 
         tableRow.innerHTML = `
-                <th scope="row">${index}</th>
+                <th scope="row">${index + 1}</th>
                     <td>${value.name}</td>
                     ${credentailsCol}
                 <td>${value.isBlocked}</td>`
@@ -197,29 +241,29 @@ class UserHandlers{
         })
     }
 
-    searchButtonConfig(){
-        userSearchInput.addEventListener('keypress', (event)=>{  
-            if(event.key == "Enter"){
-                this.searchUser();
-            }
-        })
-    }
+    // searchButtonConfig(){
+    //     userSearchInput.addEventListener('keypress', (event)=>{  
+    //         if(event.key == "Enter"){
+    //             this.searchUser();
+    //         }
+    //     })
+    // }
 
-    searchUser(){
-        const searchKey = userSearchInput.value.toLowerCase();
-        if(!searchKey){
-            this.populateUserTable(this.currentUserSet);
-        }
-        else{
-            const newUserSet = this.currentUserSet.filter( value => {
-                if(value.name.toLowerCase().includes(searchKey)) return true;
-                if(value.credentials.email?.includes(searchKey)) return true;
-                if(value.credentials.mobile?.number.includes(searchKey)) return true;
-                return false;
-            })
-            this.populateUserTable(newUserSet)
-        }
-    }
+    // searchUser(){
+    //     const searchKey = userSearchInput.value.toLowerCase();
+    //     if(!searchKey){
+    //         this.populateUserTable(this.currentUserSet);
+    //     }
+    //     else{
+    //         const newUserSet = this.currentUserSet.filter( value => {
+    //             if(value.name.toLowerCase().includes(searchKey)) return true;
+    //             if(value.credentials.email?.includes(searchKey)) return true;
+    //             if(value.credentials.mobile?.number.includes(searchKey)) return true;
+    //             return false;
+    //         })
+    //         this.populateUserTable(newUserSet)
+    //     }
+    // }
 
     displayUserDetails(){
         $("#userDetailsModal").modal();

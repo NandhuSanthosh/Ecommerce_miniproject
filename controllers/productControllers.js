@@ -104,7 +104,6 @@ exports.get_serach_result = async function(req, res, next){
     try {
         const searchKey = req.query.searchKey;
         const page = req.query.pno;
-        console.log(req.query)
         if(!searchKey) throw new Error("Please provide necessary informations")
         const {products, totalProducts} = await productModel.get_search_result(searchKey, page)
         res.send({isSuccess: true,data: products, totalCount : totalProducts});

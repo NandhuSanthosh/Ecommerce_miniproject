@@ -141,6 +141,19 @@ exports.patch_blockUser = async function(req, res){
         res.send({isSuccess: false, errorMessage: error.message})
     }
 }
+exports.get_user_serach_result = async function(req, res, next){
+    try {
+        const searchKey = req.query.searchKey;
+        const page = req.query.pno;
+        console.log(req.query)
+        if(!searchKey) throw new Error("Please provide necessary informations")
+        const {user, totalCount} = await userModels.get_search_result(searchKey, page)
+        console.log(user.length)
+        res.send({isSuccess: true,data: user, totalCount});
+    } catch (error) {
+        next(error)
+    }
+}
 
 
 // CATEGORY RELATED CONTROLLERS
@@ -193,6 +206,8 @@ exports.patch_updateRequest = async function(req, res){
         res.send({isSuccess: false, errorMessage: error.message})
     }
 }
+
+
 
 
 // forgot password and reset password

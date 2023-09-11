@@ -77,7 +77,7 @@ class ProductHandlers{
         }
     }
 
-    configureButton(e){
+    configureButton(){
         addProductBtn.addEventListener('click', this.addProductBtnEvent);
         productSearchInput.addEventListener('keydown', (e)=>{
             if(e.key == "Enter"){
@@ -85,7 +85,7 @@ class ProductHandlers{
             }
         })
         productSearchButton.addEventListener('click', this.searchProductHandler.bind(this))
-        document.querySelector('.cancel-search-btn').addEventListener('click', this.removeSearch.bind(this))
+        document.querySelector('.cancel-search-btn.product').addEventListener('click', this.removeSearch.bind(this))
     }   
 
     async removeSearch(){
@@ -93,7 +93,7 @@ class ProductHandlers{
         const {data, totalCount} = await fetchData(this.dataFetchApiEndPoint, 0);
         this.currentProductSet = data;
         this.populateProductTable(data)
-        document.querySelector('.cancel-search-btn').classList.add('d-none')
+        document.querySelector('.cancel-search-btn.product').classList.add('d-none')
         this.configurePagination(totalCount);
     }
 
@@ -109,7 +109,7 @@ class ProductHandlers{
             if(data.isSuccess){
                 this.populateProductTable(data.data)
                 this.configurePagination(data.totalCount)
-                document.querySelector('.cancel-search-btn').classList.remove('d-none')
+                document.querySelector('.cancel-search-btn.product').classList.remove('d-none')
             }
             else{
                 showModel(data.errorMessage)

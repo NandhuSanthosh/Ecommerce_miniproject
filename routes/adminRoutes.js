@@ -2,7 +2,7 @@ const { get_adminLogin , post_adminLogin, get_adminHome, get_otpAuth,
     get_otp, post_verifyOtp, get_users, patch_blockUser, get_categories, 
     post_createCategory, delete_category, patch_updateRequest, 
     get_complete_userDetails, get_forgotPassword, post_forgotPassword, 
-    get_resetPassword, post_resetPassword
+    get_resetPassword, post_resetPassword, get_user_serach_result
 } = require('../controllers/adminControllers');
 const { get_products, post_product, delete_product, delete_image, patch_updateProduct, patch_addImage, get_serach_result } = require('../controllers/productControllers');
 const {isLogged, isNotLogged, parser, isAwaitingOtp} = require('../Middleware/adminAutherization')
@@ -29,11 +29,13 @@ router.patch('/block_user', isLogged, patch_blockUser)
 router.get('/complete_userDetails/:id', isLogged, get_complete_userDetails);
 
 
+
 // CATEGORY
 router.get('/get_categories', isLogged, get_categories)
 router.post('/create_category', isLogged, post_createCategory);
 router.delete('/delete_category', isLogged, delete_category)
 router.patch('/update_category/:id', isLogged, patch_updateRequest)
+router.get('/search_user', isLogged, get_user_serach_result)
 
 
 
