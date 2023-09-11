@@ -1,8 +1,8 @@
-class CategoryHandler{
+class CategoryHandler{ 
     constructor(){
-        this.dataFetchApiEndPoint = baseUrl + "admin/get_categories"
+        this.defaultEndPoint = baseUrl + "admin/get_categories?dummy:dummy" 
+        this.dataFetchApiEndPoint = this.defaultEndPoint;
         this.currentCategorySet = [];
-        this.searchButtonConfig();
         this.addButtonConfiguration();
     }
     async render(){
@@ -59,10 +59,10 @@ class CategoryHandler{
     }
     paginationHandler(count){
         return async()=>{
-            const data =await fetchData(this.dataFetchApiEndPoint + `?pno=${count-1}`);
+            const data =await fetchData(this.dataFetchApiEndPoint + `&pno=${count-1}`);
             this.currentCategorySet = data.data;
             this.configurePagination(data.totalCount, count);
-            this.populateCategoryTable(this.currentCategorySet)
+            this.populateCategoryTable(this.currentCategorySet, count -1)
         }
     }
 
@@ -72,7 +72,46 @@ class CategoryHandler{
         console.log(addCategoryModal);
         newCategoryBtn.addEventListener('click', this.addButtonEvent.bind(this))
         addCategoryBtn.addEventListener('click', this.addCategoryEvent.bind(this))
+
+        categorySearchInput.addEventListener('keydown', (e)=>{
+            if(e.key == "Enter"){
+                this.searchProductHandler();
+            }
+        })
+
+        userSearchButton.addEventListener('click', this.searchProductHandler.bind(this))
+        document.querySelector('.cancel-search-btn.category').addEventListener('click', this.removeSearch.bind(this))
     }
+
+    searchProductHandler(){
+        const key = categorySearchInput.value;
+        console.log(key)
+        const url = "http://localhost:3000/admin/search_category?searchKey=" + key
+        this.dataFetchApiEndPoint = url
+        fetch(url)
+        .then( response => response.json())
+        .then( data => {
+            console.log(data)
+            if(data.isSuccess){
+                this.populateCategoryTable(data.data)
+                this.configurePagination(data.totalCount)
+                document.querySelector('.cancel-search-btn.category').classList.remove('d-none')
+            }
+            else{
+                showModel(data.errorMessage)
+            }
+        })
+    }
+
+    async removeSearch(){
+        this.dataFetchApiEndPoint = this.defaultEndPoint;
+        const {data, totalCount} = await fetchData(this.dataFetchApiEndPoint, 0);
+        this.currentCategorySet = data;
+        this.populateCategoryTable(data)
+        document.querySelector('.cancel-search-btn.category').classList.add('d-none')
+        this.configurePagination(totalCount);
+    }
+
 
     addButtonEvent(){
         this.displayCategoryAdd();
@@ -118,11 +157,11 @@ class CategoryHandler{
         this.currentCategorySet.push(newCategory);
     }
 
-    populateCategoryTable(data){
+    populateCategoryTable(data, count = 0){
         categoryTableBody.innerHTML = ''
         if(data.length){
             data.forEach( (value, index)=>{
-                const userTile = this.createCategoryTile(value, index);
+                const userTile = this.createCategoryTile(value, count * 10 + index);
                 categoryTableBody.append(userTile)
             })
         }
@@ -294,28 +333,28 @@ class CategoryHandler{
         })
     }
 
-    searchButtonConfig(){
-        categorySearchInput.addEventListener('keypress', (event)=>{  
-            if(event.key == "Enter"){
-                this.searchCategory();
-            }
-        })
-    }
+    // searchButtonConfig(){
+    //     categorySearchInput.addEventListener('keypress', (event)=>{  
+    //         if(event.key == "Enter"){
+    //             this.searchCategory();
+    //         }
+    //     })
+    // }
 
-    searchCategory(){
-        const searchKey = categorySearchInput.value.toLowerCase();
-        if(!searchKey){
-            this.populateCategoryTable(this.currentCategorySet)
-        }
-        else{
-            const newCategorySet = this.currentCategorySet.filter( value => {
-                if(value.category.toLowerCase().includes(searchKey)) return true;
-                if(value.description.includes(searchKey)) return true;
-                return false;
-            })
-            this.populateCategoryTable(newCategorySet)
-        }
-    }
+    // searchCategory(){
+    //     const searchKey = categorySearchInput.value.toLowerCase();
+    //     if(!searchKey){
+    //         this.populateCategoryTable(this.currentCategorySet)
+    //     }
+    //     else{
+    //         const newCategorySet = this.currentCategorySet.filter( value => {
+    //             if(value.category.toLowerCase().includes(searchKey)) return true;
+    //             if(value.description.includes(searchKey)) return true;
+    //             return false;
+    //         })
+    //         this.populateCategoryTable(newCategorySet)
+    //     }
+    // }
 
     displayCategoryDetails(){
         $("#categoryDetailsModal").modal();

@@ -207,6 +207,21 @@ exports.patch_updateRequest = async function(req, res){
     }
 }
 
+exports.get_category_serach_result = async function(req, res, next){
+    try {
+        const searchKey = req.query.searchKey;
+        const page = req.query.pno;
+        console.log(page)
+        console.log(req.query)
+        if(!searchKey) throw new Error("Please provide necessary informations")
+        const {user, totalCount} = await categoryModel.get_search_result(searchKey, page)
+        console.log(user.length)
+        res.send({isSuccess: true,data: user, totalCount});
+    } catch (error) {
+        next(error)
+    }
+}
+
 
 
 

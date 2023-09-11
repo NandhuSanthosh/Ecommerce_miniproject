@@ -88,4 +88,14 @@ categorySchema.pre('save', async function (next){
     }
 })
 
+categorySchema.statics.get_search_result = async function(searchKey, page){
+        const docPerPage = 10;
+        const query = {
+                category: { $regex: searchKey, $options: 'i' } // Case-insensitive search on name}, // Case-insensitive search on description
+        };
+        const result = await this.find(query).skip(page * docPerPage).limit(docPerPage);
+        const totalUsers = await this.countDocuments(query)
+        return {user: result, totalCount : totalUsers};
+}
+
 module.exports = mongoose.model("categories", categorySchema);
