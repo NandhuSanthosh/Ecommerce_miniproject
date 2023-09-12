@@ -221,8 +221,8 @@ function udpateInsight(insights){
     }
 
     container.querySelector('.total-count').innerHTML = insights.count
-    container.querySelector('.total-price').innerHTML = insights.total
-    container.querySelector('.total-discount').innerHTML = insights.ogTotal - insights.total
+    container.querySelector('.total-price').innerHTML = insights.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    container.querySelector('.total-discount').innerHTML = (insights.ogTotal - insights.total).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 }
 

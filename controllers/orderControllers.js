@@ -3,6 +3,8 @@ const productModel = require("../Models/productModel");
 const userCartModel = require("../Models/userCartModel");
 const userModels = require("../Models/userModels");
 
+
+
 exports.post_checkout = async function(req, res, next){
     try {
         const {products} = req.body
@@ -60,3 +62,46 @@ exports.delete_order = async function(req, res, next){
         next(error)
     }
 }
+
+
+// ADMIN
+exports.get_order_stages = async function(req, res, next){
+    try {
+        const orderStages = await orderModel.fetch_all_stages();
+        res.send({isSuccess: true, orderStages})
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.get_all_order = async function(req, res, next){
+    try {
+        const p = req.query.pno;
+        const {data, totalCount} = await orderModel.find_all_order(p);
+        res.send({isSuccess: true, data, totalCount})
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.patch_update_status = async function(req, res, next){
+    try {
+        const {id, status, cancelReason} = req.query;
+        const result = await orderModel.update_order_status(id, status, cancelReason);
+        res.send({isSuccess: true, data: result})
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.patch_update_estimateDeliveryDate = async function(req, res, next){
+    try {
+        const {id, newExtimatedDate} = req.query;
+        const updatedOrder = await orderModel.update_extimated_date(id, newExtimatedDate);
+        res.send({isSuccess: true, updatedOrder})
+    } catch (error) {
+        next(error)
+    }
+}
+
+

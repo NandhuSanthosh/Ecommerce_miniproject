@@ -1,5 +1,10 @@
 const mongoose = require('mongoose')
 
+
+const orderStages = ["Order Pending", "Preparing to Dispatch", "Dispatched", 
+"Out for Delivery", "Delivered", "Canceled", "Return Request Processing", 
+"Return Request Granted", "Returned"];
+
 const orderSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -52,14 +57,20 @@ const orderSchema = new mongoose.Schema({
     }, 
     status: {
         type: String, 
-        required: true
+        required: true, 
+        enum: [...orderStages]
     }, 
     extimatedDeliveryDate: {
         type: Date, 
     }, 
-    isDeleted: {
-        type: Boolean, 
-        default: false
+    cancelation : {
+        cancledBy: {
+            type: String, 
+            enum: ['user', 'admin']
+        },
+        cancelationReason: {
+            type: String
+        }
     }
 })
 
@@ -118,5 +129,63 @@ orderSchema.statics.delete_order = async function(orderId){
     if(!orderId) throw new Error("Please provide necessary information.")
     const result = await this.findByIdAndUpdate(orderId, {$set: {isDeleted: true}})
 }
+
+
+
+// ADMIN
+orderSchema.statics.find_all_order = async function(p = 0){
+   const pageCount = 10;
+    const products = await this.find({})
+    .populate("userId", "credentials")
+    .populate({
+        path: "products.product", 
+        select: {
+            name: 1, 
+            images: { $slice: ['$images', 1] }
+        }
+    })
+    .skip(p*pageCount).limit(pageCount);
+
+    const totalProducts = await this.countDocuments()
+    return {data:products, totalCount: totalProducts};
+}
+orderSchema.statics.fetch_all_stages = async function(){
+    return orderStages;
+}
+orderSchema.statics.update_order_status = async function(orderId, status, cancelReason){
+    if(!orderId || !status) throw new Error("Please provide necessary informations");
+    if(!orderStages.includes(status)) throw new Error("Invalid status")
+    if(status == 'Canceled' && !cancelReason) throw new Error("To cancel a order you have to specify cancelation reason")
+
+    const updateQuery = {status}
+    if(status == "Canceled"){
+        updateQuery.cancelation ={
+            cancledBy: "admin", 
+            cancelationReason: cancelReason
+        }
+    }
+
+    const updatedOrder = await this.findByIdAndUpdate(orderId, {$set: updateQuery}, {new: true})
+    if(updatedOrder.status != "Canceled" && Object.keys(updatedOrder.cancelation).length != 0){
+        updatedOrder.cancelation = {}
+        await updatedOrder.save();
+    }
+    return updatedOrder
+}
+orderSchema.statics.update_extimated_date = async function (orderId, extimatedDate) {
+    if(!orderId || !extimatedDate) throw new Error("Please provide all the necessary details")
+    let extimatedDeliveryDate;
+    try {
+        extimatedDeliveryDate = new Date(extimatedDate)
+    } catch (error) {
+        throw error
+    }
+    const currentDate = new Date();
+    if(extimatedDeliveryDate < currentDate) throw new Error("Invalid date: the date is in the past.")
+    const updatedOrder = await this.findByIdAndUpdate(orderId, {$set: {extimatedDeliveryDate: extimatedDate}})
+    return updatedOrder;
+}
+
+
 
 module.exports = mongoose.model("Orders", orderSchema)

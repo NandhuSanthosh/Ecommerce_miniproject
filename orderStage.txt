@@ -2,7 +2,7 @@ here are the various stages of an order from the time a customer places an order
 
 Order Pending: This stage starts when a customer clicks the "Buy Now" button and initiates the order. It includes the entire process from order initiation to successful completion of the order procedure, including payment confirmation.
 
-Yet to Dispatch: After the order is successfully placed, it may remain in this stage until the e-commerce platform processes and prepares the order for shipping. This stage indicates that the order has been confirmed but hasn't been dispatched for delivery yet.
+Preparing to Dispatch: After the order is successfully placed, it may remain in this stage until the e-commerce platform processes and prepares the order for shipping. This stage indicates that the order has been confirmed but hasn't been dispatched for delivery yet.
 
 Dispatched: Once the order is packed and handed over to the shipping carrier, it transitions to the "Dispatched" stage. This means that the products have left the seller's warehouse or distribution center and are en route to the nearest hub or sorting facility.
 

@@ -108,7 +108,7 @@ function createOrderTile(order){
                                                 <div class="product-details">
                                                     
                                                 </div>
-                                                <div class='d-flex justify-content-end'> 
+                                                <div class='d-flex justify-content-end ${order.status == 'Canceled' ? "d-none" : ""}'> 
                                                     <button class='remove-button'>Cancel Order</button>
                                                 </div>
                                             </div>

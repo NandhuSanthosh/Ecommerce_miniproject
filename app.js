@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser');
 
 const userRoutes = require('./routes/userRoutes')
 const adminRoutes = require('./routes/adminRoutes')
+const adminOrderRoutes = require('./routes/adminOrderRoutes')
 const utilityRoutes = require('./routes/utilityRoutes')
 const cartRoutes = require('./routes/cartRoutes')
 const orderRoutes = require('./routes/orderRoutes')
@@ -28,6 +29,7 @@ app.use('/', userRoutes);
 app.use('/', cartRoutes);
 app.use('/order', orderRoutes);
 app.use('/admin', adminRoutes)
+app.use('/admin/orders', adminOrderRoutes)
 app.use('/utility', utilityRoutes);
 
 app.use(errorHandler)
