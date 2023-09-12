@@ -1,9 +1,54 @@
-function createOrderTile(order){
 
+const monthNames = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
+const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+
+function createOrderTile(order){
+    console.log(order)
     const totalPrice = order.totalPrice.toLocaleString('en-US', {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                         });
+
+
+    let orderPlacedDate, deliveryExtimate
+    if(order.orderCreateAt){
+        // orderPlaced date fomatting
+        const orderCreateAt = new Date(order.orderCreateAt)
+        const day = orderCreateAt.getUTCDate();
+        const month = orderCreateAt.getUTCMonth();
+        const year = orderCreateAt.getUTCFullYear();
+        orderPlacedDate = `${day} ${monthNames[month]} ${year}`
+        
+        // delivery extimated date formatting
+        const today = new Date();
+        const extimatedDeliveryDate = new Date(order.extimatedDeliveryDate)
+        const timeDifference =  extimatedDeliveryDate - today;
+        const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+        if(daysDifference == 0){
+            deliveryExtimate = "Arriving Today"
+        }
+        else if(daysDifference == 1){
+            deliveryExtimate = "Arriving Tomorrow"
+        }
+        else if(daysDifference <= 7){
+            const dayIndex = extimatedDeliveryDate.getUTCDay();
+            deliveryExtimate = "Arriving " + daysOfWeek[dayIndex];
+        }
+        else{
+            const extimateDay = orderCreateAt.getUTCDate();
+            const extimateMonth = orderCreateAt.getUTCMonth();
+            const extimateYear = orderCreateAt.getUTCFullYear();
+            deliveryExtimate = `${extimateDay} ${monthNames[extimateMonth]} ${extimateYear}`
+        }
+
+    }            
+
+
 
 
     const address = order.userAddressId 
@@ -18,7 +63,7 @@ function createOrderTile(order){
                                                                 <span>ORDER PLACED</span>
                                                             </div>
                                                             <div class="section-value">
-                                                                <span>6 August 2023</span>
+                                                                <span>${orderPlacedDate}</span>
                                                             </div>
                                                         </div>
                                                         <div class="total-price">
@@ -57,8 +102,8 @@ function createOrderTile(order){
                                         </div>
                                         <div class="section-two p-2">
                                             <div>
-                                                <div class="header">
-                                                    ${order.status}
+                                                <div class="header py-2 ps-1 ${order.status == "Dispatched" ? "text-success" : ""}">
+                                                    ${order.status == "Dispatched" ? deliveryExtimate : order.status}
                                                 </div>
                                                 <div class="product-details">
                                                     
@@ -85,7 +130,6 @@ function createOrderTile(order){
 
 
 function createProductTile(product){
-    console.log(product)
     const template = `
     <div class="d-flex gap-2 gap-md-4 mb-2">
         <div class="image-container">

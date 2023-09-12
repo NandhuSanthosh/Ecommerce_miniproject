@@ -15,8 +15,9 @@ let currentProductSet = [{
 function render(){
     const resultContainer = document.querySelector("#result-product-container")
     resultContainer.innerHTML = "";
-    currentProductSet.forEach( (x, index)=>{
-        const productCard = createProductTile(x);
+    console.log(currentProductSet)
+    currentProductSet.data.forEach( (x, index)=>{
+         const productCard = createProductTile(x);
         console.log(productCard);
         resultContainer.append(productCard);
     })

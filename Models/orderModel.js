@@ -64,7 +64,12 @@ const orderSchema = new mongoose.Schema({
 })
 
 orderSchema.statics.create_new_order = async function (userId, products, totalPrice, isFreeDelivery, discount, deliveryCharge = 40) {
-    if(!userId || !products || !totalPrice || !isFreeDelivery) throw new Error("Please provide all the necessary information");
+    console.log(userId, products, totalPrice, isFreeDelivery, discount, deliveryCharge)
+    if(!userId || !products || !totalPrice || isFreeDelivery == undefined) throw new Error("Please provide all the necessary information");
+
+    const orderCreateAt = new Date();
+    const extimatedDeliveryDate = new Date();
+    extimatedDeliveryDate.setDate(orderCreateAt.getDate() + 6);
 
     console.log(discount);
     const newDoc = {
@@ -74,7 +79,9 @@ orderSchema.statics.create_new_order = async function (userId, products, totalPr
         isFreeDelivery, 
         status : "Pending",
         deliveryCharge,
-        discount
+        discount, 
+        orderCreateAt, 
+        extimatedDeliveryDate
     }
     const newOrder = await this.create(newDoc)
     console.log(newOrder)

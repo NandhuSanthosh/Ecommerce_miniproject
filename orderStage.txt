@@ -1,0 +1,19 @@
+here are the various stages of an order from the time a customer places an order until its resolution:
+
+Order Pending: This stage starts when a customer clicks the "Buy Now" button and initiates the order. It includes the entire process from order initiation to successful completion of the order procedure, including payment confirmation.
+
+Yet to Dispatch: After the order is successfully placed, it may remain in this stage until the e-commerce platform processes and prepares the order for shipping. This stage indicates that the order has been confirmed but hasn't been dispatched for delivery yet.
+
+Dispatched: Once the order is packed and handed over to the shipping carrier, it transitions to the "Dispatched" stage. This means that the products have left the seller's warehouse or distribution center and are en route to the nearest hub or sorting facility.
+
+Out for Delivery: At this stage, the order is on its way to the customer's delivery address. It is with the local delivery provider and is being delivered to the customer's location.
+
+Delivered: The order transitions to the "Delivered" stage when it has been successfully delivered to the customer's specified address and received by the customer or a designated recipient.
+
+Canceled: If a customer decides to cancel an order before it is dispatched or during the processing stage, the order is marked as "Canceled." This can occur due to various reasons, such as changing one's mind or encountering issues with the order.
+
+Return Request Processing: When a customer requests to return an item from their delivered order, the e-commerce platform initiates the return request processing. This includes verifying the return request and initiating the return process.
+
+Return Request Granted: Once the return request has been reviewed and approved by the e-commerce platform or seller, the order enters the "Return Request Granted" stage. This indicates that the customer is authorized to return the product.
+
+Returned: After the customer has returned the product according to the return instructions provided, the order is marked as "Returned." This stage signifies that the product has been received back by the seller or fulfillment center.
