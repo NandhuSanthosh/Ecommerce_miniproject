@@ -21,6 +21,7 @@ function buyEventListener(){
     })
     .then( response => response.json())
     .then( data => {
+        console.log(data)
         if(data.isSuccess){
             location.assign(data.redirect)
         }

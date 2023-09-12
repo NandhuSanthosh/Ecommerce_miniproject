@@ -86,6 +86,7 @@ exports.patch_addImage = async function(req, res, next){
 exports.get_product_details = async function(req, res, next){
     const id = req.params.id
     try {
+        console.log("Here")
         if(!id) throw new Error("Please provide all the necessary details");
         console.log('here');
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
