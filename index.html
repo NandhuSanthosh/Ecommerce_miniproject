@@ -1,196 +1,203 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-		
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
 
-    <!-- Include jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
-    <!-- Include jQuery UI -->
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-    <style>
-      * {
-        box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        -webkit-box-sizing: border-box;
-      }
-    
-      body {
-        font-family: 'Roboto', sans-serif;
-        color: #546E7A;
-      }
-    
-      .wrapper {
-        max-width: 18rem;
-        padding: 0 0.5rem;
-        margin-left: auto;
-        margin-right: auto;
-        padding-top: 4rem;
-      }
-    
-      label {
-        font-size: 0.75rem;
-        font-weight: 400;
-        display: block;
-        margin-bottom: 0.5rem;
-        color: #B0BEC5;
-        border: 1px solid #ECEFF1;
-        padding: 0.5rem 0.75rem;
-        border-radius: 0.5rem;
-      }
-    
-      input {
-        font-family: 'Roboto', sans-serif;
-        display: block;
-        border: none;
-        border-radius: 0.25rem;
-        border: 1px solid transparent;
-        line-height: 1.5rem;
-        padding: 0;
-        font-size: 1rem;
-        color: #607D8B;
-        width: 100%;
-        margin-top: 0.5rem;
-      }
-    
-      input:focus {
-        outline: none;
-      }
-    
-      #ui-datepicker-div {
-        display: none;
-        background-color: #fff;
-        box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.1);
-        margin-top: 0.25rem;
-        border-radius: 0.5rem;
-        padding: 0.5rem;
-      }
-    
-      table {
-        border-collapse: collapse;
-        border-spacing: 0;
-      }
-    
-      .ui-datepicker-calendar thead th {
-        padding: 0.25rem 0;
-        text-align: center;
-        font-size: 0.75rem;
-        font-weight: 400;
-        color: #78909C;
-      }
-    
-      .ui-datepicker-calendar tbody td {
-        width: 2.5rem;
-        text-align: center;
-        padding: 0;
-      }
-    
-      .ui-datepicker-calendar tbody td a {
-        display: block;
-        border-radius: 0.25rem;
-        line-height: 2rem;
-        transition: 0.3s all;
-        color: #546E7A;
-        font-size: 0.875rem;
-        text-decoration: none;
-      }
-    
-      .ui-datepicker-calendar tbody td a:hover {
-        background-color: #E0F2F1;
-      }
-    
-      .ui-datepicker-calendar tbody td a.ui-state-active {
-        background-color: #009688;
-        color: white;
-      }
-    
-      .ui-datepicker-header a.ui-corner-all {
-        cursor: pointer;
-        position: absolute;
-        top: 0;
-        width: 2rem;
-        height: 2rem;
-        margin: 0.5rem;
-        border-radius: 0.25rem;
-        transition: 0.3s all;
-      }
-    
-      .ui-datepicker-header a.ui-corner-all:hover {
-        background-color: #ECEFF1;
-      }
-    
-      .ui-datepicker-header a.ui-datepicker-prev {
-        left: 0;
-        background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMyIgaGVpZ2h0PSIxMyIgdmlld0JveD0iMCAwIDEzIDEzIj48cGF0aCBmaWxsPSIjNDI0NzcwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik03LjI4OCA2LjI5NkwzLjIwMiAyLjIxYS43MS43MSAwIDAgMSAuMDA3LS45OTljLjI4LS4yOC43MjUtLjI4Ljk5OS0uMDA3TDguODAzIDUuOGEuNjk1LjY5NSAwIDAgMSAuMjAyLjQ5Ni42OTUuNjk1IDAgMCAxLS4yMDIuNDk3bC00LjU5NSA0LjU5NWEuNzA0LjcwNCAwIDAgMS0xLS4wMDcuNzEuNzEgMCAwIDEtLjAwNi0uOTk5bDQuMDg2LTQuMDg2eiIvPjwvc3ZnPg==");
-        background-repeat: no-repeat;
-        background-size: 0.5rem;
-        background-position: 50%;
-        transform: rotate(180deg);
-      }
-    
-      .ui-datepicker-header a.ui-datepicker-next {
-        right: 0;
-        background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMyIgaGVpZ2h0PSIxMyIgdmlld0JveD0iMCAwIDEzIDEzIj48cGF0aCBmaWxsPSIjNDI0NzcwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik03LjI4OCA2LjI5NkwzLjIwMiAyLjIxYS43MS43MSAwIDAgMSAuMDA3LS45OTljLjI4LS4yOC43MjUtLjI4Ljk5OS0uMDA3TDguODAzIDUuOGEuNjk1LjY5NSAwIDAgMSAuMjAyLjQ5Ni42OTUuNjk1IDAgMCAxLS4yMDIuNDk3bC00LjU5NSA0LjU5NWEuNzA0LjcwNCAwIDAgMS0xLS4wMDcuNzEuNzEgMCAwIDEtLjAwNi0uOTk5bDQuMDg2LTQuMDg2eiIvPjwvc3ZnPg==');
-        background-repeat: no-repeat;
-        background-size: 10px;
-        background-position: 50%;
-      }
-    
-      .ui-datepicker-header a>span {
-        display: none;
-      }
-    
-      .ui-datepicker-title {
-        text-align: center;
-        line-height: 2rem;
-        margin-bottom: 0.25rem;
-        font-size: 0.875rem;
-        font-weight: 500;
-        padding-bottom: 0.25rem;
-      }
-    
-      .ui-datepicker-week-col {
-        color: #78909C;
-        font-weight: 400;
-        font-size: 0.75rem;
-      }
-    
-      .ui-state-default,
-      .ui-widget-content .ui-state-default {
-        border: none;
-        background: none;
-      }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+    <link rel="stylesheet" href="./style.css">
 </head>
-
 <body>
-              <label for="datepicker">Pick a Date
-                <input type="text" id="datepicker" autocomplete="off" readonly>
-              </label>
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Launch demo modal
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header border-none">
+          <h5 class="modal-title" id="exampleModalLabel">Order Details</h5>
+          <button type="button" class="close btn" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="body-content">
+            <div class="section-container">
+              <div class="section-header fw-bold">User Details</div>
+              <div class="name">
+                <span class="fw-bold">Name:</span> <span class="ms-3">Nandhu Santhosh</span>
+              </div>
+              <div class="credential">
+                <span class="fw-bold">Email:</span> <span class="ms-3">nandhusanthosh87@gmail.com</span>
+              </div>
+            </div>
 
+            <div class="section-container">
+              <div class="section-header fw-bold">User Address</div>
+              <div class="user-address">
+                <div class="address">
+                  <span class="name fw-500">
+                    Nandhu Santhosh
+                    </span>
+                      SomeOther(H) SomeOther PO, SomeOtherDistrict, SomeOtherState, SomeOtherState
+                    </span>
+                    <div>
+                      <span class="phone-number">Mobile number <span class="mobile">6238973581</span> 
+                    </div>
+                  </div>
+              </div>
+            </div>
+
+            <div class="section-container">
+              <div class="section-header fw-bold">Products</div>
+              <div class="products-container">
+                <div class="product d-flex gap-2 mb-2">
+                  <div class="image border">
+                    <img class="" width="100px" src="uploads\0cdd525864a1d3df4b37d11093959e34.png" alt="">
+                  </div>
+                  <div class="name">
+                    <a href="http://localhost:3000/product_details/64ed034b4514f9b6ec0cbe3a" class="responsive-text minimize-3">
+                      Fire-Boltt Phoenix Smart Watch with Bluetooth Calling 1.3",120+ Sports Modes, 240 * 240 PX High Res with SpO2, Heart
+                      Rate Monitoring & IP67 Rating (purple)
+                    </a>
+                  </div>
+                </div>
+                <div class="product d-flex gap-2">
+                  <div class="image border">
+                    <img width="100px" src="uploads\0cdd525864a1d3df4b37d11093959e34.png" alt="">
+                  </div>
+                  <div class="name">
+                    <a href="http://localhost:3000/product_detail/64ed034b4514f9b6ec0cbe3a" class="responsive-text minimize-3">
+                      Fire-Boltt Phoenix Smart Watch with Bluetooth Calling 1.3",120+ Sports Modes, 240 * 240 PX High Res with SpO2, Heart
+                      Rate Monitoring & IP67 Rating (purple)
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="section-container">
+              <div class="section-header fw-bold">Invoice</div>
+              <div class="invoice-container">
+
+                <div class="product-invoice d-flex justify-content-between">
+                  <div>
+                    <span class="fw-500"> <span class="brand-model">Sony WH-XM</span> : <span></span>
+                  </div>
+                  <div class="color-black">
+                    <span class="color-light">(11 * 29545.00)</span><span class="fs-18 fw-500">₹ 3,24,995.00</span> 
+                  </div>
+                </div>
+
+                <div class="product-invoice d-flex justify-content-between">
+                  <div>
+                    <span class="fw-500"> <span class="brand-model">Oneplus Nord Buds</span> : <span></span>
+                  </div>
+                  <div class="color-black">
+                    <span class="color-light">(1 * 4995.000)</span><span class="fs-18 fw-500">₹ 4,995.00</span> 
+                  </div>
+                </div>
+
+                <div class="product-invoice d-flex justify-content-between">
+                  <div>
+                    <span class="fw-500"> <span class="brand-model">Delivery Charge</span> : <span></span>
+                  </div>
+                  <div class="color-black">
+                    <span class="fs-18 fw-500 text-decoration-line-through">₹ 40</span>
+                  </div>
+                </div>
+
+                <div class="product-invoice d-flex justify-content-between">
+                  <div>
+                    <span class="fw-500"> <span class="brand-model">Total</span> : <span></span>
+                  </div>
+                  <div class="color-black">
+                      <span class="fs-18 fw-500">₹ 329,990.00</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            
+            <div class="section-container">
+              <div class="section-header fw-bold">Order Details</div>
+              <div class="payment-method">
+                <span class="fw-500">Payment Method :</span> COD
+              </div>
+              <div class="created-at">
+                <span class="fw-500">Ordered Date :</span> <span>12/02/2002</span>
+              </div>
+              <div class="created-at d-flex align-items-center" id="DeliveryDatePicker">
+                <span class="fw-500">Delivery Date : </span> <input type="text" id="datepicker" class="date-input">
+                <button class="btn btn-primary ms-auto">Update</button>
+              </div>
+              <div class="status mt-2">
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    Dropdown button
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+        <div class="modal-footer border-none">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 <script>
-  // INCLUDE JQUERY & JQUERY UI 1.12.1
-    $(function () {
-        $("#datepicker").datepicker({
-          dateFormat: "dd-mm-yy",
-          duration: "fast"
-        });
-      });
+  function displayModal(){
+     $("#exampleModal").modal();
+  }
 
-      // Add event listeners after datepicker is initialized
-      const datepicker = document.getElementById("datepicker");
+  displayModal();
 
-      datepicker.addEventListener("input", function () {
-        console.log("Input Event: Value changed to " + this.value);
-      });
+  
+  datePicker();
+  
+  function datePicker(startDate, endDate, defaultDate) {
+      // Initialize the date picker with a date range restriction
+      var datePickerInput = document.getElementById("datepicker");
 
-      // Add a change event listener to track changes when the input loses focus
-      datepicker.addEventListener("change", function () {
-        console.log("Change Event: Value changed to " + this.value);
+      startDate = startDate || new Date(); // Minimum selectable date
+      if(!endDate){
+        endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + 31)
+      }
+      datePickerInput.value =startDate.getDate() + "-" +  startDate.getMonth() + "-" + startDate.getFullYear() 
+      // Initialize the date picker using the .datepicker() method
+      $(datePickerInput).datepicker({
+        format: 'dd-mm-yyyy',
+        startDate: startDate,
+        endDate: endDate,
+        autoclose: true, // Close the date picker when a date is selected
+        setDate: startDate
       });
+    }
 </script>
-
 </html>

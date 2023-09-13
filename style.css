@@ -1,0 +1,77 @@
+.border-none{
+    border: none;
+}
+.modal-title{
+    color: white;
+}
+
+
+.modal-header{
+    background-color: #2a2a2a;
+}
+
+.body-content{
+    font-size: 16px;
+    color: #282828;
+}
+.section-header{
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.section-container{
+    border: 1px solid #b7b7b74f;
+    border-radius: 7px;
+    padding: 7px 15px;
+    margin-bottom: 10px;
+}
+
+.responsive-text {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.responsive-text.minimize-3 {
+    -webkit-line-clamp: 3;
+}
+
+.fw-bold{
+    color: rgb(0, 0, 0);
+}
+
+.fw-500{
+    font-weight: 500;
+    color: rgb(0, 0, 0);
+}
+.fs-18{
+    font-size: 18px;
+}
+
+.color-black{
+    color: rgb(0, 0, 0);
+}
+.color-light{
+    color: rgb(91, 91, 91);
+}
+
+.image img,
+.border{
+    border-radius: 5px;
+}
+
+.date-input{
+    border: 1px solid #e1e1e1;
+    padding: 7px 10px;
+    border-radius: 7px;
+}
+
+.datepicker-days{
+    padding: 10px;
+}
+
+.datepicker-days td{
+    padding: 5px 10px;
+    font-size: 18px;
+    font-weight: 500;
+}

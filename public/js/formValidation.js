@@ -53,7 +53,7 @@ loginBtn?.addEventListener('click',  (e)=>{
     else if(associate == 'admin'){
         credentialValidateObject = [{
             field: emailMobile, 
-            validityFunction: adminValidationEmail(emailMobile)
+            validityFunction: adminValidationEmail()(emailMobile)
         }, {
             field: password, 
             validityFunction: validatePasswordOne()(password)
@@ -64,9 +64,9 @@ loginBtn?.addEventListener('click',  (e)=>{
     // this is a function which return true/false based on the user input
     // the function accepts a array of object which contains the field referance and function to validate
     let status = validaityForm(credentialValidateObject)
-
+    console.log(status)
     // if the validityForm result is positive(true) we will submit the form
-    if(status){
+    if(status){ 
         // we keep a object named credentials to keep track of the credential details
         // we are using this because the user can login using email and mobile
         let credentials;
@@ -130,8 +130,7 @@ function getLoginUrl(){
 signupBtn?.addEventListener('click', (e)=>{
     e.preventDefault();
 
-
-    console.log(fullName)
+    console.log(validationIntegrateObj)
     let status = validaityForm(validationIntegrateObj)
     if(status){
         let credentials;
@@ -149,7 +148,6 @@ signupBtn?.addEventListener('click', (e)=>{
             }
         }
 
-        console.log(fullName)
         const body = {
             name: extractValue(fullName), 
             credentials,
@@ -166,7 +164,6 @@ signupBtn?.addEventListener('click', (e)=>{
         .then(response => response.json())
         .then( d=> {
             if(d.isSuccess){
-                    console.log('here')
                     location.assign("http://localhost:3000/otp-Auth?superSet="+superSet)
             }
             else{
@@ -198,7 +195,7 @@ function validaityForm(validationObject){
     let status = true;
     let validationResult;
     validationObject.forEach( x => {
-        validationResult = x.validityFunction(x.field);
+        validationResult = x.validityFunction(x.field)();
         status &&= validationResult;
     })
         return status;
@@ -224,6 +221,7 @@ function adminValidationEmail(field){
 
 function validateEmail(field, email){
     // validate 
+    console.log("what is this")
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
         errorCorrection(field);
         return true;

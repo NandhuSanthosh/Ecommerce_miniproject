@@ -51,14 +51,10 @@ router.get('/search_product', isLogged, get_serach_result)
 
 
 // forgot password
-router.route('/forgot_password')
-.get(isNotLogged, get_forgotPassword)
-.post(isNotLogged, post_forgotPassword)
+router.route('/forgot_password').get(isNotLogged, get_forgotPassword).post(isNotLogged, post_forgotPassword)
 
 // reset password
-router.route('/reset_password/:key')
-.get(isNotLogged, get_resetPassword)
-.patch(isNotLogged, post_resetPassword)
+router.route('/reset_password/:key').get(isNotLogged, get_resetPassword).patch(isNotLogged, post_resetPassword)
 
 router.use(errorHandler);
 module.exports = router;

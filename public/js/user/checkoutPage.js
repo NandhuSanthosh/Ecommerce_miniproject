@@ -64,6 +64,7 @@ function placeOrderHandler(){
         if(x.checked) paymentMethod = x.value
     })
     // collect payment method id
+    console.log(order)
     if(!paymentMethod) alert("Please select one payment method.")
     else
     fetch("http://localhost:3000/order/complete_order/" + order._id, {

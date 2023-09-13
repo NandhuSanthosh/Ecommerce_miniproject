@@ -11,8 +11,10 @@ exports.post_checkout = async function(req, res, next){
         const userId = req.userDetails.userDetails._id;
         const productRelatedDetails = await productModel.find_total_price(products);
 
-        const orderDoc = await orderModel.create_new_order(userId, products, productRelatedDetails.payable, productRelatedDetails.isFreeDelivery, productRelatedDetails.total - productRelatedDetails.payable )
-        const link = "http://localhost:3000/order/get_checkout_page/"+orderDoc;
+        const userCredential = req.userDetails.userDetails.credentials.email || req.userDetails.userDetails.credentials.mobile.number
+
+        const orderDoc = await orderModel.create_new_order(userId, userCredential, products, productRelatedDetails.payable, productRelatedDetails.isFreeDelivery, productRelatedDetails.total - productRelatedDetails.payable )
+        const link = "http://localhost:3000/order/get_checkout_page/" + orderDoc;
         res.send({isSuccess: true, redirect: link})
     } catch (error) {
         next(error)
@@ -68,7 +70,7 @@ exports.delete_order = async function(req, res, next){
 exports.get_order_stages = async function(req, res, next){
     try {
         const orderStages = await orderModel.fetch_all_stages();
-        res.send({isSuccess: true, orderStages})
+        res.send({isSuccess: true, data: orderStages})
     } catch (error) {
         next(error)
     }
@@ -99,6 +101,28 @@ exports.patch_update_estimateDeliveryDate = async function(req, res, next){
         const {id, newExtimatedDate} = req.query;
         const updatedOrder = await orderModel.update_extimated_date(id, newExtimatedDate);
         res.send({isSuccess: true, updatedOrder})
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.get_serach_result = async function(req, res, next){
+    try {
+        const searchKey = req.query.searchKey;
+        const page = req.query.pno;
+        if(!searchKey) throw new Error("Please provide necessary informations")
+        const {orders, totalOrders} = await orderModel.get_search_result(searchKey, page)
+        res.send({isSuccess: true,data: orders, totalCount : totalOrders});
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.get_complete_order_details = async function(req, res, next){
+    try {
+        const id = req.params.id
+        const order = await orderModel.complete_order_details(id);
+        res.send({isSuccess: true, data: order})
     } catch (error) {
         next(error)
     }

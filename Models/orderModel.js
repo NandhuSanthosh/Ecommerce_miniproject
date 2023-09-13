@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 
 const orderStages = ["Order Pending", "Preparing to Dispatch", "Dispatched", 
 "Out for Delivery", "Delivered", "Canceled", "Return Request Processing", 
-"Return Request Granted", "Returned"];
+"Return Request Granted", "Returned Completed"];
 
 const orderSchema = new mongoose.Schema({
     userId: {
@@ -11,6 +11,9 @@ const orderSchema = new mongoose.Schema({
         ref: 'Users', 
         required: true
     }, 
+    userCredential: {
+        type: String
+    },
     userAddressId: {
         type: mongoose.Schema.Types.ObjectId, 
         ref: "address", 
@@ -22,6 +25,10 @@ const orderSchema = new mongoose.Schema({
             ref: 'products',
             required: true
         }, 
+        productName: {
+            type: String, 
+            required: true,
+        },
         price : {
             type: Number, 
             required: true,
@@ -74,35 +81,38 @@ const orderSchema = new mongoose.Schema({
     }
 })
 
-orderSchema.statics.create_new_order = async function (userId, products, totalPrice, isFreeDelivery, discount, deliveryCharge = 40) {
-    console.log(userId, products, totalPrice, isFreeDelivery, discount, deliveryCharge)
+orderSchema.statics.create_new_order = async function (userId, userCredential, products, totalPrice, isFreeDelivery, discount, deliveryCharge = 40) {
     if(!userId || !products || !totalPrice || isFreeDelivery == undefined) throw new Error("Please provide all the necessary information");
 
     const orderCreateAt = new Date();
     const extimatedDeliveryDate = new Date();
     extimatedDeliveryDate.setDate(orderCreateAt.getDate() + 6);
 
-    console.log(discount);
+    if(!isFreeDelivery){
+        totalPrice += deliveryCharge;
+    }
+
     const newDoc = {
         userId, 
+        userCredential,
         products, 
         totalPrice, 
         isFreeDelivery, 
-        status : "Pending",
+        status : "Order Pending",
         deliveryCharge,
         discount, 
         orderCreateAt, 
         extimatedDeliveryDate
     }
+
+
     const newOrder = await this.create(newDoc)
-    console.log(newOrder)
     return newOrder._id
 }
 
 orderSchema.statics.find_order_details = async function(id){
     if(!id) throw new Error("Please provide the necessary data");
-    const doc = await this.findOne({_id: id, isDeleted: false});
-    console.log(doc, id)
+    const doc = await this.findOne({_id: id});
     return doc
 }
 
@@ -118,10 +128,9 @@ orderSchema.statics.complete_order_handler = async function(id, addressId, payme
 
 orderSchema.statics.find_user_orders = async function(userId){
     if(!userId) throw new Error("Please provide all necessary informations.")
-    const userOrders = await this.find({userId, isDeleted: false})
+    const userOrders = await this.find({userId})
                         .populate("products.product")
                         .populate('userAddressId')
-    console.log(userOrders + "is this realy here")
     return userOrders
 }
 
@@ -135,13 +144,14 @@ orderSchema.statics.delete_order = async function(orderId){
 // ADMIN
 orderSchema.statics.find_all_order = async function(p = 0){
    const pageCount = 10;
-    const products = await this.find({})
-    .populate("userId", "credentials")
+    const products = await this.find({}, {products: 1, userId: 1, totalPrice: 1, status: 1, userCredential: 1})
     .populate({
         path: "products.product", 
-        select: {
-            name: 1, 
-            images: { $slice: ['$images', 1] }
+        select: "name images",
+        options: {
+            select: {
+                images: { $slice: ['$images', 1] }
+            }
         }
     })
     .skip(p*pageCount).limit(pageCount);
@@ -174,6 +184,10 @@ orderSchema.statics.update_order_status = async function(orderId, status, cancel
 }
 orderSchema.statics.update_extimated_date = async function (orderId, extimatedDate) {
     if(!orderId || !extimatedDate) throw new Error("Please provide all the necessary details")
+    
+
+    const order = await this.findById(orderId);
+    if(order.status != "Dispatched") throw new Error("Order not elibible to change delivery date, order must be in the DESPATCH state.")
     let extimatedDeliveryDate;
     try {
         extimatedDeliveryDate = new Date(extimatedDate)
@@ -182,10 +196,51 @@ orderSchema.statics.update_extimated_date = async function (orderId, extimatedDa
     }
     const currentDate = new Date();
     if(extimatedDeliveryDate < currentDate) throw new Error("Invalid date: the date is in the past.")
-    const updatedOrder = await this.findByIdAndUpdate(orderId, {$set: {extimatedDeliveryDate: extimatedDate}})
+    const updatedOrder = await this.findByIdAndUpdate(orderId, {$set: {extimatedDeliveryDate: extimatedDate}}, {new: true})
     return updatedOrder;
 }
 
+orderSchema.statics.get_search_result = async function(searchKey, page = 0){
+    const docPerPage = 10;
+    const query = {
+        $or: [{
+                userCredential: { $regex: searchKey, $options: 'i' } // Case-insensitive search on name}, // Case-insensitive search on description
+            }, {
+                "products.productName" : { $regex: searchKey, $options: 'i' }
+            }
+        ]}
+    
+    const result = await this.find(query)
+    .populate({
+        path: "products.product", 
+        select: "name images",
+        options: {
+            select: {
+                images: { $slice: ['$images', 1] }
+            }
+        }
+    }).skip(page * docPerPage).limit(docPerPage);
+    const totalOrders = await this.countDocuments(query)
+    return {orders: result, totalOrders};
+}
+
+orderSchema.statics.complete_order_details = async function(id){
+    if(!id) throw new Error("Please provide all necessary data.")
+    const order = await this.findById(id)
+    .populate("userId", "name")
+    .populate({
+        path: "products.product", 
+        select: "brand modelName images",
+        options: {
+            select: {
+                images: { $slice: ['$images', 1] }
+            }
+        }
+    })
+.populate("userAddressId")
+
+    return order;
+}
 
 
 module.exports = mongoose.model("Orders", orderSchema)

@@ -78,6 +78,8 @@ productSchema.statics.create_product = async function(productDetails){
         e.name = "ValidationError";
         throw e;
     }
+
+    console.log(productDetails)
     const newProduct = await this.create(productDetails);
     return newProduct;
 }
@@ -187,7 +189,7 @@ productSchema.statics.find_total_price = async function(productArray){
     }, {isFreeDelivery: true, payable: 0, total: 0})
     // isFreeDelivery
 
-    console.log(totalPrice)
+
     return totalPrice;
 }
 

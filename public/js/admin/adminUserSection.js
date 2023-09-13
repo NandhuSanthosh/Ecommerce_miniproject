@@ -152,6 +152,8 @@ class UserHandlers{
         return tableRow
     }
 
+
+
     renderIndividualUserDetails(value){
         return ()=>{
             // fetch user address using the id
@@ -200,6 +202,7 @@ class UserHandlers{
         return addressContainer
     }
 
+
     blockUserEvent(id, isBlocked){
         return ()=>{
             const status = confirm("Do you want to block this user")
@@ -240,30 +243,6 @@ class UserHandlers{
             if(x._id == id) x.isBlocked = isBlocked
         })
     }
-
-    // searchButtonConfig(){
-    //     userSearchInput.addEventListener('keypress', (event)=>{  
-    //         if(event.key == "Enter"){
-    //             this.searchUser();
-    //         }
-    //     })
-    // }
-
-    // searchUser(){
-    //     const searchKey = userSearchInput.value.toLowerCase();
-    //     if(!searchKey){
-    //         this.populateUserTable(this.currentUserSet);
-    //     }
-    //     else{
-    //         const newUserSet = this.currentUserSet.filter( value => {
-    //             if(value.name.toLowerCase().includes(searchKey)) return true;
-    //             if(value.credentials.email?.includes(searchKey)) return true;
-    //             if(value.credentials.mobile?.number.includes(searchKey)) return true;
-    //             return false;
-    //         })
-    //         this.populateUserTable(newUserSet)
-    //     }
-    // }
 
     displayUserDetails(){
         $("#userDetailsModal").modal();

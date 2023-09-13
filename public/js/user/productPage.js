@@ -8,6 +8,7 @@ function buyEventListener(){
     const body = {
         products: [{
             product: productId, 
+            productName : product.name,
             price: product.currentPrice,
             quantity
         }]}

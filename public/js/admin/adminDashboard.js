@@ -28,10 +28,10 @@ const dashboardItems = [{
         icon: "bi-cart-fill",
         renderObject: renderMethod.renderOrders
     }, {
-        item: "Sellers",
-        icon: "bi-currency-rupee",
-        renderObject: renderMethod.renderSellers
-    }, {
+    //     item: "Sellers",
+    //     icon: "bi-currency-rupee",
+    //     renderObject: renderMethod.renderSellers
+    // }, {
         item: "Categories",
         icon: "bi-tags-fill",
         renderObject: renderMethod.renderCategories
