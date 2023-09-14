@@ -82,3 +82,9 @@
     font-weight: 500;
 }
 
+.reason-input{
+    border: 1px solid lightgray;
+    border-radius: 7px;    
+    padding: 7px;
+}
+

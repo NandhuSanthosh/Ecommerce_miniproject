@@ -78,6 +78,15 @@ const orderSchema = new mongoose.Schema({
         cancelationReason: {
             type: String
         }
+    },
+    returned: {
+        returnedInitiatedBy: {
+            type: String, 
+            enum: ['user', 'admin']
+        },
+        returnReason: {
+            type: String
+        }
     }
 })
 
@@ -162,20 +171,44 @@ orderSchema.statics.find_all_order = async function(p = 0){
 orderSchema.statics.fetch_all_stages = async function(){
     return orderStages;
 }
-orderSchema.statics.update_order_status = async function(orderId, status, cancelReason){
+orderSchema.statics.update_order_status = async function(orderId, status, reason){
     if(!orderId || !status) throw new Error("Please provide necessary informations");
     if(!orderStages.includes(status)) throw new Error("Invalid status")
-    if(status == 'Canceled' && !cancelReason) throw new Error("To cancel a order you have to specify cancelation reason")
-
+    if((status == 'Canceled' || status == "Return Request Processing" || status == "Return Request Granted" || status == "Returned Completed") && !reason) 
+        throw new Error("To process cannot be completed without specify cancelation reason")
+    
     const updateQuery = {status}
     if(status == "Canceled"){
         updateQuery.cancelation ={
             cancledBy: "admin", 
-            cancelationReason: cancelReason
+            cancelationReason: reason,
+        }
+        updateQuery.returned = {}
+    }
+    else if(status == 'Delivered'){
+        updateQuery.extimatedDeliveryDate = new Date();
+        updateQuery.cancelation = {}
+        updateQuery.returned = {}
+    }
+    else if(status == "Return Request Processing" || status == "Return Request Granted" || status == "Returned Completed"){
+        updateQuery.returned = {
+            returnedInitiatedBy: "admin", 
+            returnReason : reason
         }
     }
 
     const updatedOrder = await this.findByIdAndUpdate(orderId, {$set: updateQuery}, {new: true})
+    .populate("userId", "name")
+    .populate({
+        path: "products.product", 
+        select: "brand modelName images",
+        options: {
+            select: {
+                images: { $slice: ['$images', 1] }
+            }
+        }
+    })
+    .populate("userAddressId")
     if(updatedOrder.status != "Canceled" && Object.keys(updatedOrder.cancelation).length != 0){
         updatedOrder.cancelation = {}
         await updatedOrder.save();

@@ -8,6 +8,7 @@ class RenderHandlers{
     }
 
     async render(){
+        console.log(this.dataFetchApiEndPoint)
         const {data, totalCount} = await fetchData(this.dataFetchApiEndPoint);
         this.currentOrderSet = data;
         this.populateOrderTable(data)
@@ -186,6 +187,27 @@ class RenderHandlers{
             orderModal.querySelector('.dropdown-menu').append(this.createOptionsTile(x, data._id))
         })
 
+        const reasonSpan = document.querySelector('.current-state-reason');
+        const reasonSpanContainer = document.querySelector('.current-order-state-reason')
+
+        const x = data.status
+        if(x == "Canceled" || x == "Return Request Processing" || x == "Return Request Granded" || x == "Return Request Completed"){
+            reasonSpanContainer.classList.remove('d-none')
+            if(x == "Canceled"){
+                console.log(data.cancelation)
+                reasonSpan.innerHTML = data.cancelation.cancelationReason
+            }
+            else{
+                reasonSpan.innerHTML = data.returned.returnReason   
+            }
+        }
+        else{
+            reasonSpanContainer.classList.add("d-none");
+        }
+        
+        document.querySelector('.reason-input').classList.add('d-none')
+
+        document.querySelector('.current-state').innerHTML = data.status
         dropdownMenuButton.innerHTML = data.status;
         
     }
@@ -201,29 +223,66 @@ class RenderHandlers{
     changeStateHandler(x, orderId){
         return()=>{
             console.log(x)
+            dropdownMenuButton.innerHTML = x;
+            const reasonInput = document.querySelector('.reason-input');
             let stateUpdateBtn = document.querySelector('.state-update-btn');
             stateUpdateBtn = removeExcessiveEventListeners(stateUpdateBtn);
-            stateUpdateBtn.disabled = false;
-            stateUpdateBtn.addEventListener('click', this.updateStateHandler(x, orderId))
+            
+            if(x == "Canceled" || x == "Return Request Processing" || x == "Return Request Granted" || x == "Return Completed"){
+                reasonInput.classList.remove("d-none");
+                reasonInput.value = ""
+                reasonInput.addEventListener('input', this.reasonInputEventListener)
+                stateUpdateBtn.addEventListener('click', this.updateStateHandler(x, orderId, true))
+                stateUpdateBtn.disabled = true;
+            }
+            else{
+                reasonInput.classList.add("d-none");
+                stateUpdateBtn.disabled = false;
+                stateUpdateBtn.addEventListener('click', this.updateStateHandler(x, orderId))
+            }
         }
     }
 
-    updateStateHandler(x, orderId){
+    reasonInputEventListener(e){
+            let stateUpdateBtn = document.querySelector('.state-update-btn');
+            if(e.target.value.length >= 10){
+                stateUpdateBtn.disabled = false;
+            }
+            else{
+                stateUpdateBtn.disabled = true;
+            }
+    }
+
+    updateStateHandler(x, orderId, reason){
         return ()=>{
-            fetch("http://localhost:3000/admin/orders/update_status?id=" + orderId + "&status=" + x, {
+            let url = "http://localhost:3000/admin/orders/update_status?id=" + orderId + "&status=" + x
+            if(reason) url += "&cancelReason=" + document.querySelector('.reason-input').value
+            fetch( url, {
                 method: "PATCH"
             })
             .then( response => response.json())
             .then(data => {
                 if(data.isSuccess){
                     showModel("State sucessfully updated");
-                    dropdownMenuButton.innerHTML = x;
+                    this.updateCurrentOrderSetStateUpdate(data.data);
+                    this.populateModalOrder(data.data)
+                    this.populateOrderTable(this.currentOrderSet)
                 }
                 else{
                     showModel(data.errorMessage)
                 }
             })
         }
+    }
+
+    updateCurrentOrderSetStateUpdate( data){
+        this.currentOrderSet.every( x => {
+            if(x._id == data._id){
+                x.status = data.status;
+                return false;
+            }
+            return true;
+        })
     }
 
     dateFormat(date){
@@ -365,6 +424,7 @@ class RenderHandlers{
 
     async removeSearch(){
         this.dataFetchApiEndPoint = this.defaultEndPoint;
+        console.log(this.dataFetchApiEndPoint)
         const {data, totalCount} = await fetchData(this.dataFetchApiEndPoint, 0);
         this.currentOrderSet = data;
         this.populateOrderTable(data)

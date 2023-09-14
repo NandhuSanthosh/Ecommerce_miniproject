@@ -130,22 +130,35 @@
                                 class="date-input">
                             <button class="btn btn-primary ms-auto" id="updateExpectedDeliveryDate">Update</button>
                         </div>
+                    </div>
+                    
+                    <div class="section-container">
+                        <div class="section-header fw-bold">Order State</div>
+                        <div class="current-order-state">
+                            <span class="fw-500">Order state :</span> <span class="current-state"></span>
+                        </div>
+                        <div class="current-order-state-reason">
+                            <span class="fw-500">Reason : </span> <span class="current-state-reason"></span>
+                        </div>
+
+                        <div class="fw-500 mt-3">Update Order State</div>
                         <div class="status mt-2">
-                            <div class="row">
-                                <div class="dropdown col">
+                                <div class="dropdown w-100">
                                     <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="dropdownMenuButton"
                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Dropdown button
                                     </button>
                                     <div class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item" href="#">Action</a>
-                                        <a class="dropdown-item" href="#">Another action</a>
-                                        <a class="dropdown-item" href="#">Something else here</a>
+                                        
                                     </div>
                                 </div>
-                                <button class="btn btn-primary col-2 state-update-btn" disabled>Submit</button>
-                            </div>
+                                
+                                <div class="row gap-1 px-2 mt-2">
+                                    <input type="text" class="col-12 reason-input d-none">
+                                    <button class="btn btn-primary col-12 state-update-btn ms-auto" disabled>Update State</button>
+                                </div>
                         </div>
+                        
                     </div>
 
 
