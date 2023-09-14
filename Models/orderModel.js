@@ -143,9 +143,27 @@ orderSchema.statics.find_user_orders = async function(userId){
     return userOrders
 }
 
-orderSchema.statics.delete_order = async function(orderId){
-    if(!orderId) throw new Error("Please provide necessary information.")
-    const result = await this.findByIdAndUpdate(orderId, {$set: {isDeleted: true}})
+orderSchema.statics.cancel_order = async function(orderId, reason){
+    if(!orderId || !reason) throw new Error("Please provide necessary information.")
+    const order = await this.findById(orderId);
+
+    if(["Order Pending", "Preparing to Dispatch", "Dispatched", "Out for Delivery"].includes(order.status)){
+        let updateQuery = {
+            cancelation: {
+                cancledBy: "admin", 
+                cancelationReason: reason,
+            }, 
+            status: "Canceled"
+        }
+
+        const order = this.findByIdAndUpdate(orderId, {$set: updateQuery,}, {new: true})
+        return order;
+
+    }
+    else{
+        throw new Error("You order is not in a state where it can be canceled.")
+    }
+    // const result = await this.findByIdAndUpdate(orderId, {$set: {isDeleted: true}})
 }
 
 

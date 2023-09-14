@@ -78,7 +78,9 @@ hr{
     font-size: 14px;
 }
 
-.remove-button{
+.toggle-cancel-form,
+.cancel-return,
+.return-button{
     background-color: white;
     border: 1px solid rgb(233, 233, 233);
     font-size: 12px;

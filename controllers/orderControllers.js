@@ -55,11 +55,13 @@ exports.get_orders = async function(req, res, next){
     }
 }
 
-exports.delete_order = async function(req, res, next){
+exports.cancel_order_user = async function(req, res, next){
     try {
-        const orderId = req.params.id
-        const result = await orderModel.delete_order(orderId)
-        res.send({isSuccess: true})
+        const orderId = req.query.id
+        const reason = req.query.cancelReason || "This is the default reason."
+        console.log(req.query)
+        const result = await orderModel.cancel_order(orderId, reason)
+        res.send({isSuccess: true, data: result})
     } catch (error) {
         next(error)
     }

@@ -3,55 +3,43 @@ const monthNames = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ];
-
 const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+const cancelationOptions = ["I found a better deal elsewhere.", "I no longer need the product.", "I ordered the wrong item by mistake.", "The estimated delivery time is too long."]
 
 
 function createOrderTile(order){
-    console.log(order)
-    const totalPrice = order.totalPrice.toLocaleString('en-US', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                        });
+    const template = createOrderTemplate(order)
 
+    const div = document.createElement('div');
+    div.innerHTML = template;
 
-    let orderPlacedDate, deliveryExtimate
-    if(order.orderCreateAt){
-        // orderPlaced date fomatting
-        const orderCreateAt = new Date(order.orderCreateAt)
-        const day = orderCreateAt.getUTCDate();
-        const month = orderCreateAt.getUTCMonth();
-        const year = orderCreateAt.getUTCFullYear();
-        orderPlacedDate = `${day} ${monthNames[month]} ${year}`
-        
-        // delivery extimated date formatting
-        const today = new Date();
-        const extimatedDeliveryDate = new Date(order.extimatedDeliveryDate)
-        const timeDifference =  extimatedDeliveryDate - today;
-        const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
-        if(daysDifference == 0){
-            deliveryExtimate = "Arriving Today"
-        }
-        else if(daysDifference == 1){
-            deliveryExtimate = "Arriving Tomorrow"
-        }
-        else if(daysDifference <= 7){
-            const dayIndex = extimatedDeliveryDate.getUTCDay();
-            deliveryExtimate = "Arriving " + daysOfWeek[dayIndex];
-        }
-        else{
-            const extimateDay = orderCreateAt.getUTCDate();
-            const extimateMonth = orderCreateAt.getUTCMonth();
-            const extimateYear = orderCreateAt.getUTCFullYear();
-            deliveryExtimate = `${extimateDay} ${monthNames[extimateMonth]} ${extimateYear}`
-        }
+    // populating products in the order tile
+    const productListContainer = div.querySelector('.product-details')
+    order.products.forEach( x => {
+        productListContainer.insertAdjacentHTML('beforeend' ,createProductTile(x.product))
+    })
 
-    }            
+    // required elements
+    const toggleCancelFormBtn = div.querySelector('.toggle-cancel-form');
+    const returnBtn = div.querySelector('.return-button');
+    const cancelReturnBtn = div.querySelector('.cancel-return');
+    
+    // adding eventlisteners
+    toggleCancelFormBtn.addEventListener('click', toggleFormHandler(div.querySelector('.cancel-form')))
+    div.querySelector('.submitCancelationBtn').addEventListener('click', removeOrderHandler(order._id, div))
+    
+    // configuation function
+    resetControllerButtons(order.status, toggleCancelFormBtn, returnBtn, cancelReturnBtn)
+    configureCancelationForm(div, order._id)
+    return div;
+}
 
-
-
-
+function createOrderTemplate(order){
+    const totalPrice = order.totalPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    let {orderPlacedDate, deliveryExtimate} = orderStageFormatter(order)
     const address = order.userAddressId 
+
     const template = `
      <div class="order-item-container mb-3">
                                         <div class="section-one p-2">
@@ -108,26 +96,143 @@ function createOrderTile(order){
                                                 <div class="product-details">
                                                     
                                                 </div>
-                                                <div class='d-flex justify-content-end ${order.status == 'Canceled' ? "d-none" : ""}'> 
-                                                    <button class='remove-button'>Cancel Order</button>
+                                                <div class='d-flex justify-content-end'> 
+                                                        <button class='toggle-cancel-form'>
+                                                            <span >Cancel Order</span>
+                                                        </button>
+                                                        
+                                                </div>
+                                                <div class='d-flex justify-content-end'>
+                                                    <button class='return-button'>Return</button>
+                                                </div>
+                                                <div class='d-flex justify-content-end'>
+                                                    <button class='cancel-return'>Cancel Return</button>
+                                                </div>
+
+                                                <div class="cancel-form d-none">
+                                                    <div>
+                                                        <p class="fw-bold">Select the reason for the order cancelation</p>
+                                                    </div>
+                                                    <ul class="cancelation-options list-group list-group-flush">
+                                                        
+                                                    </ul>
+                                                    <input type="text" placeholder="Enter the cancelation reason" class="mb-2 cancelation-reason-input-field d-none form-control">
+                                                    <button class="btn btn-primary submitCancelationBtn" disabled> Submit </button>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>`
 
-    const div = document.createElement('div');
-    div.innerHTML = template;
-    const productListContainer = div.querySelector('.product-details')
-    order.products.forEach( x => {
-        productListContainer.insertAdjacentHTML('beforeend' ,createProductTile(x.product))
-    })
-
-    const removeBtn = div.querySelector('.remove-button');
-    removeBtn.addEventListener('click', removeOrderHandler(order._id));
-
-    return div;
+    return template;
 }
 
+function orderStageFormatter(order){
+    let orderPlacedDate, deliveryExtimate;
+    if(order.orderCreateAt){
+        // orderPlaced date fomatting
+        const orderCreateAt = new Date(order.orderCreateAt)
+        const day = orderCreateAt.getUTCDate();
+        const month = orderCreateAt.getUTCMonth();
+        const year = orderCreateAt.getUTCFullYear();
+        orderPlacedDate = `${day} ${monthNames[month]} ${year}`
+        
+        // delivery extimated date formatting
+        const today = new Date();
+        const extimatedDeliveryDate = new Date(order.extimatedDeliveryDate)
+        const timeDifference =  extimatedDeliveryDate - today;
+        const daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+        if(daysDifference == 0){
+            deliveryExtimate = "Arriving Today"
+        }
+        else if(daysDifference == 1){
+            deliveryExtimate = "Arriving Tomorrow"
+        }
+        else if(daysDifference <= 7){
+            const dayIndex = extimatedDeliveryDate.getUTCDay();
+            deliveryExtimate = "Arriving " + daysOfWeek[dayIndex];
+        }
+        else{
+            const extimateDay = orderCreateAt.getUTCDate();
+            const extimateMonth = orderCreateAt.getUTCMonth();
+            const extimateYear = orderCreateAt.getUTCFullYear();
+            deliveryExtimate = `${extimateDay} ${monthNames[extimateMonth]} ${extimateYear}`
+        }
+    }  
+
+    return {orderPlacedDate, deliveryExtimate}
+}
+
+function configureCancelationForm(div, orderId){
+    cancelationOptions.forEach( (x, index)=>{
+        div.querySelector('.cancelation-options').append(createOptionTile(x, "cancelation-options", index, optionSelectEvent(div.querySelector(".submitCancelationBtn"), div.querySelector('.cancelation-reason-input-field'))))
+    })
+    div.querySelector('.cancelation-options').append(createOptionTile("Other", "cancelation-options", cancelationOptions.length, showInputField))
+
+    function showInputField(){
+        div.querySelector(".submitCancelationBtn").disabled = true;
+        const inputField = div.querySelector('.cancelation-reason-input-field')
+        inputField.classList.remove('d-none')
+        inputField.addEventListener('input', (e)=> {
+            console.log(e.target.value.length)
+            if(e.target.value.length >= 10){
+                div.querySelector(".submitCancelationBtn").disabled = false;
+            }
+            else{
+                div.querySelector(".submitCancelationBtn").disabled = true;
+            }
+        })
+    }
+}
+
+
+
+function createOptionTile(x, name, index,  callback){
+    const li = document.createElement('li');
+    li.classList.add("list-group-item");
+    console.log(index)
+    const template = `
+        <input type="radio" name="${name}" id="${name}-option-${index}" value="${index}">
+        <label for="option-${index}">${x}</label>`
+
+    li.innerHTML = template;
+    li.querySelector(`#${name}-option-${index}`).addEventListener('click', callback)
+    return li;
+}
+
+function optionSelectEvent(button, field){
+    return ()=>{
+            button.disabled = false;
+            field.classList.add('d-none')
+    }
+}
+
+
+function toggleFormHandler(form){
+    return ()=>{
+        if(form.classList.contains("d-none")){
+            form.classList.remove("d-none")
+        }
+        else{
+            form.classList.add('d-none')
+        }
+    }
+}
+
+
+function resetControllerButtons(status, removeBtn, returnBtn, cancelReturnBtn){
+    removeBtn.classList.add('d-none')
+    returnBtn.classList.add('d-none')
+    cancelReturnBtn.classList.add('d-none')
+    if(["Order Pending", "Preparing to Dispatch", "Dispatched", "Out for Delivery"].includes(status)){
+        removeBtn.classList.remove('d-none')
+    }
+    else if(["Delivered"].includes(status)){
+        returnBtn.classList.remove('d-none')
+    }
+    else if(["Return Request Processing", "Return Request Granted"].includes(status)){
+        cancelReturnBtn.classList.remove('d-none')
+    }
+}
 
 function createProductTile(product){
     const template = `
@@ -150,17 +255,22 @@ function createProductTile(product){
     
 }
 
-function removeOrderHandler(orderId){
+function removeOrderHandler(orderId, container){
     return ()=>{
         const status = confirm("Do you really want to cancel this order!")
         if(status){
-            fetch("http://localhost:3000/order/delete_order/" + orderId, {
+
+            const reason = findReason("cancelation-options", container);
+            console.log(reason)
+            const url = `http://localhost:3000/order/delete_order?id=${orderId}&cancelReason=${reason}`
+            fetch(url, {
                 method: "DELETE"
             })
             .then( response => response.json())
             .then( data => {
                 if(data.isSuccess){
                     alert("Order sucessfully cancelled");
+                    console.log(data)
                     updateOrderList(orderId)
                     loader()
                 }
@@ -173,9 +283,32 @@ function removeOrderHandler(orderId){
     }
 }
 
+function findReason(name, container){
+    const radioButtons = container.querySelectorAll(`[name="${name}"]`);
+    let selectedButton; 
+    console.log(radioButtons)
+    for(let x of radioButtons){
+        if(x.checked){
+            selectedButton = x;
+            break;
+        }
+    }
+    
+    let reason = cancelationOptions[selectedButton.value];
+    if(!reason){
+        return container.querySelector('.cancelation-reason-input-field').value;
+    }
+    else{
+        return reason;
+    }
+}
+
 function updateOrderList(orderId){
-    userOrders = userOrders.filter( x => {
-        if(x._id == orderId) return false;
+    userOrders.every( x => {
+        if(x._id == orderId){
+            x.status = "Canceled"
+            return false;
+        }
         return true;
     })
 }

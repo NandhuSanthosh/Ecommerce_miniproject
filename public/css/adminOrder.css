@@ -22,10 +22,11 @@
 }
 
 .section-container {
-    border: 1px solid #b7b7b74f;
+    border: 1px solid #7e7e7e4f;
     border-radius: 7px;
     padding: 7px 15px;
     margin-bottom: 10px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
 .responsive-text {
