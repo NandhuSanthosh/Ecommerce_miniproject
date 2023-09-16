@@ -13,6 +13,8 @@ function buyEventListener(){
             quantity
         }]}
 
+    console.log(body)
+
     fetch('http://localhost:3000/order/post_checkout', {
         method: "POST", 
         headers: {

@@ -81,16 +81,17 @@ function addLimitReachedToolTip(btn, isAdd){
         btn.removeEventListener('mouseout', removeToolTip)
     }
     
-}
-function addToolTip(){
-    const toolTip = document.querySelector('.incrementBtnTooltip')
-    toolTip.classList.remove('d-none')
+    function addToolTip(){
+        const toolTip = document.querySelector('.incrementBtnTooltip')
+        toolTip.classList.remove('d-none')
+    }
+    
+    function removeToolTip(){
+        const toolTip = document.querySelector('.incrementBtnTooltip')
+        toolTip.classList.add('d-none')
+    }
 }
 
-function removeToolTip(){
-    const toolTip = document.querySelector('.incrementBtnTooltip')
-    toolTip.classList.add('d-none')
-}
 
 function editCartItem(quantity, productCount, validation, productList, index, increBtn){
     return ()=>{
@@ -188,6 +189,7 @@ function loader(){
     container.innerHTML = ""
     
     const productList = product.products;
+    console.log(productList)
     if(productList.length == 0){
         document.querySelector('.cart-insight-container').classList.add('d-none')
         document.querySelector('.noProductMessage').classList.remove('d-none')
@@ -251,3 +253,46 @@ function showModal(message){
 }
 
 loader();
+
+
+
+const proceedToPayBtn = document.querySelector('.proceed-to-pay-btn');
+proceedToPayBtn.addEventListener('click', ()=>{
+
+    const body = {
+        products: createProductObject()
+    };
+    console.log(body)
+
+    fetch('http://localhost:3000/order/post_checkout', {
+        method: "POST", 
+        headers: {
+            "Content-Type" : "application/json"
+        }, 
+        body: JSON.stringify(body)
+    })
+    .then( response => response.json())
+    .then( data => {
+        console.log(data)
+        if(data.isSuccess){
+            location.assign(data.redirect)
+        }
+        else{
+            alert(data.errorMessage)
+        }
+    })
+})
+
+
+function createProductObject(){
+    const productList = product.products;
+    const body = productList.map( product => {
+        const details = {};
+        details.product = product.productId._id;
+        details.productName = product.productId.name;
+        details.quantity = product.quantity;
+        details.price = product.productId.currentPrice;
+        return details;
+    })
+    return body;
+}
