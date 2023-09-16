@@ -130,7 +130,7 @@ orderSchema.statics.complete_order_handler = async function(id, addressId, payme
     const orderCreateAt = new Date();
     const extimatedDeliveryDate = new Date()
     extimatedDeliveryDate.setDate(orderCreateAt.getDate() + 5)
-    const doc = await this.findByIdAndUpdate(id, {$set: {status: "Processing", userAddressId: addressId, "paymentDetail.method": paymentMethod, }}, {new: true})
+    const doc = await this.findByIdAndUpdate(id, {$set: {status: "Order Pending", userAddressId: addressId, "paymentDetail.method": paymentMethod, }}, {new: true})
     
     return doc;
 }
@@ -150,7 +150,7 @@ orderSchema.statics.cancel_order = async function(orderId, reason){
     if(["Order Pending", "Preparing to Dispatch", "Dispatched", "Out for Delivery"].includes(order.status)){
         let updateQuery = {
             cancelation: {
-                cancledBy: "admin", 
+                cancledBy: "user", 
                 cancelationReason: reason,
             }, 
             status: "Canceled"
@@ -165,6 +165,58 @@ orderSchema.statics.cancel_order = async function(orderId, reason){
     }
     // const result = await this.findByIdAndUpdate(orderId, {$set: {isDeleted: true}})
 }
+
+orderSchema.statics.return_order = async function(orderId, reason){
+    if(!orderId || !reason) throw new Error("Please provide necessary information.")
+    const order = await this.findById(orderId);
+
+    if(["Delivered"].includes(order.status)){
+
+        const deliveryDate = new Date(order.extimatedDeliveryDate);
+        const currentDate = new Date();
+
+        const timeDifferenceInMilliSecond = currentDate - deliveryDate;
+        const milliSecondsInADay = 24 * 60 * 60 * 1000;
+        const timeDifferenceInDays = timeDifferenceInMilliSecond / milliSecondsInADay;
+        console.log(timeDifferenceInDays)
+        if(timeDifferenceInDays > 7){
+            throw new Error("Order is no longer eligible for returns as it has been more than 7 days since the delivery date.")
+        }
+
+
+        let updateQuery = {
+            returned: {
+                returnedInitiatedBy: "user", 
+                returnReason: reason,
+            }, 
+            status: "Return Request Processing"
+        }
+
+        const updatedOrder = this.findByIdAndUpdate(orderId, {$set: updateQuery,}, {new: true})
+        return updatedOrder;
+    }
+    else{
+        throw new Error("You order is not in a state where it can be returned.")
+    }
+}
+orderSchema.statics.cancel_return_request = async function(orderId){
+    if(!orderId) throw new Error("Please provide necessary information.")
+    const order = await this.findById(orderId);
+
+    if(["Return Request Processing", "Return Request Granted"].includes(order.status)){
+        let updateQuery = {
+            returned: {}, 
+            status: "Delivered"
+        }
+        const updatedOrder = this.findByIdAndUpdate(orderId, {$set: updateQuery,}, {new: true})
+        return updatedOrder;
+    }
+    else{
+        throw new Error("You order is not in a state where it can be returned.")
+    }
+}
+
+
 
 
 

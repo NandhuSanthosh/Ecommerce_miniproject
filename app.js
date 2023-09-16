@@ -13,6 +13,7 @@ const adminOrderRoutes = require('./routes/adminOrderRoutes')
 const utilityRoutes = require('./routes/utilityRoutes')
 const cartRoutes = require('./routes/cartRoutes')
 const orderRoutes = require('./routes/orderRoutes')
+const paymentRoutes = require('./routes/paymentRoutes')
 
 const {errorHandler} = require('./Middleware/errorHandler');
 
@@ -30,6 +31,7 @@ app.use('/', cartRoutes);
 app.use('/order', orderRoutes);
 app.use('/admin', adminRoutes)
 app.use('/admin/orders', adminOrderRoutes)
+app.use('/payment', paymentRoutes)
 app.use('/utility', utilityRoutes);
 
 app.use(errorHandler)

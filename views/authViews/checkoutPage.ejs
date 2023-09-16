@@ -60,11 +60,18 @@
                                     </div>
                                     <hr>
                                     <div class="address-list">
-                                        <div class="address d-flex align-items-start gap-2">
+                                        <div class="address d-flex align-items-start gap-2 mb-2">
                                             <input type="radio" name="payment-method" value="COD" class="mt-2">
                                             <div class="address-content">
                                                 <div class="fw-bold">Cash on Delivery/Pay on Delivery</div>
-                                                    <div>Cash, UPI and Cards accepted.</div>
+                                                    <div>Cash, UPI and Cards accepted on delivery.</div>
+                                            </div>
+                                        </div>
+                                        <div class="address d-flex align-items-start gap-2 mb-2">
+                                            <input type="radio" name="payment-method" value="online-payment" class="mt-2">
+                                            <div class="address-content">
+                                                <div class="fw-bold">Online Payment</div>
+                                                    <div>Cart, Upi, Netbanking, Wallet, EMI, PayLater are available.</div>
                                             </div>
                                         </div>
                                     </div>
@@ -124,6 +131,7 @@
         </main>
         
 </body>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="../../js/user/checkoutPage.js"></script>
     <%- include('../utilityViews/alertModel.ejs') %>
     <%- include("../generalPartials/_jqueryJs.ejs") %>

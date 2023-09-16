@@ -13,21 +13,15 @@ const { errorHandler } = require('../Middleware/errorHandler');
 
 router.get('/', userControllers.get_home)
 
+
+
 router.route('/signin').all(isNotLogged).get(userControllers.get_signup).post(userControllers.post_signin)
 router.route('/login').all(isNotLogged).get(userControllers.get_login).post(userControllers.post_login)
 
-
-
 router.route('/otp-Auth').get(isRegestered, userControllers.get_otpAuthPage)
 router.route('/request-otp').get(isRegestered, userControllers.get_otp)
-// router.route('/login-verify-otp').post(isRegestered, userControllers.post_loginVerifyOtp)
 router.post('/verify-otp',isRegestered, userControllers.post_verifyOtp)
 
-
-router.use('get_search_result', (req, res, next)=>{
-    console.log(req.method, req.url)
-    next()
-})
 
 router.get('/get_product_search_page', get_product_searchPage)
 router.get('/product_details/:id', get_product_details);

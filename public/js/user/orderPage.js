@@ -6,7 +6,7 @@ const monthNames = [
 const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 const cancelationOptions = ["I found a better deal elsewhere.", "I no longer need the product.", "I ordered the wrong item by mistake.", "The estimated delivery time is too long."]
-
+const returnOptions = ["The item arrived in a damaged or defective condition.", "The product received does not match the one ordered.", "The product did not meet the expected quality or performance standards.", "The product is missing components or accessories."]
 
 function createOrderTile(order){
     const template = createOrderTemplate(order)
@@ -22,18 +22,27 @@ function createOrderTile(order){
 
     // required elements
     const toggleCancelFormBtn = div.querySelector('.toggle-cancel-form');
-    const returnBtn = div.querySelector('.return-button');
+    const toggleReturnBtn = div.querySelector('.return-button');
     const cancelReturnBtn = div.querySelector('.cancel-return');
+    const cancelSubmitBtn = div.querySelector(".submitCancelationBtn");
+    const returnSubmitBtn = div.querySelector('.submitReturnBtn')
+    const cancelBtn = div.querySelector(".cancel-return")
     
     // adding eventlisteners
     toggleCancelFormBtn.addEventListener('click', toggleFormHandler(div.querySelector('.cancel-form')))
-    div.querySelector('.submitCancelationBtn').addEventListener('click', removeOrderHandler(order._id, div))
-    
+    toggleReturnBtn.addEventListener('click', toggleFormHandler(div.querySelector('.return-form')))
+    cancelSubmitBtn.addEventListener('click', removeOrderHandler(order._id, div))
+    returnSubmitBtn.addEventListener('click', returnOrderHandler(order._id, div))
+    cancelBtn.addEventListener('click', cancelReturnHandler(order._id, div))
+
+
     // configuation function
-    resetControllerButtons(order.status, toggleCancelFormBtn, returnBtn, cancelReturnBtn)
-    configureCancelationForm(div, order._id)
+    resetControllerButtons(order.status, toggleCancelFormBtn, toggleReturnBtn, cancelReturnBtn)
+    configureForm(div, cancelSubmitBtn, div.querySelector('.cancelation-reason-input-field'), "cancelation-options", div.querySelector('.cancelation-options'), cancelationOptions)
+    configureForm(div, returnSubmitBtn, div.querySelector('.return-reason-input-field'), "return-options", div.querySelector('.return-options'), returnOptions)
     return div;
 }
+
 
 function createOrderTemplate(order){
     const totalPrice = order.totalPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -103,7 +112,7 @@ function createOrderTemplate(order){
                                                         
                                                 </div>
                                                 <div class='d-flex justify-content-end'>
-                                                    <button class='return-button'>Return</button>
+                                                    <button class='return-button'>Return Product</button>
                                                 </div>
                                                 <div class='d-flex justify-content-end'>
                                                     <button class='cancel-return'>Cancel Return</button>
@@ -111,13 +120,24 @@ function createOrderTemplate(order){
 
                                                 <div class="cancel-form d-none">
                                                     <div>
-                                                        <p class="fw-bold">Select the reason for the order cancelation</p>
+                                                        <p class="fw-bold">Select the reason for the order cancelation.</p>
                                                     </div>
                                                     <ul class="cancelation-options list-group list-group-flush">
                                                         
                                                     </ul>
                                                     <input type="text" placeholder="Enter the cancelation reason" class="mb-2 cancelation-reason-input-field d-none form-control">
                                                     <button class="btn btn-primary submitCancelationBtn" disabled> Submit </button>
+                                                </div>
+
+                                                <div class="return-form d-none">
+                                                    <div>
+                                                        <p class="fw-bold">Select the reason for the returning the product.</p>
+                                                    </div>
+                                                    <ul class="return-options list-group list-group-flush">
+                                                        
+                                                    </ul>
+                                                    <input type="text" placeholder="Enter the reason for returning the product" class="mb-2 return-reason-input-field d-none form-control">
+                                                    <button class="btn btn-primary submitReturnBtn" disabled> Submit </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -162,28 +182,27 @@ function orderStageFormatter(order){
     return {orderPlacedDate, deliveryExtimate}
 }
 
-function configureCancelationForm(div, orderId){
-    cancelationOptions.forEach( (x, index)=>{
-        div.querySelector('.cancelation-options').append(createOptionTile(x, "cancelation-options", index, optionSelectEvent(div.querySelector(".submitCancelationBtn"), div.querySelector('.cancelation-reason-input-field'))))
+function configureForm(div, button, reasonField, name, list, optionList){
+    console.log(list)
+    optionList.forEach( (x, index)=>{
+        list.append(createOptionTile(x, name, index, optionSelectEvent(button, reasonField)))
     })
-    div.querySelector('.cancelation-options').append(createOptionTile("Other", "cancelation-options", cancelationOptions.length, showInputField))
+    list.append(createOptionTile("Other", name, cancelationOptions.length, showInputField))
 
     function showInputField(){
-        div.querySelector(".submitCancelationBtn").disabled = true;
-        const inputField = div.querySelector('.cancelation-reason-input-field')
-        inputField.classList.remove('d-none')
-        inputField.addEventListener('input', (e)=> {
+        button.disabled = true;
+        reasonField.classList.remove('d-none')
+        reasonField.addEventListener('input', (e)=> {
             console.log(e.target.value.length)
             if(e.target.value.length >= 10){
-                div.querySelector(".submitCancelationBtn").disabled = false;
+                button.disabled = false;
             }
             else{
-                div.querySelector(".submitCancelationBtn").disabled = true;
+                button.disabled = true;
             }
         })
     }
 }
-
 
 
 function createOptionTile(x, name, index,  callback){
@@ -257,10 +276,8 @@ function createProductTile(product){
 
 function removeOrderHandler(orderId, container){
     return ()=>{
-        const status = confirm("Do you really want to cancel this order!")
-        if(status){
 
-            const reason = findReason("cancelation-options", container);
+            const reason = findReason("cancelation-options", container, container.querySelector('.cancelation-reason-input-field'));
             console.log(reason)
             const url = `http://localhost:3000/order/delete_order?id=${orderId}&cancelReason=${reason}`
             fetch(url, {
@@ -271,7 +288,7 @@ function removeOrderHandler(orderId, container){
                 if(data.isSuccess){
                     alert("Order sucessfully cancelled");
                     console.log(data)
-                    updateOrderList(orderId)
+                    updateOrderList(orderId, "Canceled")
                     loader()
                 }
                 else{
@@ -279,34 +296,85 @@ function removeOrderHandler(orderId, container){
                     // show failure
                 }
             })
-        }
     }
 }
 
-function findReason(name, container){
+function returnOrderHandler(orderId, container){
+    return ()=>{
+            const reason = findReason("return-options", container,  container.querySelector('.return-reason-input-field'));
+            console.log(reason)
+            const url = `http://localhost:3000/order/return_order?id=${orderId}&returnReason=${reason}`
+            fetch(url, {
+                method: "PATCH"
+            })
+            .then( response => response.json())
+            .then( data => {
+                if(data.isSuccess){
+                    alert("Order return request sucessfully send.");
+                    console.log(data)
+                    updateOrderList(orderId, "Return Request Processing")
+                    loader()
+                }
+                else{
+                    alert(data.errorMessage)
+                    // show failure
+                }
+            })
+    }
+}
+
+function cancelReturnHandler(orderId){
+    return ()=>{
+            const status = confirm("Do you really want to cancel the return request.")
+            if(!status) return;
+
+            const url = `http://localhost:3000/order/cancel_return?id=${orderId}`
+            fetch(url, {
+                method: "PATCH"
+            })
+            .then( response => response.json())
+            .then( data => {
+                if(data.isSuccess){
+                    alert("Order return request is canceled.");
+                    console.log(data)
+                    updateOrderList(orderId, "Delivered")
+                    loader()
+                }
+                else{
+                    alert(data.errorMessage)
+                    // show failure
+                }
+            })
+    }
+}
+
+function findReason(name, container, inputField){
+    console.log(container, name)
     const radioButtons = container.querySelectorAll(`[name="${name}"]`);
     let selectedButton; 
-    console.log(radioButtons)
     for(let x of radioButtons){
+        console.log(x)
         if(x.checked){
             selectedButton = x;
             break;
         }
     }
     
+    console.log(selectedButton.value)
     let reason = cancelationOptions[selectedButton.value];
     if(!reason){
-        return container.querySelector('.cancelation-reason-input-field').value;
+        console.log(inputField)
+        return inputField.value;
     }
     else{
         return reason;
     }
 }
 
-function updateOrderList(orderId){
+function updateOrderList(orderId, state){
     userOrders.every( x => {
         if(x._id == orderId){
-            x.status = "Canceled"
+            x.status = state
             return false;
         }
         return true;

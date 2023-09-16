@@ -58,9 +58,29 @@ exports.get_orders = async function(req, res, next){
 exports.cancel_order_user = async function(req, res, next){
     try {
         const orderId = req.query.id
-        const reason = req.query.cancelReason || "This is the default reason."
-        console.log(req.query)
+        const reason = req.query.cancelReason
         const result = await orderModel.cancel_order(orderId, reason)
+        res.send({isSuccess: true, data: result})
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.return_order_user = async function(req, res, next){
+    try {
+        const orderId = req.query.id;
+        const reason = req.query.returnReason 
+        const result = await orderModel.return_order(orderId, reason);
+        res.send({isSuccess: true, data: result})
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.cancel_return_order = async function(req, res, next){
+    try {
+        const orderId = req.query.id;
+        const result = await orderModel.cancel_return_request(orderId);
         res.send({isSuccess: true, data: result})
     } catch (error) {
         next(error)
