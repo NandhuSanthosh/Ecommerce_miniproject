@@ -17,6 +17,7 @@ class RenderMethods{
         this.renderCategories = new CategoryHandler();
         this.renderProducts = new ProductHandlers();
         this.renderOrders = new RenderHandlers();
+        this.renderCoupen = new CoupenHandlers();
     }
     renderSellers(){
         console.log("render sellers");

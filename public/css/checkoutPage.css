@@ -94,3 +94,19 @@ hr{
 .cross{
     text-decoration: line-through;
 }
+
+.fs-14{
+    font-size: 14px;
+}
+
+.coupen-code-success{
+    color: white;
+    font-size: 11px;
+    display: flex;
+    justify-content: center;
+    border: 1px solid green;
+    padding: 10px 0px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background: #00900080;
+}

@@ -24,18 +24,19 @@ const dashboardItems = [{
         icon: "bi-box-seam-fill",
         renderObject: renderMethod.renderProducts
     }, {
+        item: "Categories",
+        icon: "bi-tags-fill",
+        renderObject: renderMethod.renderCategories
+    }, {
         item: "Orders", 
         icon: "bi-cart-fill",
         renderObject: renderMethod.renderOrders
     }, {
-    //     item: "Sellers",
-    //     icon: "bi-currency-rupee",
-    //     renderObject: renderMethod.renderSellers
-    // }, {
-        item: "Categories",
-        icon: "bi-tags-fill",
-        renderObject: renderMethod.renderCategories
-}]
+        item: "Coupon",
+        icon: "bi-c-circle-fill",
+        renderObject: renderMethod.renderOrders
+    }
+]
 
 
 
@@ -104,7 +105,7 @@ function sidebarButtonClickEvent(button, item){
 
 
 
-
+ 
 
 
 

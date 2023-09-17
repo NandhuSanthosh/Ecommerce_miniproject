@@ -53,14 +53,14 @@ loginBtn?.addEventListener('click',  (e)=>{
     else if(associate == 'admin'){
         credentialValidateObject = [{
             field: emailMobile, 
-            validityFunction: adminValidationEmail()(emailMobile)
+            validityFunction: adminValidationEmail(emailMobile)
         }, {
             field: password, 
-            validityFunction: validatePasswordOne()(password)
+            validityFunction: validatePasswordOne()
         }]
     }
 
-
+    console.log(credentialValidateObject)
     // this is a function which return true/false based on the user input
     // the function accepts a array of object which contains the field referance and function to validate
     let status = validaityForm(credentialValidateObject)
@@ -215,7 +215,9 @@ function validateFullName(field){
 
 function adminValidationEmail(field){
     return ()=>{
-        return validateEmail(field, extractValue(field));
+        return ()=>{
+            return validateEmail(field, extractValue(field));
+        }
     }
 }
 

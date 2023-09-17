@@ -14,17 +14,49 @@ function injectUserAddress(){
 function injectInsightDetails(){
     let total = order.totalPrice;
     document.querySelector('.payable').innerHTML = '₹' + order.totalPrice.toLocaleString();
+    document.querySelector('.delivery-charge').innerHTML = order.deliveryCharge
     if(order.isFreeDelivery){
-        document.querySelector('.delivery-charge').innerHTML = order.deliveryCharge
-        document.querySelector('.delivery-charge').classList.add('cross')
+        document.querySelector('.free-delivery').innerHTML = '-' + order.deliveryCharge
+        document.querySelector('.free-delivery').classList.remove('d-none')
     }
-    else
+    else{
         total += order?.deliveryCharge;
+    }
 
     const discountPercentage = Math.floor(order.discount / ((order.totalPrice+order.discount) / 100))
     document.querySelector('.total .amount').innerHTML = '₹' + total.toLocaleString()
     document.querySelector('.discount-figure').innerHTML = order.discount.toLocaleString();
     document.querySelector('.discount-percentage').innerHTML = discountPercentage
+
+    document.querySelector('.apply-coupen-btn').addEventListener('click', applyCoupenCode)
+    document.querySelector('.remove-coupen-btn').addEventListener('click', removeCoupenCode)
+
+    document.querySelector('.coupen-input-show-btn').addEventListener('click', ()=>{
+        document.querySelector('.coupen-input-container').classList.remove('d-none')
+    })
+
+    document.querySelector('.coupen-input').addEventListener('input', (e)=>{
+        console.log(e.target.value.length)
+        e.target.value = e.target.value.toUpperCase();
+        if(e.target.value.length >= 5){
+            document.querySelector('.apply-coupen-btn').disabled = false;
+        }
+        else
+        document.querySelector('.apply-coupen-btn').disabled = true;
+    })
+}
+
+function applyCoupenCode(e){
+    document.querySelector('.remove-coupen-btn').classList.remove('d-none')
+    document.querySelector('.coupen-code-success').classList.remove('d-none');
+    document.querySelector('.coupen-input').classList.add('d-none')
+    e.target.classList.add('d-none')
+}
+function removeCoupenCode(e) {
+    document.querySelector('.apply-coupen-btn').classList.remove('d-none')
+    document.querySelector('.coupen-input').classList.remove('d-none')
+    document.querySelector('.coupen-code-success').classList.add('d-none')
+    e.target.classList.add('d-none')
 }
 
 function createUserAddressTile(x, index){

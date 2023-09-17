@@ -87,6 +87,25 @@ const orderSchema = new mongoose.Schema({
         returnReason: {
             type: String
         }
+    },
+    coupen: {
+        code: {
+            required: true, 
+            type: String
+        }, 
+        discount: {
+            discountType: {
+                type: String, 
+                enum: ["percentage-discount", "amount-discount"], 
+                required: true
+            }, 
+            percentage: {
+                type: Number
+            }, 
+            amount: {
+                type: Number
+            }
+        }
     }
 })
 

@@ -10,6 +10,7 @@ const {isLogged, isNotLogged, parser, isAwaitingOtp} = require('../Middleware/ad
 const router = require('express').Router();
 const multer = require('multer');
 const { errorHandler } = require('../Middleware/errorHandler');
+const { post_createCoupon, patch_coupon, put_activate_coupon, put_activateCoupon, put_deactivateCoupon, get_coupons } = require('../controllers/couponControllers');
 
 router.use(parser)
 
@@ -52,9 +53,25 @@ router.get('/search_product', isLogged, get_serach_result)
 
 // forgot password
 router.route('/forgot_password').get(isNotLogged, get_forgotPassword).post(isNotLogged, post_forgotPassword)
-
 // reset password
 router.route('/reset_password/:key').get(isNotLogged, get_resetPassword).patch(isNotLogged, post_resetPassword)
+
+
+// coupon
+router.post('/create_coupon', isLogged, post_createCoupon)
+router.patch("/update_coupon", isLogged, patch_coupon)
+router.put("/activate_coupon", isLogged, put_activateCoupon)
+router.put("/diactivate_coupon", isLogged, put_deactivateCoupon)
+router.get("/coupons", isLogged, get_coupons)
+
+
+
+
+
+
+
+
+
 
 router.use(errorHandler);
 module.exports = router;
