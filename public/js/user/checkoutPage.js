@@ -11,6 +11,13 @@ function injectUserAddress(){
     })
 }
 
+function removeExcessiveEventListeners(blockUser){
+    var old_element = blockUser
+    var new_element = old_element.cloneNode(true);
+    old_element.parentNode.replaceChild(new_element, old_element);
+    return new_element;
+}
+
 function injectInsightDetails(order){
     document.querySelector('.without-discounts').innerHTML = '₹' + order.totalPrice.toLocaleString();
     document.querySelector('.discount').innerHTML = '₹' + order.discount.toLocaleString();
@@ -27,6 +34,9 @@ function injectInsightDetails(order){
     document.querySelector('.discount-figure').innerHTML = discount.toLocaleString();
     document.querySelector('.discount-percentage').innerHTML = discountPercentage
 
+
+    removeExcessiveEventListeners(document.querySelector('.apply-coupen-btn'))
+    removeExcessiveEventListeners(document.querySelector('.remove-coupen-btn'))
     document.querySelector('.apply-coupen-btn').addEventListener('click', applyCoupenCode(order._id))
     document.querySelector('.remove-coupen-btn').addEventListener('click', removeCoupenCode(order._id))
 

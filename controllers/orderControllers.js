@@ -145,10 +145,13 @@ exports.apply_coupon = async function(req, res, next){
         const couponCategories = coupon.categories.map( x => x._id.toString())
         const products = order.products;
         let expensiveProductInCategory;
+        let totalPrice = 0;
         if(coupon.categories.length){
             for(let item of order.products){
                 if(couponCategories.includes(item.product.category._id.toString())){
-                    if(!expensiveProductInCategory || item.price > expensiveProductInCategory.price){
+                    let currPrice = item.price * item.quantity
+                    if(!expensiveProductInCategory || currPrice  > totalPrice){
+                        totalPrice = currPrice;
                         expensiveProductInCategory = item;
                     }
                 }

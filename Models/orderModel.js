@@ -132,7 +132,7 @@ orderSchema.statics.create_new_order = async function (userId, userCredential, p
     const extimatedDeliveryDate = new Date();
     extimatedDeliveryDate.setDate(orderCreateAt.getDate() + 6);
 
-    const payable = totalPrice - discount;
+    let payable = totalPrice - discount;
 
     if(!isFreeDelivery){
         payable += deliveryCharge;
