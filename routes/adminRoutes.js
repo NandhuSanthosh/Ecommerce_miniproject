@@ -2,7 +2,7 @@ const { get_adminLogin , post_adminLogin, get_adminHome, get_otpAuth,
     get_otp, post_verifyOtp, get_users, patch_blockUser, get_categories, 
     post_createCategory, delete_category, patch_updateRequest, 
     get_complete_userDetails, get_forgotPassword, post_forgotPassword, 
-    get_resetPassword, post_resetPassword, get_user_serach_result, get_category_serach_result
+    get_resetPassword, post_resetPassword, get_user_serach_result, get_category_serach_result, get_all_categories
 } = require('../controllers/adminControllers');
 const { get_products, post_product, delete_product, delete_image, patch_updateProduct, patch_addImage, get_serach_result } = require('../controllers/productControllers');
 const {isLogged, isNotLogged, parser, isAwaitingOtp} = require('../Middleware/adminAutherization')
@@ -10,7 +10,7 @@ const {isLogged, isNotLogged, parser, isAwaitingOtp} = require('../Middleware/ad
 const router = require('express').Router();
 const multer = require('multer');
 const { errorHandler } = require('../Middleware/errorHandler');
-const { post_createCoupon, patch_coupon, put_activate_coupon, put_activateCoupon, put_deactivateCoupon, get_coupons } = require('../controllers/couponControllers');
+const { post_createCoupon, patch_coupon, put_activate_coupon, put_activateCoupon, put_deactivateCoupon, get_coupons, get_coupons_search_result } = require('../controllers/couponControllers');
 
 router.use(parser)
 
@@ -34,6 +34,7 @@ router.get('/search_user', isLogged, get_user_serach_result)
 
 // CATEGORY
 router.get('/get_categories', isLogged, get_categories)
+router.get('/get_all_categories', isLogged, get_all_categories)
 router.post('/create_category', isLogged, post_createCategory);
 router.delete('/delete_category', isLogged, delete_category)
 router.patch('/update_category/:id', isLogged, patch_updateRequest)
@@ -63,6 +64,7 @@ router.patch("/update_coupon", isLogged, patch_coupon)
 router.put("/activate_coupon", isLogged, put_activateCoupon)
 router.put("/diactivate_coupon", isLogged, put_deactivateCoupon)
 router.get("/coupons", isLogged, get_coupons)
+router.get("/search_coupon", isLogged, get_coupons_search_result)
 
 
 

@@ -9,10 +9,10 @@ exports.post_edit_product =  async function(req, res, next){
         const cartId = await userModels.getCart(userId);
         const userCart = await userCartModel.edit_product(cartId, productId, quantity);
         res.send({isSuccess: true})
-    } catch (error) {
+    } catch (error) {      
         next(error)
     }
-}
+}    
 
 exports.get_cart_products = async function(req, res, next){
     try {

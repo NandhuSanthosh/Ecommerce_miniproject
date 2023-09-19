@@ -11,28 +11,33 @@ function injectUserAddress(){
     })
 }
 
-function injectInsightDetails(){
-    let total = order.totalPrice;
-    document.querySelector('.payable').innerHTML = '₹' + order.totalPrice.toLocaleString();
-    document.querySelector('.delivery-charge').innerHTML = order.deliveryCharge
-    if(order.isFreeDelivery){
-        document.querySelector('.free-delivery').innerHTML = '-' + order.deliveryCharge
-        document.querySelector('.free-delivery').classList.remove('d-none')
-    }
-    else{
-        total += order?.deliveryCharge;
+function injectInsightDetails(order){
+    document.querySelector('.without-discounts').innerHTML = '₹' + order.totalPrice.toLocaleString();
+    document.querySelector('.discount').innerHTML = '₹' + order.discount.toLocaleString();
+    document.querySelector('.delivery-charge').innerHTML = order.delivery.deliveryCharge
+    if(order.delivery.isFreeDelivery){
+        document.querySelector('.free-delivery-container').classList.remove("d-none")
+        document.querySelector('.free-delivery').innerHTML = `- ${order.delivery.deliveryCharge}`
     }
 
-    const discountPercentage = Math.floor(order.discount / ((order.totalPrice+order.discount) / 100))
-    document.querySelector('.total .amount').innerHTML = '₹' + total.toLocaleString()
-    document.querySelector('.discount-figure').innerHTML = order.discount.toLocaleString();
+
+    const discount = order.totalPrice - order.payable
+    const discountPercentage = Math.floor(discount / ((order.totalPrice) / 100));
+    document.querySelector('.total .amount').innerHTML = '₹' + order.payable.toLocaleString()
+    document.querySelector('.discount-figure').innerHTML = discount.toLocaleString();
     document.querySelector('.discount-percentage').innerHTML = discountPercentage
 
-    document.querySelector('.apply-coupen-btn').addEventListener('click', applyCoupenCode)
-    document.querySelector('.remove-coupen-btn').addEventListener('click', removeCoupenCode)
+    document.querySelector('.apply-coupen-btn').addEventListener('click', applyCoupenCode(order._id))
+    document.querySelector('.remove-coupen-btn').addEventListener('click', removeCoupenCode(order._id))
+
+    document.querySelector('.coupen-input').classList.add('d-none')
+    document.querySelector('.apply-coupen-btn').classList.add('d-none')
+    document.querySelector('.coupen-code-success').classList.add('d-none')
+    document.querySelector('.coupen-input').classList.add('d-none')
 
     document.querySelector('.coupen-input-show-btn').addEventListener('click', ()=>{
-        document.querySelector('.coupen-input-container').classList.remove('d-none')
+        document.querySelector('.coupen-input').classList.remove('d-none')
+        document.querySelector('.apply-coupen-btn   ').classList.remove('d-none')
     })
 
     document.querySelector('.coupen-input').addEventListener('input', (e)=>{
@@ -44,19 +49,79 @@ function injectInsightDetails(){
         else
         document.querySelector('.apply-coupen-btn').disabled = true;
     })
+
+    if(order.coupon.code){
+        document.querySelector('.coupon-discount-info').classList.remove('d-none')
+        addCouponAppliedInfo(order.coupon)
+    }
+    else{
+        document.querySelector('.coupen-input-show-button').classList.remove('d-none')
+        document.querySelector('.remove-coupen-btn').classList.add('d-none')
+    }
 }
 
-function applyCoupenCode(e){
+function applyCoupenCode(orderId){
+    return (e)=>{
+        const couponCode = document.querySelector('.coupen-input').value;
+        const status = /^\S+$/.test(couponCode);
+        if(!status){
+            alert("Not a valid coupen")
+            return;
+        }
+
+        fetch("http://localhost:3000/order/apply_coupon?orderId=" + orderId, {
+            method: "PATCH", 
+            headers: {
+                "Content-Type" : "application/json"
+            },
+            body: JSON.stringify({
+                couponCode
+            })
+        })
+        .then( response => response.json())
+        .then( data => {
+            if(data.isSuccess){
+                console.log(data.data)
+                order = data.data;
+                injectInsightDetails(order)
+            }
+            else{
+                alert(data.errorMessage)
+            }
+        })
+    }
+}
+
+function addCouponAppliedInfo(coupon){
+    document.querySelector('.coupen-input-show-button').classList.add('d-none')
     document.querySelector('.remove-coupen-btn').classList.remove('d-none')
     document.querySelector('.coupen-code-success').classList.remove('d-none');
     document.querySelector('.coupen-input').classList.add('d-none')
-    e.target.classList.add('d-none')
+    document.querySelector('.coupon-discount-info').classList.remove('d-none')
+    document.querySelector('.coupon-discount').innerHTML = coupon.discountAmount.toLocaleString()
+    document.querySelector('.apply-coupen-btn').classList.add('d-none')
+    console.log(coupon.code)
+    document.querySelector('.coupen_code').innerHTML = coupon.code;
 }
-function removeCoupenCode(e) {
-    document.querySelector('.apply-coupen-btn').classList.remove('d-none')
-    document.querySelector('.coupen-input').classList.remove('d-none')
-    document.querySelector('.coupen-code-success').classList.add('d-none')
-    e.target.classList.add('d-none')
+
+
+function removeCoupenCode(orderId) {
+    return (e)=>{
+        fetch("http://localhost:3000/order/remove_coupon?orderId=" + orderId, {
+            method: "PATCH", 
+        })
+        .then( response => response.json() )
+        .then( data => {
+            if(data.isSuccess){
+                console.log(data.data)
+                order = data.data;
+                injectInsightDetails(order)
+            }
+            else{
+                alert(data.errorMessage)
+            }
+        })
+    }
 }
 
 function createUserAddressTile(x, index){
@@ -91,7 +156,7 @@ function currentAddressUpdater(div){
 
 function config(){
     injectUserAddress();
-    injectInsightDetails();
+    injectInsightDetails(order);
     paymentMethodConfig();
 }
 
@@ -167,7 +232,7 @@ async function createOrder(){
             "Content-Type" : "application/json"
         }, 
         "body": JSON.stringify({
-            amount: order.totalPrice
+            amount: order.payable
         })
     })
     .then( response => response.json())

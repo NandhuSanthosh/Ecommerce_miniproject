@@ -36,23 +36,33 @@ const orderSchema = new mongoose.Schema({
         quantity: {
             type: Number, 
             default: 1
+        },
+        coupon:{
+            discount: {
+                type: Number, 
+                default: 0
+            }
+        },
+        payable: {
+            type: Number
         }
     }], 
     totalPrice: {
         type: Number, 
         required: true
     },
-    deliveryCharge: {
-        type: Number, 
-        default: 0
-    },
     discount: {
         type: Number, 
         default: 0
     },
-    isFreeDelivery: {
-        type: Boolean, 
-        default: false
+    delivery: {
+        isFreeDelivery: {
+            type: Boolean, 
+            default: false
+        },
+        deliveryCharge: {
+            type: Number
+        }
     },
     paymentDetail: {
         method: {
@@ -88,16 +98,14 @@ const orderSchema = new mongoose.Schema({
             type: String
         }
     },
-    coupen: {
+    coupon: {
         code: {
-            required: true, 
             type: String
         }, 
         discount: {
             discountType: {
                 type: String, 
-                enum: ["percentage-discount", "amount-discount"], 
-                required: true
+                enum: ["percentage-discount", "amount-discount", null], 
             }, 
             percentage: {
                 type: Number
@@ -105,19 +113,29 @@ const orderSchema = new mongoose.Schema({
             amount: {
                 type: Number
             }
+        }, 
+        discountAmount: {
+            type: Number, 
+            default: 0
         }
+    },
+    payable: {
+        type: Number, 
+        required: true
     }
 })
 
-orderSchema.statics.create_new_order = async function (userId, userCredential, products, totalPrice, isFreeDelivery, discount, deliveryCharge = 40) {
+orderSchema.statics.create_new_order = async function (userId, userCredential, products, totalPrice, discount, isFreeDelivery, deliveryCharge = 40) {
     if(!userId || !products || !totalPrice || isFreeDelivery == undefined) throw new Error("Please provide all the necessary information");
 
     const orderCreateAt = new Date();
     const extimatedDeliveryDate = new Date();
     extimatedDeliveryDate.setDate(orderCreateAt.getDate() + 6);
 
+    const payable = totalPrice - discount;
+
     if(!isFreeDelivery){
-        totalPrice += deliveryCharge;
+        payable += deliveryCharge;
     }
 
     const newDoc = {
@@ -127,7 +145,11 @@ orderSchema.statics.create_new_order = async function (userId, userCredential, p
         totalPrice, 
         isFreeDelivery, 
         status : "Order Pending",
-        deliveryCharge,
+        delivery: {
+            isFreeDelivery, 
+            deliveryCharge
+        },
+        payable,
         discount, 
         orderCreateAt, 
         extimatedDeliveryDate

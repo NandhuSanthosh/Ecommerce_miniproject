@@ -147,6 +147,7 @@ class RenderHandlers{
     }
 
     async populateModalOrder(data){
+        console.log(data)
         orderModal.querySelector('.user-name').innerHTML = data.userId.name
         orderModal.querySelector('.user-credential').innerHTML = data.userCredential
         
@@ -161,15 +162,15 @@ class RenderHandlers{
             orderModal.querySelector('.product-invoiceContainer').insertAdjacentHTML('beforeend', this.createModalInsightProductTile(x))
         })
 
-        orderModal.querySelector('.delivery-charge').innerHTML = "₹ " + data.deliveryCharge
-        if(data.isFreeDelivery){
+        orderModal.querySelector('.delivery-charge').innerHTML = "₹ " + data.delivery.deliveryCharge
+        if(data.delivery.isFreeDelivery){
             orderModal.querySelector('.delivery-charge').classList.add("text-decoration-line-through")
         }
         else{
             orderModal.querySelector('.delivery-charge').classList.remove("text-decoration-line-through")
         }
 
-        orderModal.querySelector('.total-price').innerHTML = "₹ " + data.totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+        orderModal.querySelector('.total-price').innerHTML = "₹ " + data.payable.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
         orderModal.querySelector('.payment-method-type').innerHTML = data.paymentDetail.method
 
         orderModal.querySelector('.create-at-date').innerHTML = this.dateFormat(data.orderCreateAt)
@@ -299,15 +300,17 @@ class RenderHandlers{
     }
 
     createModalInsightProductTile(product){
+        console.log(product)
         const template = `
         <div class="product-invoice d-flex justify-content-between">
                 <div>
                     <span class="fw-500"> <span class="brand-model">${product.product.brand + " " + product.product.modelName}</span> : <span></span>
                 </div>
             <div class="color-black">
-                <span class="color-light">(${product.quantity} * ${product.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}) </span><span class="fs-18 fw-500">₹
-                    ${(product.quantity * product.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                <span class="color-light">(${product.quantity} * ( ${product.price} - ${product.coupon.discount})) </span><span class="fs-18 fw-500">₹
+                    ${(product.payable * product.quantity).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
+
         </div>`
 
         return template;

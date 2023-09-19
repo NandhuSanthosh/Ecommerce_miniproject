@@ -34,7 +34,7 @@ const dashboardItems = [{
     }, {
         item: "Coupon",
         icon: "bi-c-circle-fill",
-        renderObject: renderMethod.renderOrders
+        renderObject: renderMethod.renderCoupon
     }
 ]
 

@@ -665,7 +665,7 @@ class ProductHandlers{
         buttonsWithEvent.forEach( x => {
             removeExcessiveEventListeners(x);
         })
-
+        
         this.resetInputFieldValue();
         imagePreviewContainer.innerHTML = ""
 
@@ -780,6 +780,7 @@ class ProductHandlers{
     }
 
     injectCategory(categoryList, id){
+        console.log(product_category)
         product_category.innerHTML = "";
         product_category.append(this.createCategoryTile({category: "Choose category", value: ""}))
         console.log(categoryList)

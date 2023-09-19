@@ -89,15 +89,19 @@
                             <div class="details">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>Items:</div>
-                                    <div class="payable">₹2,599.00</div>
+                                    <div class="without-discounts">₹2,599.00</div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>Discount:</div>
+                                    <div class="discount">₹2,599.00</div>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>Delivery:</div>
                                     <div class="delivery-charge">₹40.00</div>
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex justify-content-between align-items-center free-delivery-container d-none">
                                     <div>Free Delivery:</div>
-                                    <div class="free-delivery d-none">₹40.00</div>
+                                    <div class="free-delivery">40.00</div>
                                 </div>
                                 <!-- <div class="d-flex justify-content-between align-items-center">
                                     <div>Total:</div>
@@ -113,8 +117,14 @@
                                     <div class="amount">₹2,599.00</div>
                                 </div>
                             </div>
-
+                            
+                            
                             <hr>
+
+                            <div class="coupon-discount-info d-none">
+                                <p class="mb-0">Your coupon discount: ₹ <span class="coupon-discount">940.00</span></p>
+                                <hr>
+                            </div>
 
                             <div>
                                 <p class="discount">Your Savings: ₹ <span class="discount-figure">940.00</span> (<span class="discount-percentage">27</span>%)</p>
@@ -122,26 +132,25 @@
                                     <li>Free Delivery</li>
                                 </ul>
                             </div>
-
                             <hr class="mx-3">
 
                             <div class="place-order-btn-container d-flex justify-content-center">
                                 <button class="place-order-btn" id="placeOrderBtn">Place your order</button>
                             </div>
+                            <hr class="mx-3">
 
-                            <hr>
 
                             <div class="coupen-container">
                                 <div class="coupen-input-show-button fs-14 d-flex align-items-center gap-2">
                                     <span>Have a coupen?</span>
                                     <button class="btn btn-link fs-14 p-0 m-0 coupen-input-show-btn">Click here to enter your code</button>
                                 </div>
-                                <div class="coupen-input-container mt-2 d-none">
-                                    <input type="text" class="form-control mb-2 coupen-input">
+                                <div class="coupen-input-container mt-2">
+                                    <input type="text" class="form-control mb-2 coupen-input d-none">
                                     <div class="coupen-code-success d-none">
-                                        Coupen code <span>Coupen_code</span> has been applied to your order.
+                                        Coupen code <span class="coupen_code fw-bold">Coupen_code</span> has been applied to your order.
                                     </div>
-                                    <button type="button" class="btn btn-secondary w-100 apply-coupen-btn" disabled>Apply Coupen Code</button>
+                                    <button type="button" class="btn btn-secondary w-100 apply-coupen-btn d-none" disabled>Apply Coupen Code</button>
                                     <button type="button" class="btn btn-secondary w-100 remove-coupen-btn d-none">Remove Coupen Code</button>
                                 </div>
                             </div>

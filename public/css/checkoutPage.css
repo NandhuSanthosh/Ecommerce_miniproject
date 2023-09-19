@@ -102,11 +102,23 @@ hr{
 .coupen-code-success{
     color: white;
     font-size: 11px;
-    display: flex;
     justify-content: center;
     border: 1px solid green;
-    padding: 10px 0px;
+    padding: 10px 10px;
     margin-bottom: 10px;
     border-radius: 5px;
     background: #00900080;
+}
+
+
+.coupon-discount-info{
+    font-weight: 500;
+    color: #0d560d;
+    font-size: 14px;
+    text-align: center;
+}
+
+.coupon-discount{
+    font-size: 15px;
+    font-weight: bold;
 }

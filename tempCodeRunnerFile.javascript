@@ -1,8 +1,3 @@
-const obj ={
-    name: "Nandhu",
-    Nandhu: "Someone"
-}
-
-const name = "Nandhu";
-
-console.log(obj[name])
+const a = [5, 4, 3, 2, 1];
+const b = [...a].sort();
+console.log(a, "\n", b)

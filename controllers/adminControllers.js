@@ -167,6 +167,15 @@ exports.get_categories = async function(req, res){
     }
 }
 
+exports.get_all_categories = async function(req, res){
+    try {
+        const categories = await categoryModel.find({}, {category: 1});
+        res.send({isSuccess: true, data: categories})
+    } catch (error) {
+        res.send({isSuccess: false, errorMessage: error.message})
+    }
+}
+
 exports.post_createCategory = async function(req, res){
     const {category, description, parentCategory} = req.body
     try {

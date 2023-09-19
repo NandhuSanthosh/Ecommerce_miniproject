@@ -40,10 +40,10 @@ const couponSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users', 
     }], 
-    numberOfCouponsUsed: [{
+    numberOfCouponsUsed: {
         type: Number, 
         default: 0
-    }], 
+    }, 
     isActive: {
         type: Boolean, 
         default: false

@@ -152,4 +152,44 @@ main{
 .name-container{
     max-width: 300px;
 }
+.form-group{
+    margin-bottom: 20px;
+}
 
+#couponModal label{
+    font-size: 12px;
+    font-weight: bold
+}
+
+#category_list_container, 
+#user_list_container{
+    display: flex;
+    flex-wrap: wrap;
+}
+.category-tile-container, 
+.user-tile-container{
+    margin-top: 10px;
+    margin-right: 10px;
+    border-radius: 7px;
+    padding: 2px 9px;
+    border: 1px solid #80808042;
+    width: max-content;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #80808024;
+}
+
+.category-tile-container button{
+    font-size: 10px;
+}
+
+.category-tile-container span, 
+.user-tile-container span{
+    font-size: 14px;
+}
+
+.list-group li{
+    border-color: gray;
+    padding-bottom: 40px;
+}
