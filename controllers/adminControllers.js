@@ -177,13 +177,14 @@ exports.get_all_categories = async function(req, res){
 }
 
 exports.post_createCategory = async function(req, res){
-    const {category, description, parentCategory} = req.body
+    const {category, description, parentCategory, offer} = req.body
     try {
         if(!category || !description) throw new Error("Please provide necessary information")
         const createdCategory = await categoryModel.create({
             category, 
             description, 
-            parentCategory
+            parentCategory, 
+            offer
         })
         res.send({isSuccess: true, createdCategory})
     } catch (error) {

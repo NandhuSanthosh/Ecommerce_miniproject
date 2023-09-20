@@ -122,6 +122,10 @@ main{
     -webkit-line-clamp: 2;
 }
 
+.category-description{
+    max-width: 500px;
+}
+
 .rounded-border{
     border: 1px solid gray; 
     border-radius: 10px;

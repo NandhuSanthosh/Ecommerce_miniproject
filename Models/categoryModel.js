@@ -16,7 +16,13 @@ const categorySchema = new mongoose.Schema({
     subCategories: [{
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'categories'
-    }]
+    }], 
+    offer: {
+        type: Number, 
+        min: 0, 
+        max: 100, 
+        default: 0
+    }
 })
 
 categorySchema.statics.get_categories = async function(p=0){

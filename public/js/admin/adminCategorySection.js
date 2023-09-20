@@ -121,6 +121,7 @@ class CategoryHandler{
         // verify that all the necessary fields are there
         const cate = addCategory.value;
         const desc = addDescription.value;
+        const offerValue = offer.value;
         const url = "http://localhost:3000/admin/create_category";
         try {
             if(cate == "" || desc == "") {
@@ -134,7 +135,8 @@ class CategoryHandler{
                 },
                 body: JSON.stringify({
                     category : cate, 
-                    description: desc
+                    description: desc, 
+                    offer : offerValue
                 })
             })
             const data = await response.json()
@@ -175,10 +177,11 @@ class CategoryHandler{
         let tableRow = document.createElement('tr')
         tableRow.innerHTML = `
                 <th scope="row">${index+1}</th>
-                    <td>${value.category}</td>`
+                    <td>${value.category}</td>
+                    <td>${value.offer? `${value.offer}%` : "0%"}</td>`
 
         const tdTag = document.createElement('td');
-        tdTag.innerHTML = `<p class="responsive-text minimize">${value.description}</p>`
+        tdTag.innerHTML = `<p class="responsive-text minimize category-description">${value.description}</p>`
         tdTag.querySelector('p').addEventListener('click', this.setTextExtendFeature)
 
 
