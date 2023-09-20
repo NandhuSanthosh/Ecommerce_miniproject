@@ -1,14 +1,87 @@
 <header>
-    <div class="d-flex justify-content-between container py-3">
-        <div class="logo">CRIO</div>
-        <div class="searchbar">
-            <div class="header-serach-bar">
-                <button id="productSearch"  class="header-serach-btn">
-                    <i class="bi bi-search"></i>
-                </button>
-                <input id="productSearchInput"  type="text" placeholder="Search" class="header-serach-input">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light w-100">
+        <div class="container">
+            <div class="row w-100 align-items-center justify-content-between">
+                <a class="navbar-brand col-2" href="http://localhost:3000/">
+                    <img src="/accets/userHeaderLogo.jpeg" height="40px" alt="">
+                </a>
+        
+                <div class="col d-none d-lg-block"></div>
+                <div class="col col-md-6 col-lg-5">
+                    <div class="input-group md-form form-sm form-2 pl-0 display-flex">
+                        <input class="form-control my-0 py-1 lime-border" type="text" placeholder="Search" aria-label="Search">
+                        <div class="input-group-append">
+                            <span class="input-group-text lime lighten-2" id="basic-text1"><i class="bi bi-search"></i></i></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-1">
+                    <button class="navbar-toggler col"  type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+        
+                <div class="col-0 col-lg-3">
+                    <div class="collapse navbar-collapse col" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link align-items-center" href="http://localhost:3000/order/get_orders"><span class="mt-half nav-button">Orders</span></span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex" href="http://localhost:3000/get_cart"><span class="mt-half nav-button">Carts</span></a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle nav-button" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false" >
+                                    Account
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item nav-button" href="http://localhost:3000/settings">Settings</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item nav-button"  href="#">Logout</a>
+                                    <!-- <a class="dropdown-item" href="#">Something else here</a> -->
+                                </div>
+                            </li>
+                            <li class="nav-item d-none">
+                                <a class="nav-link disabled nav-button" href="#">Disabled</a>
+                            </li>
+                        </ul>
+                        
+                    </div>
+                </div>
             </div>
         </div>
-        <div >buttons</div>
-    </div>
+    </nav>
 </header>
+
+<script>
+    const searchFocus = document.getElementById('search-focus');
+        const keys = [
+            { keyCode: 'AltLeft', isTriggered: false },
+            { keyCode: 'ControlLeft', isTriggered: false },
+        ];
+
+        window.addEventListener('keydown', (e) => {
+            keys.forEach((obj) => {
+                if (obj.keyCode === e.code) {
+                    obj.isTriggered = true;
+                }
+            });
+
+            const shortcutTriggered = keys.filter((obj) => obj.isTriggered).length === keys.length;
+
+            if (shortcutTriggered) {
+                searchFocus.focus();
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            keys.forEach((obj) => {
+                if (obj.keyCode === e.code) {
+                    obj.isTriggered = false;
+                }
+            });
+        });
+</script>

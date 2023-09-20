@@ -1,3 +1,3 @@
-const a = [5, 4, 3, 2, 1];
-const b = [...a].sort();
-console.log(a, "\n", b)
+const a = [1, 2, 3];
+const b = a.map( x => x)
+console.log(Array.isArray(b))

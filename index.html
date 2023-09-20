@@ -17,187 +17,40 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <!-- Button trigger modal -->
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-    Launch demo modal
-  </button>
-  
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header border-none">
-          <h5 class="modal-title" id="exampleModalLabel">Order Details</h5>
-          <button type="button" class="close btn" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="body-content">
-            <div class="section-container">
-              <div class="section-header fw-bold">User Details</div>
-              <div class="name">
-                <span class="fw-bold">Name:</span> <span class="ms-3">Nandhu Santhosh</span>
-              </div>
-              <div class="credential">
-                <span class="fw-bold">Email:</span> <span class="ms-3">nandhusanthosh87@gmail.com</span>
-              </div>
-            </div>
-
-            <div class="section-container">
-              <div class="section-header fw-bold">User Address</div>
-              <div class="user-address">
-                <div class="address">
-                  <span class="name fw-500">
-                    Nandhu Santhosh
-                    </span>
-                      SomeOther(H) SomeOther PO, SomeOtherDistrict, SomeOtherState, SomeOtherState
-                    </span>
-                    <div>
-                      <span class="phone-number">Mobile number <span class="mobile">6238973581</span> 
-                    </div>
-                  </div>
-              </div>
-            </div>
-
-            <div class="section-container">
-              <div class="section-header fw-bold">Products</div>
-              <div class="products-container">
-                <div class="product d-flex gap-2 mb-2">
-                  <div class="image border">
-                    <img class="" width="100px" src="uploads\0cdd525864a1d3df4b37d11093959e34.png" alt="">
-                  </div>
-                  <div class="name">
-                    <a href="http://localhost:3000/product_details/64ed034b4514f9b6ec0cbe3a" class="responsive-text minimize-3">
-                      Fire-Boltt Phoenix Smart Watch with Bluetooth Calling 1.3",120+ Sports Modes, 240 * 240 PX High Res with SpO2, Heart
-                      Rate Monitoring & IP67 Rating (purple)
-                    </a>
-                  </div>
-                </div>
-                <div class="product d-flex gap-2">
-                  <div class="image border">
-                    <img width="100px" src="uploads\0cdd525864a1d3df4b37d11093959e34.png" alt="">
-                  </div>
-                  <div class="name">
-                    <a href="http://localhost:3000/product_detail/64ed034b4514f9b6ec0cbe3a" class="responsive-text minimize-3">
-                      Fire-Boltt Phoenix Smart Watch with Bluetooth Calling 1.3",120+ Sports Modes, 240 * 240 PX High Res with SpO2, Heart
-                      Rate Monitoring & IP67 Rating (purple)
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="section-container">
-              <div class="section-header fw-bold">Invoice</div>
-              <div class="invoice-container">
-
-                <div class="product-invoice d-flex justify-content-between">
-                  <div>
-                    <span class="fw-500"> <span class="brand-model">Sony WH-XM</span> : <span></span>
-                  </div>
-                  <div class="color-black">
-                    <span class="color-light">(11 * 29545.00)</span><span class="fs-18 fw-500">₹ 3,24,995.00</span> 
-                  </div>
-                </div>
-
-                <div class="product-invoice d-flex justify-content-between">
-                  <div>
-                    <span class="fw-500"> <span class="brand-model">Oneplus Nord Buds</span> : <span></span>
-                  </div>
-                  <div class="color-black">
-                    <span class="color-light">(1 * 4995.000)</span><span class="fs-18 fw-500">₹ 4,995.00</span> 
-                  </div>
-                </div>
-
-                <div class="product-invoice d-flex justify-content-between">
-                  <div>
-                    <span class="fw-500"> <span class="brand-model">Delivery Charge</span> : <span></span>
-                  </div>
-                  <div class="color-black">
-                    <span class="fs-18 fw-500 text-decoration-line-through">₹ 40</span>
-                  </div>
-                </div>
-
-                <div class="product-invoice d-flex justify-content-between">
-                  <div>
-                    <span class="fw-500"> <span class="brand-model">Total</span> : <span></span>
-                  </div>
-                  <div class="color-black">
-                      <span class="fs-18 fw-500">₹ 329,990.00</span>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-            
-            <div class="section-container">
-              <div class="section-header fw-bold">Order Details</div>
-              <div class="payment-method">
-                <span class="fw-500">Payment Method :</span> COD
-              </div>
-              <div class="created-at">
-                <span class="fw-500">Ordered Date :</span> <span>12/02/2002</span>
-              </div>
-              <div class="created-at d-flex align-items-center" id="DeliveryDatePicker">
-                <span class="fw-500">Delivery Date : </span> <input type="text" id="datepicker" class="date-input">
-                <button class="btn btn-primary ms-auto">Update</button>
-              </div>
-              <div class="status mt-2">
-                <div class="dropdown">
-                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                    Dropdown button
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-          </div>
-        </div>
-        <div class="modal-footer border-none">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
-        </div>
-      </div>
+  <div class="input-group md-form form-sm form-2 pl-0">
+    <input class="form-control my-0 py-1 lime-border" type="text" placeholder="Search" aria-label="Search">
+    <div class="input-group-append">
+      <span class="input-group-text lime lighten-2" id="basic-text1"><i class="bi bi-search"></i></i></span>
     </div>
   </div>
 </body>
 <script>
-  function displayModal(){
-     $("#exampleModal").modal();
-  }
+  const searchFocus = document.getElementById('search-focus');
+    const keys = [
+      { keyCode: 'AltLeft', isTriggered: false },
+      { keyCode: 'ControlLeft', isTriggered: false },
+    ];
 
-  displayModal();
-
-  
-  datePicker();
-  
-  function datePicker(startDate, endDate, defaultDate) {
-      // Initialize the date picker with a date range restriction
-      var datePickerInput = document.getElementById("datepicker");
-
-      startDate = startDate || new Date(); // Minimum selectable date
-      if(!endDate){
-        endDate = new Date(startDate);
-        endDate.setDate(startDate.getDate() + 31)
-      }
-      datePickerInput.value =startDate.getDate() + "-" +  startDate.getMonth() + "-" + startDate.getFullYear() 
-      // Initialize the date picker using the .datepicker() method
-      $(datePickerInput).datepicker({
-        format: 'dd-mm-yyyy',
-        startDate: startDate,
-        endDate: endDate,
-        autoclose: true, // Close the date picker when a date is selected
-        setDate: startDate
+    window.addEventListener('keydown', (e) => {
+      keys.forEach((obj) => {
+        if (obj.keyCode === e.code) {
+          obj.isTriggered = true;
+        }
       });
-    }
+
+      const shortcutTriggered = keys.filter((obj) => obj.isTriggered).length === keys.length;
+
+      if (shortcutTriggered) {
+        searchFocus.focus();
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      keys.forEach((obj) => {
+        if (obj.keyCode === e.code) {
+          obj.isTriggered = false;
+        }
+      });
+    });
 </script>
 </html>

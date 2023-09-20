@@ -389,7 +389,6 @@ function loader(orders = userOrders){
     userOrderList.innerHTML = ""
     orders.forEach( x => {
         userOrderList.append(createOrderTile(x));
-        
     })
 }
 loader();

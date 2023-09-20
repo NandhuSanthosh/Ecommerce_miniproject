@@ -12,14 +12,20 @@
     --fc-gray-200: rgb(68, 63, 63);
     --fc-discount-red: #f45858;
 
+    --light-green: green;
+
     --bg-light: #eeeeee;
 }
+
+
+
 
 .header-serach-bar{
     border: 1px solid rgb(130, 125, 125);
     border-radius: 6px;
     padding: 2px 10px;
 }
+
 .header-serach-btn,
 .header-serach-input{
     background-color: transparent;
@@ -180,3 +186,4 @@ figure img {
         width: 100% !important;
     }
 }
+
