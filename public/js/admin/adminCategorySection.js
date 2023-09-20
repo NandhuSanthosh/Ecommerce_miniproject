@@ -210,14 +210,18 @@ class CategoryHandler{
     updateModalData(value){
         category.value = value.category
         description.value = value.description
+        offer_details.value = value.offer || 0
 
         removeExcessiveEventListeners(deleteCategoryBtn)
         removeExcessiveEventListeners(updateCategoryBtn)
         removeExcessiveEventListeners(category)
         removeExcessiveEventListeners(description)
+        removeExcessiveEventListeners(offer_details)
         
         category.addEventListener('input', this.updateUpdateBtn(value))
         description.addEventListener('input', this.updateUpdateBtn(value))
+        offer_details.addEventListener('input', this.updateUpdateBtn(value))
+        
 
         
         deleteCategoryBtn.addEventListener('click', this.deleteCategoryEvent(value._id));
@@ -237,7 +241,10 @@ class CategoryHandler{
     }
 
     validateUpdateCategoryValues(value){
-            if((category.value == value.category && description.value == value.description) || (category.value == "" || description.value == "")){
+            if(!value.offer){
+                value.offer = 0;
+            }
+            if((category.value == value.category && description.value == value.description && offer_details.value == value.offer) || (category.value == "" || description.value == "" || offer_details.value == "")){
                 return false;
             }
             return true;
@@ -260,7 +267,8 @@ class CategoryHandler{
                     body: JSON.stringify({
                         diff: {
                             category: category.value,
-                            description: description.value
+                            description: description.value,
+                            offer: offer_details.value,
                         }
                     })
                 })

@@ -133,7 +133,7 @@ class ProductHandlers{
     }
     async getAllCategory(){
         if(!this.category.length)
-            this.category = await fetchData("http://localhost:3000/admin/get_categories")
+            this.category = await fetchData("http://localhost:3000/admin/get_all_categories")
         console.log(this.category)
         return this.category;
         

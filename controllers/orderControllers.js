@@ -12,7 +12,9 @@ exports.post_checkout = async function(req, res, next){
         const userId = req.userDetails.userDetails._id;
 
         const productIds = products.map( x => x.product);
-        const productDetails = await productModel.find({_id : {$in : productIds}}, {name: 1, currentPrice: 1, actualPrice: 1, stock: 1, isFreeDelivery : 1});
+        const productDetails = await productModel.find({_id : {$in : productIds}}, {name: 1, currentPrice: 1, actualPrice: 1, stock: 1, isFreeDelivery : 1})
+        .populate("category", { offer: 1});
+        console.log(productDetails)
 
         let discount = 0, totalPrice = 0, isFreeDelivery = true;
         const productObjForDB = productDetails.map( product => {
@@ -26,16 +28,24 @@ exports.post_checkout = async function(req, res, next){
             if(quantity > product.stock){
                 throw new Error(`${product.name} exceed stock, reduce the product count.`)
             }
+
+            let price = product.currentPrice;
+
+            if(product.category.offer){
+                price = (price / 100) * (100 - product.category.offer)
+                price = Math.ceil(price)
+            }
+            console.log("This is the price ", price)
             let obj = {
                 product : product._id, 
                 productName : product.name, 
                 quantity, 
-                price : product.currentPrice, 
-                payable : product.currentPrice                
+                price : price, 
+                payable : price                
             }
 
             totalPrice += product.actualPrice * quantity;
-            discount += (product.actualPrice - product.currentPrice) * quantity;
+            discount += (product.actualPrice - price) * quantity;
             isFreeDelivery = isFreeDelivery && product.isFreeDelivery
             return obj;
         })
