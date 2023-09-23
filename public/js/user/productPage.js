@@ -4,7 +4,7 @@ document.querySelector('.wish_list_btn').addEventListener('click', addToWishList
 
 
 function addToWishListHandler(){
-
+    
 }
 
 function buyEventListener(){
