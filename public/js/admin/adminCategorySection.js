@@ -247,6 +247,13 @@ class CategoryHandler{
             if((category.value == value.category && description.value == value.description && offer_details.value == value.offer) || (category.value == "" || description.value == "" || offer_details.value == "")){
                 return false;
             }
+            if(offer_details.value < 0 || offer_details.value > 100){
+                document.querySelector(".offer-error").classList.remove('d-none')
+                return false;
+            }
+            else{
+                document.querySelector(".offer-error").classList.add('d-none')
+            }
             return true;
     }
 

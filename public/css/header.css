@@ -12,6 +12,14 @@
     font-size: 12px;
 }
 
+header{
+    border-bottom: 1px solid rgb(227 220 220);
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    border-bottom: 1px solid rgb(211, 211, 211);
+}
+
 .nav-button{
     font-weight: 500;
     color: #8d8d8d;

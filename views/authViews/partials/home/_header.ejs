@@ -9,9 +9,9 @@
                 <div class="col d-none d-lg-block"></div>
                 <div class="col col-md-6 col-lg-5">
                     <div class="input-group md-form form-sm form-2 pl-0 display-flex">
-                        <input class="form-control my-0 py-1 lime-border" type="text" placeholder="Search" aria-label="Search">
+                        <input class="form-control my-0 py-1 lime-border" type="text" placeholder="Search" aria-label="Search" id="productSearchInput">
                         <div class="input-group-append">
-                            <span class="input-group-text lime lighten-2" id="basic-text1"><i class="bi bi-search"></i></i></span>
+                            <span class="input-group-text lime lighten-2" id="productSearch"><i class="bi bi-search"></i></i></span>
                         </div>
                     </div>
                 </div>
@@ -57,31 +57,15 @@
 </header>
 
 <script>
-    const searchFocus = document.getElementById('search-focus');
-        const keys = [
-            { keyCode: 'AltLeft', isTriggered: false },
-            { keyCode: 'ControlLeft', isTriggered: false },
-        ];
+    productSearchInput.addEventListener('keydown', (e)=>{
+        if(e.key == "Enter"){
+            searchProducts();
+        }
+    })
+    productSearch.addEventListener('click', searchProducts)
 
-        window.addEventListener('keydown', (e) => {
-            keys.forEach((obj) => {
-                if (obj.keyCode === e.code) {
-                    obj.isTriggered = true;
-                }
-            });
 
-            const shortcutTriggered = keys.filter((obj) => obj.isTriggered).length === keys.length;
-
-            if (shortcutTriggered) {
-                searchFocus.focus();
-            }
-        });
-
-        window.addEventListener('keyup', (e) => {
-            keys.forEach((obj) => {
-                if (obj.keyCode === e.code) {
-                    obj.isTriggered = false;
-                }
-            });
-        });
+    function searchProducts(){
+        window.location.assign("http://localhost:3000/get_product_search_page/" + productSearchInput.value)
+    }
 </script>

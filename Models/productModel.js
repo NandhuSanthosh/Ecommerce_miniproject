@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const categoryModel = require("./categoryModel")
 
 const productSchema = new mongoose.Schema({
     name: {
@@ -142,8 +143,14 @@ productSchema.statics.get_single_product_details = async function(id){
 
 productSchema.statics.get_search_result = async function(searchKey, page){
     const docPerPage = 10;
+    const category = await categoryModel.find({category: { $regex: searchKey, $options: 'i' }}, {_id: 1})
+    const categoryIds = category.map( x => x._id)
+    console.log(categoryIds)
     const query = {
-            name: { $regex: searchKey, $options: 'i' } // Case-insensitive search on name}, // Case-insensitive search on description
+        $or: [
+            {name: { $regex: searchKey, $options: 'i' }}, 
+            { category : {$in : categoryIds}} // Case-insensitive search on name}, // Case-insensitive search on description
+        ]   
             , isDeleted: false};
     
     const result = await this.find(query).skip(page * docPerPage).limit(docPerPage);

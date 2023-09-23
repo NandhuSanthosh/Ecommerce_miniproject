@@ -41,6 +41,10 @@ const orderSchema = new mongoose.Schema({
             discount: {
                 type: Number, 
                 default: 0
+            }, 
+            isApplied: {
+                type: Boolean, 
+                default: false
             }
         },
         payable: {
@@ -181,6 +185,7 @@ orderSchema.statics.find_user_orders = async function(userId){
     const userOrders = await this.find({userId})
                         .populate("products.product")
                         .populate('userAddressId')
+                        .sort({"orderCreateAt": -1})
     return userOrders
 }
 

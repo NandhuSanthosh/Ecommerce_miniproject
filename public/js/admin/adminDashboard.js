@@ -20,13 +20,13 @@ const dashboardItems = [{
         icon: "bi-people-fill",
         renderObject: renderMethod.renderUser,
     }, {
-        item: "Products", 
-        icon: "bi-box-seam-fill",
-        renderObject: renderMethod.renderProducts
-    }, {
         item: "Categories",
         icon: "bi-tags-fill",
         renderObject: renderMethod.renderCategories
+    }, {
+        item: "Products", 
+        icon: "bi-box-seam-fill",
+        renderObject: renderMethod.renderProducts
     }, {
         item: "Orders", 
         icon: "bi-cart-fill",

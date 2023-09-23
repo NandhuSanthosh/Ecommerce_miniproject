@@ -86,19 +86,29 @@ exports.patch_addImage = async function(req, res, next){
 exports.get_product_details = async function(req, res, next){
     const id = req.params.id
     try {
-        console.log("Here")
         if(!id) throw new Error("Please provide all the necessary details");
         console.log('here');
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
         const product = await productModel.get_single_product_details(id);
-        res.render('./authViews/userHome.ejs', {page: 'product-details', product: product})
+        console.log(product)
+        res.render('./authViews/userHome.ejs', {page: 'product-details', product})
     } catch (error) {
         next(error)
     }
 }
 
 exports.get_product_searchPage = async function(req, res, next){
-    res.render('./authViews/userHome.ejs', {page: 'search-page'})
+    try {
+        const searchKey = req.params.searchKey;
+        const page = 0;
+        if(!searchKey) throw new Error("Please provide necessary informations")
+        const {products, totalProducts} = await productModel.get_search_result(searchKey, page)
+        // res.send({isSuccess: true,data: products, totalCount : totalProducts});
+        console.log("this is total products count " ,totalProducts)
+        res.render('./authViews/userHome.ejs', {page: 'search-page', product: {data: products}, totalProducts})
+    } catch (error) {
+        next(error)
+    }
 }
 
 exports.get_serach_result = async function(req, res, next){
@@ -112,7 +122,6 @@ exports.get_serach_result = async function(req, res, next){
         next(error)
     }
 }
-
 
 exports.get_admin_search_result = async function(req, res, next){
     try {

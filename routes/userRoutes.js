@@ -7,6 +7,7 @@ const userControllers = require('../controllers/userControllers');
 const { isNotLogged, isRegestered, isLogged } = require('../Middleware/userAutherization');
 const { get_product_details, get_serach_result, get_product_searchPage } = require('../controllers/productControllers');
 const { errorHandler } = require('../Middleware/errorHandler');
+const  highlightControllers = require('../controllers/highlightControllers')
 
 
 
@@ -23,7 +24,7 @@ router.route('/request-otp').get(isRegestered, userControllers.get_otp)
 router.post('/verify-otp',isRegestered, userControllers.post_verifyOtp)
 
 
-router.get('/get_product_search_page', get_product_searchPage)
+router.get('/get_product_search_page/:searchKey', get_product_searchPage)
 router.get('/product_details/:id', get_product_details);
 router.get('/get_search_result', get_serach_result);
 
@@ -46,9 +47,13 @@ router.route('/forgot_password')
 router.route('/reset_password/:key')
 .get(isNotLogged, userControllers.get_resetPassword)
 .patch(isNotLogged, userControllers.post_resetPassword)
+
+
+// highlights
+router.get('/highlights/get_top_section', highlightControllers.firstHighlight)
+router.get('/highlights/get_highlights', highlightControllers.get_hightlights)
+
 router.use(errorHandler);
-
-
     
 
 module.exports = router;    

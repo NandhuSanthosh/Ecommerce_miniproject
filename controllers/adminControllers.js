@@ -180,6 +180,7 @@ exports.post_createCategory = async function(req, res){
     const {category, description, parentCategory, offer} = req.body
     try {
         if(!category || !description) throw new Error("Please provide necessary information")
+        if(offer && (offer > 100 || offer < 0)) throw new Error("Please enter a valid offer")
         const createdCategory = await categoryModel.create({
             category, 
             description, 

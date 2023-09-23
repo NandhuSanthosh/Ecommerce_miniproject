@@ -89,7 +89,7 @@ function createImageTile(src){
     const container = document.createElement('div');
     const image = document.createElement('img');
     image.src = src;
-    image.classList.add("small_img",  "col" ,"col-lg-12")
+    image.classList.add("small_img", "m-2", "m-sm-1")
     container.append(image);
     container.addEventListener('click', updatePrimaryImage(src))
     return container;

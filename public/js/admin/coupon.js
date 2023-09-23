@@ -307,6 +307,8 @@ class CoupenHandlers{
         update_button.classList.add("d-none")
         activate_btn.classList.add("d-none")
         deactivate_btn.classList.add("d-none")
+        create_coupon_btn.classList.remove("d-none")
+
         this.datePicker()
         category_list_container.innerHTML = "";
         this.currentCouponCategory = []
@@ -314,19 +316,22 @@ class CoupenHandlers{
         
     }
     async updateFieldValue(value){
+        console.log('here');
         coupon_code.value = value.code;
         coupon_discountType.querySelector(`[value = "${value.discount.discountType}"]`).selected = true
         coupon_discount.value = value.discount.discountType == "percentage-discount" ? value.discount.percentage : value.discount.amount
         coupon_minSpend.value = value.minSpend
         coupon_useageLimit.value = value.usageLimit
         coupon_numberOfUsed.parentElement.classList.remove('d-none')
+        update_button.classList.remove("d-none")
+        create_coupon_btn.classList.add("d-none")
         coupon_numberOfUsed.value = value.numberOfCouponsUsed
         
         this.currentCouponCategory = [];
 
 
         const categories = value.categories;
-        category_list_container.innerHTML = ""
+        category_list_container.innerHTML = "" 
         if(categories.length){
             categories.map( x => {
                 this.currentCouponCategory.push(x._id)
@@ -527,7 +532,7 @@ class CoupenHandlers{
         const day = parseInt(parts[0], 10);
         const month = parseInt(parts[1] - 1, 10); // Subtract 1 from the month since months are zero-indexed (0-11)
         const year = parseInt(parts[2], 10);
-        const dateObj = new Date(year, month, day);
+        const dateObj = new Date(year, month, day, 23, 59, 59, 999);
         return dateObj
     }
 

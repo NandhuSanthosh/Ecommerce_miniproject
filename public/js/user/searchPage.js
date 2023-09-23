@@ -1,16 +1,5 @@
-let currentProductSet = [{
-    "_id": "64eb5b4324966b11356b34c4",
-    "name": "ANC 30 Hour Playback",
-    "actualPrice": 2299,
-    "discount": 15,
-    "isFreeDelivery": true,
-    "warranty": 1,
-    "images": [
-        "https://res.cloudinary.com/dh1e66m8m/image/upload/v1693294912/1693294905998.png",
-        "https://res.cloudinary.com/dh1e66m8m/image/upload/v1693309402/1693309395347.png"
-    ],
-    "currentPrice": 29545
-}];
+let currentProductSet = product
+console.log(totalProducts)
 
 function render(){
     const resultContainer = document.querySelector("#result-product-container")
@@ -24,6 +13,7 @@ function render(){
 }
 
 function createProductTile(product){
+    console.log(product.images[0])
     const element = `<div class="image_container">
                     <img src="${product.images[0]}" alt="">
                 </div>
@@ -56,8 +46,8 @@ function createProductTile(product){
 function configure(){
     console.log('here');
     productSearch = document.getElementById('productSearch')
-    console.log(productSearch);
     productSearch.addEventListener('click', getData) 
+    render()
 }
 
 

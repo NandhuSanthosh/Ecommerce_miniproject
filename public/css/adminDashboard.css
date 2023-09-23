@@ -197,3 +197,9 @@ main{
     border-color: gray;
     padding-bottom: 40px;
 }
+
+.offer-error{
+    font-size: 12px;
+    text-align: end;
+    color: red;
+}

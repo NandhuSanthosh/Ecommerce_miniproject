@@ -1,0 +1,73 @@
+
+
+.sectionHeader{
+    margin-bottom: 30px;
+}
+
+
+.scroll-hidden::-webkit-scrollbar {
+    background-color: transparent;
+    height: 10px;
+    margin-top: 10px;
+}
+
+.scroll-hidden::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: rgb(235, 235, 235);
+
+}
+.productSection{
+    display: flex;
+    overflow: auto;
+    gap: 10px;
+}
+
+.product-container{
+    min-width: 80vw;
+    max-width: 80vw;
+    border: 1px solid #8080806b;
+    border-radius: 7px;
+    overflow: hidden;
+    background-color: white;
+}
+
+.product_link{
+    color: black;
+}
+.product_link:hover{
+    text-decoration: none;
+}
+
+.product-name{
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.payable-price{
+    font-size: 17px;
+    font-weight: 500;
+}
+.og-price{
+    text-decoration: line-through;
+    color: gray;
+}
+.proudct-discount{
+    font-size: 14px;
+    color: green;
+}
+
+.addToCart-btn{
+    border: none;
+    color: white;
+    background-color: black;
+    border-radius: 7px;
+    padding: 5px  10px;
+}
+
+
+@media (min-width: 556px){
+    .product-container{
+        min-width: 21vw;
+        max-width: 21vw;
+    }
+}

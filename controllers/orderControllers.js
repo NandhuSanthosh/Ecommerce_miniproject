@@ -31,7 +31,7 @@ exports.post_checkout = async function(req, res, next){
 
             let price = product.currentPrice;
 
-            if(product.category.offer){
+            if(product.category?.offer){
                 price = (price / 100) * (100 - product.category.offer)
                 price = Math.ceil(price)
             }
@@ -137,6 +137,7 @@ exports.apply_coupon = async function(req, res, next){
             category: 1
         })
         if(!coupon) throw new Error("Invalid coupen code")
+        if(!coupon.isActive) throw new Error("This coupon is not active now.")
         // check all the restrictions (category, usageLimit)
         const order = await orderModel.findById(orderId)
         .populate({
@@ -180,9 +181,10 @@ exports.apply_coupon = async function(req, res, next){
             throw new Error("The coupon can't be applied on any of the products in the cart.")
         }
             
-        let discount = coupon.discount.discountType == "percentage-discount" ?  (expensiveProductInCategory.payable / 100)* coupon.discount.percentage : expensiveProductInCategory.price > coupon.discount.amount ? 0 : expensiveProductInCategory.price - coupon.discount.amount;
+        let discount = coupon.discount.discountType == "percentage-discount" ?  (expensiveProductInCategory.payable / 100)* coupon.discount.percentage : expensiveProductInCategory.price < coupon.discount.amount ? 0 : expensiveProductInCategory.price - coupon.discount.amount;
         discount = Math.ceil(discount)
         expensiveProductInCategory.coupon.discount = discount;
+        expensiveProductInCategory.coupon.isApplied = true;
         console.log(discount, expensiveProductInCategory.quantity)
         expensiveProductInCategory.payable = expensiveProductInCategory.price - discount;
         discount *=  expensiveProductInCategory.quantity
@@ -216,22 +218,22 @@ exports.remove_coupon = async function(req, res, next){
             },
         })
 
-        
         if(!order.coupon.code) throw new Error("There is no coupon applyed on this purchase.")
         
         const products = order.products;
         let couponAppliedProduct;
         products.forEach( x => {
-            if(x.coupon.discount){
+            console.log(x)
+            if(x.coupon.isApplied ){
                 couponAppliedProduct = x;
             }
         })
 
 
-            
         let discount = couponAppliedProduct.coupon.discount;
         couponAppliedProduct.payable = couponAppliedProduct.payable + discount;
         couponAppliedProduct.coupon.discount = 0;
+        couponAppliedProduct.coupon.isApplied = false
 
         let couponCode = order.coupon.code;
         order.coupon.code = null;

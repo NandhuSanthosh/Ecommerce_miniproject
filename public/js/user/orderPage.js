@@ -45,7 +45,7 @@ function createOrderTile(order){
 
 
 function createOrderTemplate(order){
-    const totalPrice = order.totalPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const totalPrice = order.payable.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2 });
     let {orderPlacedDate, deliveryExtimate} = orderStageFormatter(order)
     const address = order.userAddressId 
 
