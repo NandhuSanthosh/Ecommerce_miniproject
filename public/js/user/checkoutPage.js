@@ -200,7 +200,6 @@ function config(){
     paymentMethodConfig();
 
     addAddressBtn.addEventListener('click', addAddressEventHandler.bind(this))
-    
 }
 
 function addAddressEventHandler(){

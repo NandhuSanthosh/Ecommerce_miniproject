@@ -8,6 +8,8 @@ const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Fri
 const cancelationOptions = ["I found a better deal elsewhere.", "I no longer need the product.", "I ordered the wrong item by mistake.", "The estimated delivery time is too long."]
 const returnOptions = ["The item arrived in a damaged or defective condition.", "The product received does not match the one ordered.", "The product did not meet the expected quality or performance standards.", "The product is missing components or accessories."]
 
+let currentFilter = "orders"
+
 function createOrderTile(order){
     const template = createOrderTemplate(order)
 
@@ -383,9 +385,44 @@ function updateOrderList(orderId, state){
 
 
 function loader(orders = userOrders){
-    const userOrderList = document.querySelector('.order-list');
+    
+    populateOrderList(orders)
+
+    filter_order.addEventListener('click', ()=> {
+        if(currentFilter == "orders") return;
+        populateOrderList(orders)
+        currentFilter = "orders";
+    })
+
+    filter_buyAgain.addEventListener( 'click',  () => {
+        if(currentFilter == "buyAgain") return;
+        populateOrderList( orders.filter( x => {
+            if(x.status == "Delivered") return true;
+        }))   
+        currentFilter = "buyAgain";
+    })
+
+    filter_notYetShipped.addEventListener('click', ()=>{
+        if(currentFilter == "notYetShipped") return;
+        populateOrderList( orders.filter( x => {
+            if(["Order Pending", "Preparing to Dispatch"].includes(x.status)) return true;
+        }))
+        currentFilter = "notYetShipped";
+    })
+
+    filter_cancelOrder.addEventListener('click', ()=>{
+        if(currentFilter == "canceled") return;
+        populateOrderList( orders.filter( x => {
+            if(x.status == "Canceled") return true;
+        }))
+        currentFilter = "canceled"
+    })
+}
+
+function populateOrderList(orders){
     const orderCountElement = document.querySelector('.order-count');
     orderCountElement.innerHTML = orders.length
+    const userOrderList = document.querySelector('.order-list');
     userOrderList.innerHTML = ""
     orders.forEach( x => {
         userOrderList.append(createOrderTile(x));
