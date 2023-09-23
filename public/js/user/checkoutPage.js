@@ -74,6 +74,7 @@ function injectInsightDetails(order){
     document.querySelector('.apply-coupen-btn').classList.add('d-none')
     document.querySelector('.coupen-code-success').classList.add('d-none')
     document.querySelector('.coupen-input').classList.add('d-none')
+    document.querySelector('.coupon-discount-info').classList.add('d-none')
 
     document.querySelector('.coupen-input-show-btn').addEventListener('click', ()=>{
         document.querySelector('.coupen-input').classList.remove('d-none')

@@ -78,6 +78,7 @@ exports.patch_complete_order = async function(req, res, next){
     try {
         const orderId = req.params.id
         const {addressId, paymentMethod} = req.body;
+
         const orderDoc = await orderModel.complete_order_handler(orderId, addressId, paymentMethod)
         const link = "http://localhost:3000/order/get_orders"
         res.send({isSuccess: true, redirect: link})
@@ -136,17 +137,27 @@ exports.apply_coupon = async function(req, res, next){
         .populate("categories", {
             category: 1
         })
-        if(!coupon) throw new Error("Invalid coupen code")
-        if(!coupon.isActive) throw new Error("This coupon is not active now.")
-        // check all the restrictions (category, usageLimit)
+
         const order = await orderModel.findById(orderId)
         .populate({
-                path: 'products.product', // Specify the path to the product reference
-                populate: {
-                    path: 'category',
-                    select: 'category',
-                },
-            })
+            path: 'products.product', // Specify the path to the product reference
+            populate: {
+                path: 'category',
+                select: 'category',
+            },
+        })
+
+
+        if(!coupon) throw new Error("Invalid coupen code")
+        if(!coupon.isActive) throw new Error("This coupon is not active now.")
+        if(coupon.usageLimit <= coupon.numberOfCouponsUsed) throw new Error("The coupon reached it's limit.")
+        for(let usedUser of coupon.usedUsers){
+            if(usedUser.toString() == order.userId.toString()){
+                throw new Error("You have already used this coupon, you can't use the coupon again.")
+            }
+        }
+        // check all the restrictions (category, usageLimit)
+        
 
 
         
@@ -194,6 +205,8 @@ exports.apply_coupon = async function(req, res, next){
         order.coupon.discount.percentage = coupon.discount.percentage 
         order.coupon.discount.amount = coupon.discount.amount 
         order.coupon.discountAmount = discount;
+
+        
     
         order.payable = order.payable - discount;
         await order.save();
