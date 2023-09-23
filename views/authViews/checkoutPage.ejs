@@ -42,6 +42,67 @@
                                     <div class="address-list">
 
                                     </div>
+                                    <div class="new-address-container">
+                                        <!-- Add address starts here -->
+                                        <!-- Add address btn starts here -->
+                                        <p class="text-end">
+                                            <button id="address_collapse_btn" class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+                                                aria-expanded="false" aria-controls="collapseExample">
+                                                Add address
+                                            </button>
+                                        </p>
+                                        <!-- Add address btn ends here -->
+                                        <!-- Add address collapse starts here -->
+                                        <div class="collapse" id="collapseExample">
+                                            <div class="card card-body">
+                                                <div class="editAddressContent">
+                                                    <div class="mb-3">
+                                                        <label for="addressFullName">Name</label>
+                                                        <input type="text" class="form-control" id="addressFullName" aria-describedby="name"
+                                                            value="">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="addressMobile">Mobile</label>
+                                                        <input type="text" class="form-control" id="addressMobile" aria-describedby="mobile"
+                                                            value="">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="addressPincode">Pincode</label>
+                                                        <input type="text" class="form-control" id="addressPincode" aria-describedby="pincode"
+                                                            value="">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="addressAddressLine1">Address Line 1</label>
+                                                        <input type="text" class="form-control" id="addressAddressLine1" aria-describedby="addressLine1"
+                                                            value="">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="addressAddressLine2">Address Line 2</label>
+                                                        <input type="text" class="form-control" id="addressAddressLine2" aria-describedby="addressLine2"
+                                                            value="">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="addressLandmark">Landmark</label>
+                                                        <input type="text" class="form-control" id="addressLandmark" aria-describedby="landmark"
+                                                            value="">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="addressState">State</label>
+                                                        <input type="text" class="form-control" id="addressState" aria-describedby="state"
+                                                            value="">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <div class="d-flex justify-content-between">
+                                                            <button class="btn btn-secondary" id="editCancelBtn">Cancel</button>
+                                                            <button class="btn btn-primary" id="addAddressBtn">Add</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Add address collapse ends here -->
+                                        <!-- Add address ends here -->
+                                    </div>
                                 </div>
                             </div> 
                         </div>
@@ -166,4 +227,7 @@
     <%- include('../utilityViews/alertModel.ejs') %>
     <%- include("../generalPartials/_jqueryJs.ejs") %>
     <%- include("../generalPartials/_bootstrapJS.ejs")%>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
 </html>

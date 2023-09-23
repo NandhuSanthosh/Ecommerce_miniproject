@@ -17,40 +17,19 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <div class="input-group md-form form-sm form-2 pl-0">
-    <input class="form-control my-0 py-1 lime-border" type="text" placeholder="Search" aria-label="Search">
-    <div class="input-group-append">
-      <span class="input-group-text lime lighten-2" id="basic-text1"><i class="bi bi-search"></i></i></span>
-    </div>
+  <p>
+  <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+    Link with href
+  </a>
+  <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    Button with data-bs-target
+  </button>
+</p>
+<div class="collapse" id="collapseExample">
+  <div class="card card-body">
+    Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
   </div>
+</div>
 </body>
-<script>
-  const searchFocus = document.getElementById('search-focus');
-    const keys = [
-      { keyCode: 'AltLeft', isTriggered: false },
-      { keyCode: 'ControlLeft', isTriggered: false },
-    ];
 
-    window.addEventListener('keydown', (e) => {
-      keys.forEach((obj) => {
-        if (obj.keyCode === e.code) {
-          obj.isTriggered = true;
-        }
-      });
-
-      const shortcutTriggered = keys.filter((obj) => obj.isTriggered).length === keys.length;
-
-      if (shortcutTriggered) {
-        searchFocus.focus();
-      }
-    });
-
-    window.addEventListener('keyup', (e) => {
-      keys.forEach((obj) => {
-        if (obj.keyCode === e.code) {
-          obj.isTriggered = false;
-        }
-      });
-    });
-</script>
 </html>

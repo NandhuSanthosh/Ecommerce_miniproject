@@ -2,6 +2,36 @@ console.log(userAddress)
 console.log(order)
 
 
+const validateObject = [{
+    name: "fullName",
+    field: addressFullName, 
+    validateFunction: validateFullName
+}, {
+    name: "mobileNumber", 
+    field: addressMobile, 
+    validateFunction: validatePhoneNumber
+}, {
+    name: "pincode", 
+    field: addressPincode, 
+    validateFunction: validatePinCode
+}, {
+    name: "addressLine1", 
+    field: addressAddressLine1,
+    validateFunction: validate
+}, {
+    name: "addressLine2", 
+    field: addressAddressLine2,
+    validateFunction: validate
+}, {
+    name: "landmark", 
+    field: addressLandmark,
+    validateFunction: validate
+}, {
+    name: "state", 
+    field: addressState,
+    validateFunction: validateIndianState
+}]
+
 let currAddressContainer, currentPaymentMethodContainer;
 function injectUserAddress(){
     const addressContainer = document.querySelector('.address-list');
@@ -168,8 +198,64 @@ function config(){
     injectUserAddress();
     injectInsightDetails(order);
     paymentMethodConfig();
+
+    addAddressBtn.addEventListener('click', addAddressEventHandler.bind(this))
+    
 }
 
+function addAddressEventHandler(){
+    const {isValid, updatedFields, error} = findUpdatedFieldsNewAddress();
+    if(isValid){
+        // request
+        const body  = {addressDetails: updatedFields}
+        fetch("http://localhost:3000/add_address", {
+            method: "POST", 
+            headers: {
+                'Content-Type': 'application/json'
+            }, 
+            body: JSON.stringify(body)
+        })
+        .then (response => response.json())
+        .then (data => {
+            if(data.isSuccess){
+                alert("New address created")
+                console.log(data)
+                userAddress.push(data.newAddress)
+                injectUserAddress();
+                address_collapse_btn.click()
+            }
+            else{
+                alert(data.errorMessage)
+            }
+        })
+    }
+    else{
+        const errorString = error.reduce( (acc, x) => acc + x + "\n", "")
+        alert(errorString)
+    }
+}   
+
+
+function findUpdatedFieldsNewAddress(){
+    let isStatus = true;
+    const errorArray = []
+    const result = validateObject.reduce( (acc,x) => {
+        const result = x.validateFunction(x.field.value)
+        if(result.isValid)
+            acc[x.name] = x.field.value
+        else{
+            isStatus = false;
+            errorArray.push(result.error)
+        }
+        return acc;
+    }, {})
+    if(isStatus){
+        return {isValid: true, updatedFields: result}
+    }
+    else{
+        return {isValid: false, error: errorArray}
+    }
+}
 function paymentMethodConfig(){
     const paymentMethodBtns = document.querySelectorAll('[name = payment-method]')
     paymentMethodBtns.forEach( x => {
@@ -309,6 +395,87 @@ function verifyPayment(response, addressId){
     })
 }
 
+
+
+function validateFullName(fullName){
+    var regName = /^[a-zA-Z]+ [a-zA-Z]+$/;
+    if(regName.test(fullName)){
+        return {isValid: true};
+    }
+    return {isValid: false, error: "Name is not valid"};
+}
+function validatePhoneNumber(number){
+    const indianPhoneNumberRegex = /^[6789]\d{9}$/;
+    if(indianPhoneNumberRegex.test(number)){
+        return {isValid: true}
+    }
+    return {isValid: false, error: "Phone number is not valid"}
+}
+function validatePinCode(pincode){
+    const indianPINCodeRegex = /^[1-9][0-9]{5}$/;
+    if(indianPINCodeRegex.test(pincode)){
+        return{isValid: true}
+    }
+    return {isValid: false, error: "Pincode is not valid"}
+}
+function validate(address) {
+    const trimmedAddress = address.trim();
+    if (trimmedAddress.length === 0) {
+        return {isValid: false, error: "Address not valid"};
+    }
+    return {isValid: true};
+}
+function validateIndianState(state) {
+    // List of valid Indian states
+    const validStates = [
+        "Andaman and Nicobar Islands",
+        "Andhra Pradesh",
+        "Arunachal Pradesh",
+        "Assam",
+        "Bihar",
+        "Chandigarh",
+        "Chhattisgarh",
+        "Dadra and Nagar Haveli and Daman and Diu",
+        "Delhi",
+        "Goa",
+        "Gujarat",
+        "Haryana",
+        "Himachal Pradesh",
+        "Jammu and Kashmir",
+        "Jharkhand",
+        "Karnataka",
+        "Kerala",
+        "Ladakh",
+        "Lakshadweep",
+        "Madhya Pradesh",
+        "Maharashtra",
+        "Manipur",
+        "Meghalaya",
+        "Mizoram",
+        "Nagaland",
+        "Odisha",
+        "Puducherry",
+        "Punjab",
+        "Rajasthan",
+        "Sikkim",
+        "Tamil Nadu",
+        "Telangana",
+        "Tripura",
+        "Uttar Pradesh",
+        "Uttarakhand",
+        "West Bengal",
+    ];
+
+    // Convert the input to title case for comparison
+    const formattedState = state.trim().toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
+    // Check if the input matches a valid state
+    if(validStates.includes(formattedState)){
+        return {isValid: true}
+    }
+    return {isValid: false, error: "State is not valid"}
+    return ;
+}
 
 placeOrderBtn.addEventListener('click', placeOrderHandler)
 
