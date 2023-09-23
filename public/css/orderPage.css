@@ -80,7 +80,8 @@ hr{
 
 .toggle-cancel-form,
 .cancel-return,
-.return-button{
+.return-button, 
+.complete_order_btn{
     background-color: white;
     border: 1px solid rgb(233, 233, 233);
     font-size: 12px;

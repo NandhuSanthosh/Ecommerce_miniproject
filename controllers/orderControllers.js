@@ -67,6 +67,7 @@ exports.get_checkout = async function(req, res, next){
         const id = req.params.id;
         const userId = req.userDetails.userDetails._id
         const orderDoc = await orderModel.find_order_details(id);
+        if(orderDoc.status != "Order Pending") throw new Error("This order checkout is complted.")
         const userAddress = await userModels.getAddress(userId)
         res.render('authViews/checkoutPage', {orderDoc, userAddress})
     } catch (error) {

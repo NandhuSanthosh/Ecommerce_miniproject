@@ -29,6 +29,8 @@ function createOrderTile(order){
     const cancelSubmitBtn = div.querySelector(".submitCancelationBtn");
     const returnSubmitBtn = div.querySelector('.submitReturnBtn')
     const cancelBtn = div.querySelector(".cancel-return")
+    const complete_order_btn = div.querySelector('.complete_order_btn')
+    console.log(complete_order_btn)
     
     // adding eventlisteners
     toggleCancelFormBtn.addEventListener('click', toggleFormHandler(div.querySelector('.cancel-form')))
@@ -36,10 +38,13 @@ function createOrderTile(order){
     cancelSubmitBtn.addEventListener('click', removeOrderHandler(order._id, div))
     returnSubmitBtn.addEventListener('click', returnOrderHandler(order._id, div))
     cancelBtn.addEventListener('click', cancelReturnHandler(order._id, div))
+    complete_order_btn.addEventListener('click', ()=> {
+        location.assign("http://localhost:3000/order/get_checkout_page/"+order._id)
+    })
 
 
     // configuation function
-    resetControllerButtons(order.status, toggleCancelFormBtn, toggleReturnBtn, cancelReturnBtn)
+    resetControllerButtons(order.status, toggleCancelFormBtn, toggleReturnBtn, cancelReturnBtn, complete_order_btn)
     configureForm(div, cancelSubmitBtn, div.querySelector('.cancelation-reason-input-field'), "cancelation-options", div.querySelector('.cancelation-options'), cancelationOptions)
     configureForm(div, returnSubmitBtn, div.querySelector('.return-reason-input-field'), "return-options", div.querySelector('.return-options'), returnOptions)
     return div;
@@ -112,6 +117,9 @@ function createOrderTemplate(order){
                                                             <span >Cancel Order</span>
                                                         </button>
                                                         
+                                                </div>
+                                                <div class="d-flex justify-content-end">
+                                                    <button class="complete_order_btn">Complete order</button>
                                                 </div>
                                                 <div class='d-flex justify-content-end'>
                                                     <button class='return-button'>Return Product</button>
@@ -240,11 +248,15 @@ function toggleFormHandler(form){
 }
 
 
-function resetControllerButtons(status, removeBtn, returnBtn, cancelReturnBtn){
+function resetControllerButtons(status, removeBtn, returnBtn, cancelReturnBtn, completeBtn){
     removeBtn.classList.add('d-none')
     returnBtn.classList.add('d-none')
     cancelReturnBtn.classList.add('d-none')
-    if(["Order Pending", "Preparing to Dispatch", "Dispatched", "Out for Delivery"].includes(status)){
+    completeBtn.classList.add('d-none')
+    if(status == "Order Pending"){
+        completeBtn.classList.remove("d-none");
+    }
+    else if([ "Preparing to Dispatch", "Dispatched", "Out for Delivery"].includes(status)){
         removeBtn.classList.remove('d-none')
     }
     else if(["Delivered"].includes(status)){

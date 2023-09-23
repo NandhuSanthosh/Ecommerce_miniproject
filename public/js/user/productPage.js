@@ -1,5 +1,11 @@
 addTOCartBtn.addEventListener('click', addToCartEventHandler)
 buyButton.addEventListener('click', buyEventListener);
+document.querySelector('.wish_list_btn').addEventListener('click', addToWishListHandler)
+
+
+function addToWishListHandler(){
+
+}
 
 function buyEventListener(){
     const productId = product._id;
