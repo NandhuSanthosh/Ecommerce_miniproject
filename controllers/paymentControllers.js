@@ -22,7 +22,7 @@ exports.post_create_order = (req, res, next)=>{
             }
             else{
                 console.log(err)
-                res.send({isSuccess: true})
+                res.send({isSuccess: false, errorMessage: err.message})
             }
         });
     } catch (error) {

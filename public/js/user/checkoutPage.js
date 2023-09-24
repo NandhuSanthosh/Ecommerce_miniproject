@@ -377,7 +377,7 @@ function showPaymentModal(orderId, addressId){
         });
         rzp1.open();
 }
-
+ 
 function verifyPayment(response, addressId){
     fetch("http://localhost:3000/payment/verify", {
         method: "POST", 

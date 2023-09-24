@@ -58,6 +58,14 @@ router.get("/wishlist/add_to_wishList", isLogged, userControllers.post_addToWish
 router.delete("/wishlist/remove_from_wishList", isLogged, userControllers.post_removeFromWishList);
 router.get("/wish_list", isLogged, userControllers.get_wishList);
 
+
+// wallet management
+router.get('/wallet', isLogged, userControllers.get_wallet);
+router.get('/wallet/find_user', isLogged, userControllers.get_userWallet);
+router.post("/wallet/create_payment_order", isLogged, userControllers.create_paymentOrder);
+router.post("/wallet/verify_payment", isLogged, userControllers.verify_payment)
+router.post("/wallet/send-to-user", isLogged, userControllers.post_sentToUser)
+
 router.use(errorHandler);
     
 

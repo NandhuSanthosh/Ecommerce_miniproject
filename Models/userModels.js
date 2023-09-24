@@ -63,7 +63,32 @@ const userSchema = new mongoose.Schema({
     wishList: [{
         type: mongoose.Schema.Types.ObjectId, 
         ref: "products"
-    }]
+    }], 
+    wallet: {
+        balance: {
+            type: Number, 
+            min: 0, 
+            default: 0
+        }, 
+        transactions: [{
+            type: {
+                type: String, 
+                enum: ["credit", "debit"]
+            },
+            transactionId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "transactions"
+            }, 
+            beforeBalance: {
+                type: Number, 
+                required: true
+            }, 
+            afterBalance: {
+                type: Number, 
+                required: true
+            }
+        }]
+    }
 })
 
 userSchema.statics.validation = async function (userDetails) {

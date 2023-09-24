@@ -1,0 +1,81 @@
+.wallet-container{
+    border-radius: 7px;
+}
+
+.tile{
+    padding: 10px 20px;
+    background-color: white;
+    border-radius: 7px;
+}
+
+.nav-link.active:hover{
+    color: white !important;
+}
+
+.amount_input_container{
+    border: 1px solid rgb(192, 192, 192);
+    padding: 5px 10px;
+    border-radius: 7px;
+}
+
+.amount-input-header{
+    font-size: 13px;
+    font-weight: 500;
+    color: #979797;
+}
+
+.amount_input_container .symbol{
+    font-size: 30px;
+    font-weight: 500;
+    color: rgb(107, 107, 107);
+}
+
+.amount_input_container .input_field input{
+    outline: none;
+    border: none;
+    padding-left: 10px;
+    font-size: 28px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.send_btn_container button{
+    border: none;
+    border-radius: 19px;
+    font-weight: 500;
+    padding: 6px 20px;
+}
+
+.user_name{
+    font-weight: bold;
+    font-size: 16px;
+}
+.user_credential{
+    font-weight: 500;
+}
+
+.invisible_btn{
+    background: none;
+    border: none;
+    padding: 0px;
+    outline: none;
+}
+
+#input_send_amount_container 
+.symbol{
+    font-size: 18px;
+    color: rgb(94, 94, 94);
+}
+
+#input_send_amount_container
+.input_field
+input{
+    padding-top: 0px;
+    height: 34px;
+    font-size: 36px;
+    margin-left: 9px;
+}
