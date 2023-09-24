@@ -1,6 +1,7 @@
 const productModel = require("../Models/productModel")
 const errorHandler = require('../Middleware/errorHandler');
-const {upload_single_image, upload_multiple_image} = require("../Middleware/uploadImages")
+const {upload_single_image, upload_multiple_image} = require("../Middleware/uploadImages");
+const userModels = require("../Models/userModels");
 
 
 exports.get_products = async function(req, res, next){
@@ -90,8 +91,16 @@ exports.get_product_details = async function(req, res, next){
         console.log('here');
         res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
         const product = await productModel.get_single_product_details(id);
-        console.log(product)
-        res.render('./authViews/userHome.ejs', {page: 'product-details', product})
+        const userId = req.userDetails?.userDetails._id;
+        let isInWishList = false;
+        if(userId){
+            const userDetails = await userModels.findById(userId);
+            console.log(userDetails.wishList, product._id)
+            isInWishList = userDetails.wishList.includes(product._id)
+            console.log(userDetails.wishList.includes(product._id))
+        }
+        
+        res.render('./authViews/userHome.ejs', {page: 'product-details', product, isInWishList})
     } catch (error) {
         next(error)
     }

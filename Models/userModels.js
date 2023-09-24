@@ -59,7 +59,11 @@ const userSchema = new mongoose.Schema({
     cartId : {
         type: mongoose.Schema.Types.ObjectId, 
         ref: "Carts"
-    }
+    },
+    wishList: [{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "products"
+    }]
 })
 
 userSchema.statics.validation = async function (userDetails) {

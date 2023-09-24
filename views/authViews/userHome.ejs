@@ -40,9 +40,12 @@
                     <%- include('./partials/_searchProduct.ejs') %>
                 <% } else if(locals.page === "cart-page") { %>
                     <%- include('./partials/_cartPage.ejs') %>
+                <% } else if(locals.page === "wishList-page") {%>
+                    <%- include('./partials/_wishList.ejs') %>
                 <% } else {%>
                     <%- include("./partials/_userHome.ejs") %>
                 <% } %>
+
             </section>
 
         </body>

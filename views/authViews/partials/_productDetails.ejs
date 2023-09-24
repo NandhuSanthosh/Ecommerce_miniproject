@@ -83,14 +83,10 @@
     </div>
 </div>
 
+<script>
+   let isInWishList = <%=locals.isInWishList%> ;
+</script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="/js/zoomsl.js" type="text/javascript"></script>
 <script src="/js/user/productPage.js"></script>
-<script>
-    $(function() {
-        $(".heart").on("click", function() {
-            $(this).toggleClass("is-active");
-        });
-    });
-</script>

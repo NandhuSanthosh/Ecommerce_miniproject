@@ -5,7 +5,8 @@ const addressModel = require("../Models/addressModel");
 const otpModel = require("../Models/otpModel");
 const userModel = require("../Models/userModels")
 const forgotPasswordTokensModel = require('../Models/forgotPasswordModel')
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const productModel = require("../Models/productModel");
 
 const associate = "user";
 
@@ -260,6 +261,58 @@ exports.patch_changePassword = async(req, res, next)=>{
         const result = await userModel.change_password(req.userDetails.userDetails._id, currentPassword, newPassword)
         console.log(result)
         res.send({isSuccess: true, result})
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+// WISH LIST
+exports.post_addToWishList = async(req, res, next) => {
+    try {
+        const userId = req.userDetails.userDetails._id;
+        const productId = req.query.productId;
+
+        const product = await productModel.findById(productId);
+        if(!product) throw new Error("Invalid product ID")
+        
+        const updatedUserDetails = await userModel.updateOne({_id: userId}, {$addToSet: {wishList: productId}})
+        
+        const isAdded = updatedUserDetails.modifiedCount;
+        if(!isAdded){
+            await userModel.updateOne({_id: userId}, {$pull: {wishList: productId}})
+        }
+
+        res.send({isSuccess: true, isAdded})
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.post_removeFromWishList = async(req, res, next) => {
+    try {
+        const productId = req.query.productId;
+        const userId = req.userDetails.userDetails._id;
+        if(!productId) throw new Error("Please provide necessary information.")
+        const updatedUser = await userModel.findByIdAndUpdate(userId, {$pull: {wishList: productId}})
+        res.send({isSuccess: true})
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.get_wishList = async(req, res, next)  => {
+    try {
+        const userId = req.userDetails.userDetails._id;
+        const userDetails = await userModel.findById(userId)
+        .populate("wishList", {
+            name: 1, 
+            images: 1, 
+            currentPrice: 1,
+            isFreeDelivery: 1,
+            warranty: 1
+        })
+        res.render('./authViews/userHome.ejs', {page: "wishList-page", product: userDetails.wishList})
     } catch (error) {
         next(error)
     }

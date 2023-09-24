@@ -1,5 +1,14 @@
 const jwt = require('jsonwebtoken')
 
+exports.parser = async function(req, res, next){
+    if(req.cookies.uDAO){
+        const result = await jwt.verify(req.cookies.uDAO, process.env.JWT_KEY)
+        req.userDetails = result
+    }
+
+    next();
+}
+
 exports.isNotLogged = async function(req, res, next){
     const logoutStatus = req.query.bthp;
     if(logoutStatus){

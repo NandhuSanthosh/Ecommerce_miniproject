@@ -4,7 +4,21 @@ document.querySelector('.wish_list_btn').addEventListener('click', addToWishList
 
 
 function addToWishListHandler(){
-    
+    fetch("http://localhost:3000/wishlist/add_to_wishList?productId=" + product._id)
+    .then( response => response.json())
+    .then( data => {
+        if(!data.isSuccess){
+            alert(data.errorMessage)
+        }
+        else{
+            if(data.isAdded){
+                document.querySelector('.heart').classList.add('is-active')
+            }
+            else{
+                document.querySelector('.heart').classList.remove('is-active')
+            }
+        }
+    })
 }
 
 function buyEventListener(){
@@ -86,6 +100,11 @@ function injectData(){
     magnifying_img.src = product.images[0];
     for(let i = 0; i<product.images.length && i<5; i++){
         image_list.append(createImageTile(product.images[i]))
+    }
+
+    console.log(isInWishList)
+    if(isInWishList) {
+        document.querySelector('.heart').classList.add('is-active')
     }
 }
 

@@ -4,7 +4,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken')
 
 const userControllers = require('../controllers/userControllers');
-const { isNotLogged, isRegestered, isLogged } = require('../Middleware/userAutherization');
+const { isNotLogged, isRegestered, isLogged, parser } = require('../Middleware/userAutherization');
 const { get_product_details, get_serach_result, get_product_searchPage } = require('../controllers/productControllers');
 const { errorHandler } = require('../Middleware/errorHandler');
 const  highlightControllers = require('../controllers/highlightControllers')
@@ -25,7 +25,7 @@ router.post('/verify-otp',isRegestered, userControllers.post_verifyOtp)
 
 
 router.get('/get_product_search_page/:searchKey', get_product_searchPage)
-router.get('/product_details/:id', get_product_details);
+router.get('/product_details/:id', parser,  get_product_details);
 router.get('/get_search_result', get_serach_result);
 
 // user settings
@@ -52,6 +52,11 @@ router.route('/reset_password/:key')
 // highlights
 router.get('/highlights/get_top_section', highlightControllers.firstHighlight)
 router.get('/highlights/get_highlights', highlightControllers.get_hightlights)
+
+// wishList 
+router.get("/wishlist/add_to_wishList", isLogged, userControllers.post_addToWishList);
+router.delete("/wishlist/remove_from_wishList", isLogged, userControllers.post_removeFromWishList);
+router.get("/wish_list", isLogged, userControllers.get_wishList);
 
 router.use(errorHandler);
     
