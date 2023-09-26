@@ -1,6 +1,7 @@
 console.log(userAddress)
 console.log(order)
 
+let walletBalance;
 
 const validateObject = [{
     name: "fullName",
@@ -257,6 +258,20 @@ function findUpdatedFieldsNewAddress(){
     }
 }
 function paymentMethodConfig(){
+    //wallet balance update
+    fetch("http://localhost:3000/wallet/get_balance")
+    .then( response => response.json())
+    .then( data => {
+        if(data.isSuccess){
+            walletBalance = data.data.balance
+            document.querySelector('.wallet_balance').innerHTML = (data.data.balance || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        else{
+            alert(data.errorMessage)
+        }
+    })
+
+    // 
     const paymentMethodBtns = document.querySelectorAll('[name = payment-method]')
     paymentMethodBtns.forEach( x => {
         x.addEventListener('click', (e)=>{
@@ -292,6 +307,12 @@ async function placeOrderHandler(){
         const orderId = await createOrder();
         await showPaymentModal(orderId, addressId);
     }
+    else if(paymentMethod == 'wallet'){
+        if(walletBalance < order.payable){
+            return alert("Insufficient fund in wallet.")
+        }
+        completeCheckout(addressId, paymentMethod)
+    }
     else{
         completeCheckout(addressId, paymentMethod)
     }
@@ -316,7 +337,7 @@ function completeCheckout(addressId, paymentMethod){
             location.assign(data.redirect);
         }
         else{
-            alert(data.isFailure);
+            alert(data.errorMessage);
         }
     })
 }

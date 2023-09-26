@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const couponModel = require('./couponModel');
+const userModels = require('./userModels');
 
 
 const orderStages = ["Order Pending", "Preparing to Dispatch", "Dispatched", 
@@ -177,6 +178,9 @@ orderSchema.statics.complete_order_handler = async function(id, addressId, payme
     const extimatedDeliveryDate = new Date()
     extimatedDeliveryDate.setDate(orderCreateAt.getDate() + 5)
     const doc = await this.findByIdAndUpdate(id, {$set: {status: "Preparing to Dispatch", userAddressId: addressId, "paymentDetail.method": paymentMethod, }}, {new: true})
+    if(paymentMethod == "wallet"){
+        const user = await userModels.findByIdAndUpdate(doc.userId, {$inc: {"wallet.balance" : (-1 * doc.payable)}})
+    }
     if(doc.coupon.code){
         const coupon = await couponModel.findOne({code: doc.coupon.code});
         coupon.numberOfCouponsUsed++;

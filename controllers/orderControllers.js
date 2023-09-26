@@ -80,6 +80,14 @@ exports.patch_complete_order = async function(req, res, next){
         const orderId = req.params.id
         const {addressId, paymentMethod} = req.body;
 
+        if(paymentMethod == "wallet"){
+            const user = await userModels.findById(req.userDetails.userDetails._id);
+            const order = await orderModel.findById(orderId);
+            if(user.wallet.balance < order.payable){
+                throw new Error("Insufficient balance in wallet.")
+            }
+        }
+
         const orderDoc = await orderModel.complete_order_handler(orderId, addressId, paymentMethod)
         const link = "http://localhost:3000/order/get_orders"
         res.send({isSuccess: true, redirect: link})

@@ -357,98 +357,6 @@ exports.get_userWallet = async(req, res, next) => {
     }
 }
 
-exports.create_paymentOrder = async(req, res, next) => {
-    try {
-        const amount = req.body.amount;
-        if(amount <= 0) throw new Error("The amount is not valid")
-        const orderId = await createOrder(amount)
-        console.log(orderId)
-        res.send({isSuccess: true, orderId})
-    } catch (error) {
-        next(error)
-    }
-}
-
-exports.verify_payment = async (req, res, next) =>{
-    try {
-        if(verify_payment(req.body.response)){
-            const {amount} = req.body
-            const userId = req.userDetails.userDetails._id;
-            const transaction = await transactionModel.create({
-                amount : amount, 
-                timestamp : new Date(),
-                senderID : userId, 
-                category : "addToWallet"
-            })
-            let user = await userModel.findById(userId)
-            const newBalance = user.wallet.balance + amount;
-            const transactionDoc = {
-                type: "credit",
-                transactionId: transaction._id, 
-                beforeBalance: user.wallet.balance, 
-                afterBalance: newBalance
-            };
-            console.log(transactionDoc)
-            user.wallet.transactions.push(transactionDoc)
-
-            user = await userModel.findByIdAndUpdate(user._id, {$set: {"wallet.balance" : newBalance}, $push: {"wallet.transactions" : transactionDoc}})
-            console.log(user);
-            res.send({isSuccess: true, data: newBalance})
-        }
-        else{
-            throw new Error("Payment verification failed.")
-        }
-    } catch (error) {
-        next(error);
-    }
-
-}
-
-exports.post_sentToUser = async(req, res, next) => {
-    try {
-        const senderID = req.userDetails.userDetails._id
-        const {receiverID, amount} = req.body;
-
-        console.log(senderID, receiverID, amount)
-
-        if(!receiverID || !amount) throw new Error("Please provide necessary details");
-
-        const receiver = await userModel.findById(receiverID);
-        if(!receiver) throw new Error("There is no such user.")
-
-        const sender = await userModel.findById(senderID);
-        if(sender.wallet.balance < amount) throw new Error("Insuffcient balance.")
-
-        const transaction = await transactionModel.create({
-            amount, 
-            timestamp: new Date(), 
-            senderID, 
-            receiverID,
-            category: "betweenUsers"
-        })
-
-        const senderTransactionDoc = {
-            type: "debit", 
-            transactionId: transaction._id, 
-            beforeBalance: sender.wallet.balance,
-            afterBalance: sender.wallet.balance - amount
-        }
-        const receiverTransactionDoc = {
-            type: "credit", 
-            transactionId: transaction._id, 
-            beforeBalance: receiver.wallet?.balance || 0,
-            afterBalance: (receiver.wallet?.balance || 0) + amount
-        }
-        const updatedSender = await userModel.findByIdAndUpdate(senderID, {$set: {"wallet.balance" : sender.wallet.balance - amount}, $push: {"wallet.transactions" : senderTransactionDoc}}, {new: true})
-        const updatedReceiver = await userModel.findByIdAndUpdate(receiverID, {$set: {"wallet.balance" : receiver.wallet.balance + amount}, $push: {"wallet.transactions" : receiverTransactionDoc}}, {new: true})
-        
-        console.log(updatedSender, updatedReceiver)
-        res.send({isSuccess: true, data: updatedSender.wallet.balance})
-    } catch (error) {
-        next(error)
-    }
-}
-
 exports.get_transactionHistory = async(req, res, next) => {
     try {
         const pageNo = req.query.pno;
@@ -562,5 +470,110 @@ exports.get_transactionHistory = async(req, res, next) => {
         next(error)
     }
 }
+
+exports.get_wallet_balance = async(req, res, next) => {
+    try {
+        const {userDetails} = req.userDetails
+        const userId = userDetails._id;
+        const user = await userModel.findById(userId, {"wallet.balance" : 1});
+        res.send({isSuccess: true, data: {balance : user.wallet.balance}})
+    } catch (error) {
+        
+    }
+}
+
+exports.create_paymentOrder = async(req, res, next) => {
+    try {
+        const amount = req.body.amount;
+        if(amount <= 0) throw new Error("The amount is not valid")
+        const orderId = await createOrder(amount)
+        console.log(orderId)
+        res.send({isSuccess: true, orderId})
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.verify_payment = async (req, res, next) =>{
+    try {
+        if(verify_payment(req.body.response)){
+            const {amount} = req.body
+            const userId = req.userDetails.userDetails._id;
+            const transaction = await transactionModel.create({
+                amount : amount, 
+                timestamp : new Date(),
+                senderID : userId, 
+                category : "addToWallet"
+            })
+            let user = await userModel.findById(userId)
+            const newBalance = user.wallet.balance + amount;
+            const transactionDoc = {
+                type: "credit",
+                transactionId: transaction._id, 
+                beforeBalance: user.wallet.balance, 
+                afterBalance: newBalance
+            };
+            console.log(transactionDoc)
+            user.wallet.transactions.push(transactionDoc)
+
+            user = await userModel.findByIdAndUpdate(user._id, {$set: {"wallet.balance" : newBalance}, $push: {"wallet.transactions" : transactionDoc}})
+            console.log(user);
+            res.send({isSuccess: true, data: newBalance})
+        }
+        else{
+            throw new Error("Payment verification failed.")
+        }
+    } catch (error) {
+        next(error);
+    }
+
+}
+
+exports.post_sentToUser = async(req, res, next) => {
+    try {
+        const senderID = req.userDetails.userDetails._id
+        const {receiverID, amount} = req.body;
+
+        console.log(senderID, receiverID, amount)
+
+        if(!receiverID || !amount) throw new Error("Please provide necessary details");
+
+        const receiver = await userModel.findById(receiverID);
+        if(!receiver) throw new Error("There is no such user.")
+
+        const sender = await userModel.findById(senderID);
+        if(sender.wallet.balance < amount) throw new Error("Insuffcient balance.")
+
+        const transaction = await transactionModel.create({
+            amount, 
+            timestamp: new Date(), 
+            senderID, 
+            receiverID,
+            category: "betweenUsers"
+        })
+
+        const senderTransactionDoc = {
+            type: "debit", 
+            transactionId: transaction._id, 
+            beforeBalance: sender.wallet.balance,
+            afterBalance: sender.wallet.balance - amount
+        }
+        const receiverTransactionDoc = {
+            type: "credit", 
+            transactionId: transaction._id, 
+            beforeBalance: receiver.wallet?.balance || 0,
+            afterBalance: (receiver.wallet?.balance || 0) + amount
+        }
+        const updatedSender = await userModel.findByIdAndUpdate(senderID, {$set: {"wallet.balance" : sender.wallet.balance - amount}, $push: {"wallet.transactions" : senderTransactionDoc}}, {new: true})
+        const updatedReceiver = await userModel.findByIdAndUpdate(receiverID, {$set: {"wallet.balance" : receiver.wallet.balance + amount}, $push: {"wallet.transactions" : receiverTransactionDoc}}, {new: true})
+        
+        console.log(updatedSender, updatedReceiver)
+        res.send({isSuccess: true, data: updatedSender.wallet.balance})
+    } catch (error) {
+        next(error)
+    }
+}
+
+
 
 

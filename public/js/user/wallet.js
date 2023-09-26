@@ -58,7 +58,6 @@ function loader(){
 
 function changeWindow(btn, header, container){
         btn.classList.add("active");
-        console.log(currentWindowBtn)
         if(currentWindowBtn) currentWindowBtn.classList.remove('active');
         currentWindowBtn = btn
 

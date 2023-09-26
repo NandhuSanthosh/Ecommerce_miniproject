@@ -53,6 +53,8 @@ hr{
 }
 
 .summary-container{
+    position: sticky;
+    top: 10px;
     border: 1px solid #80808066;
     padding: 10px;
     border-radius: 10px;
