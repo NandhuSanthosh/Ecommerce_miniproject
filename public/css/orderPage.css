@@ -90,3 +90,8 @@ hr{
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     margin-right: 30px;
 }
+
+.download-invoice{
+    font-size: 13px;
+    color: #4d4d4d;
+}

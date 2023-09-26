@@ -30,6 +30,7 @@ function createOrderTile(order){
     const returnSubmitBtn = div.querySelector('.submitReturnBtn')
     const cancelBtn = div.querySelector(".cancel-return")
     const complete_order_btn = div.querySelector('.complete_order_btn')
+    const invoiceDownloadBtn = div.querySelector('.download-invoice')
     console.log(complete_order_btn)
     
     // adding eventlisteners
@@ -41,6 +42,9 @@ function createOrderTile(order){
     complete_order_btn.addEventListener('click', ()=> {
         location.assign("http://localhost:3000/order/get_checkout_page/"+order._id)
     })
+    invoiceDownloadBtn.addEventListener('click', ()=>{
+        downloadInvoice(order._id);
+    })
 
 
     // configuation function
@@ -48,6 +52,142 @@ function createOrderTile(order){
     configureForm(div, cancelSubmitBtn, div.querySelector('.cancelation-reason-input-field'), "cancelation-options", div.querySelector('.cancelation-options'), cancelationOptions)
     configureForm(div, returnSubmitBtn, div.querySelector('.return-reason-input-field'), "return-options", div.querySelector('.return-options'), returnOptions)
     return div;
+}
+
+function downloadInvoice(orderId){
+    fetch("http://localhost:3000/order/get_invoice?orderId=" + orderId, {
+        method: "get"
+    })
+    .then( response => response.json())
+    .then( data => {
+        if(data.isSuccess){
+            const {order, invoiceNumber} = data;
+            console.log(order.products)
+            const date = formatDate(new Date());
+            var props = {
+                outputType: jsPDFInvoiceTemplate.OutputType.Save,
+                returnJsPDFDocObject: true,
+                fileName: "Invoice 2021",
+                orientationLandscape: false,
+                compress: true,
+                logo: {
+                    src: "http://localhost:3000/accets/userHeaderLogo.jpeg",
+                    type: 'PNG', //optional, when src= data:uri (nodejs case)
+                    width: 30.33, //aspect ratio = width/height
+                    height: 20.66,
+                    margin: {
+                        top: 0, //negative or positive num, from the current position
+                        left: 0 //negative or positive num, from the current position
+                    }
+                },
+                stamp: {
+                    inAllPages: true, //by default = false, just in the last page
+                    src: "https://raw.githubusercontent.com/edisonneza/jspdf-invoice-template/demo/images/qr_code.jpg",
+                    type: 'JPG', //optional, when src= data:uri (nodejs case)
+                    width: 20, //aspect ratio = width/height
+                    height: 20,
+                    margin: {
+                        top: 0, //negative or positive num, from the current position
+                        left: 0 //negative or positive num, from the current position
+                    }
+                },
+                business: {
+                    name: "Fortnite Web store",
+                    address: "Kazhakuttam, North Trivandrum, Kerala",
+                    phone: "+91 6238973581",
+                    email: "forniteWebStore@gmail.com",
+                    email_1: "nandhusanthosh87@gmail.com",
+                    website: "www.fornite.com",
+                },
+                contact: {
+                    label: "Invoice issued for:",
+                    name: order.userAddressId.name,
+                    address:  order.userAddressId.addressLine1,
+                    phone: order.userAddressId.mobileNumber,
+                },
+                invoice: {
+                    label: "Invoice #: ",
+                    num: invoiceNumber,
+                    invGenDate: "Invoice Date: "+date,
+                    headerBorder: false,
+                    tableBodyBorder: false,
+                    header: [
+                        {
+                            title: "#",
+                            style: {
+                                width: 10
+                            }
+                        },
+                        {
+                            title: "Title",
+                            style: {
+                                width: 70
+                            }
+                        },
+                        { title: "Price" },
+                        { title: "Discount" },
+                        { title: "Quantity" },
+                        { title: "Total" }
+                    ],
+                    table: Array.from(order.products, (item, index) => ([
+                        index + 1,
+                        item.product.brand + " " + item.product.modelName,
+                        item.price,
+                        item.price - item.payable,
+                        item.quantity,
+                        item.price * item.quantity
+                    ])),
+                     additionalRows: [{
+                        col1: 'Total:',
+                        col2: order.totalPrice,
+                        style: {
+                            fontSize: 14 //optional, default 12
+                        }
+                    },
+                    {
+                        col1: 'Discount:',
+                        col2: order.discount,
+                        style: {
+                            fontSize: 10 //optional, default 12
+                        }
+                    },
+                    {
+                        col1: 'SubTotal:',
+                        col2: order.payable,
+                        style: {
+                            fontSize: 10 //optional, default 12
+                        }
+                    }],
+                },
+                footer: {
+                    text: "The invoice is created on a computer and is valid without the signature and stamp.",
+                },
+                pageEnable: true,
+                pageLabel: "Page ",
+            };
+            var pdfObject = jsPDFInvoiceTemplate.default(props); 
+        }
+        else{
+            alert(data.errorMessage)
+        }
+        
+    })
+}
+
+function formatDate(date) {
+    // Get the date components
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const year = date.getFullYear();
+
+    // Get the time components
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    // Create the formatted date string
+    const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
+
+    return formattedDate;
 }
 
 
@@ -61,45 +201,56 @@ function createOrderTemplate(order){
                                         <div class="section-one p-2">
                                             <div class="section-content">
                                                 <div class="d-flex justify-content-between">
-                                                    <div class="d-flex gap-lg-5 gap-md-4 gap-sm-3 gap-3">
-                                                        <div class="order-date">
-                                                            <div>
-                                                                <span>ORDER PLACED</span>
-                                                            </div>
-                                                            <div class="section-value">
-                                                                <span>${orderPlacedDate}</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="total-price">
-                                                            <div>
-                                                                <span>TOTAL PRICE</span>
-                                                            </div>
-                                                            <div  class="section-value">
-                                                                <span>₹${totalPrice}</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="ship-to">
-                                                            <div>
-                                                                <span>SHIP TO</span>
-                                                            </div>
-                                                            <div  class="section-value position-relative show-detials-on-hover">
-                                                                <span class="link">${typeof address == 'object' ? address.fullName : "undefined"}</span>
+                                                    <div class="d-flex justify-content-between w-100">
+                                                            <div class="d-flex gap-lg-5 gap-md-4 gap-sm-3 gap-3">
+                                                                <div class="order-date">
+                                                                    <div>
+                                                                        <span>ORDER PLACED</span>
+                                                                    </div>
+                                                                    <div class="section-value">
+                                                                        <span>${orderPlacedDate}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="total-price">
+                                                                    <div>
+                                                                        <span>TOTAL PRICE</span>
+                                                                    </div>
+                                                                    <div  class="section-value">
+                                                                        <span>₹${totalPrice}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="ship-to">
+                                                                    <div>
+                                                                        <span>SHIP TO</span>
+                                                                    </div>
+                                                                    <div  class="section-value position-relative show-detials-on-hover">
+                                                                        <span class="link">${typeof address == 'object' ? address.fullName : "undefined"}</span>
 
-                                                                <div class="position-absolute address-details-container">
-                                                                    <div class="position-relative address-details">
-                                                                        <span class="fw-bold">${typeof address == 'object' ? address.fullName : "undefined"}</span>
-                                                                        <p>${typeof address == 'object' ? address.addressLine1 + ", "  + address.addressLine2 + ", " +
-                                                                        address.state + ", " + address.pincode + ", " +
-                                                                        address.mobileNumber : "undefined"}
-                                                                        India</p>
+                                                                        <div class="position-absolute address-details-container">
+                                                                            <div class="position-relative address-details">
+                                                                                <span class="fw-bold">${typeof address == 'object' ? address.fullName : "undefined"}</span>
+                                                                                <p>${typeof address == 'object' ? address.addressLine1 + ", "  + address.addressLine2 + ", " +
+                                                                                address.state + ", " + address.pincode + ", " +
+                                                                                address.mobileNumber : "undefined"}
+                                                                                India</p>
 
-                                                                        <div class="arrow">
+                                                                                <div class="arrow">
 
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+
+                                                            <div>
+                                                                <div class="invoice-download">
+                                                                    <div>
+                                                                        <button class='btn btn-link download-invoice'>Download invoice</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
                                                     </div>
                                                 </div>
                                             </div>

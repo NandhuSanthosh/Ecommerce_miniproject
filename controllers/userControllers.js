@@ -1,6 +1,8 @@
 const { generateOtp, createOtpDocument } = require("../Middleware/authUtilMiddleware");
 const { sendResponseMail, sendMailWithButton, sendPasswordResetMail } = require("../Middleware/sendMail");
 const sendOtp = require("../Middleware/sendOtp");
+const { ObjectId } = require('mongoose').Types;
+
 
 const addressModel = require("../Models/addressModel");
 const otpModel = require("../Models/otpModel");
@@ -443,6 +445,120 @@ exports.post_sentToUser = async(req, res, next) => {
         console.log(updatedSender, updatedReceiver)
         res.send({isSuccess: true, data: updatedSender.wallet.balance})
     } catch (error) {
+        next(error)
+    }
+}
+
+exports.get_transactionHistory = async(req, res, next) => {
+    try {
+        const pageNo = req.query.pno;
+        const currentWindow = req.query.currentWindow
+        const docPerPage = 10;
+        const {userDetails} = req.userDetails
+
+        let windowFilterQuery = {}; 
+        if(currentWindow){
+            windowFilterQuery = {
+                "wallet.transactions.transactionId.category" : currentWindow
+            }   
+        }
+        console.log(req.query)
+        console.log(windowFilterQuery)
+        
+        const pipeline = [
+            {
+                $match: { _id: new ObjectId(userDetails._id) }
+            },
+            {
+                $unwind: '$wallet.transactions'
+            },
+            {
+                $lookup: {
+                    from: 'transactions', // Replace with your actual transactions collection name
+                    localField: 'wallet.transactions.transactionId',
+                    foreignField: '_id',
+                    as: 'wallet.transactions.transactionId'
+                }
+            },
+            {
+                $unwind: '$wallet.transactions.transactionId'
+            },
+            {
+                $match: windowFilterQuery
+            }
+            // {
+            //     $lookup: {
+            //         from: 'Users', 
+            //         localField: "wallet.transactions.transactionId.receiverID", 
+            //         foreignField: "_id", 
+            //         as: "wallet.transactions.transactionId.receiverID"
+            //     }
+            // },  
+            // {
+            //     $lookup: {
+            //         from: 'Users', 
+            //         localField: "wallet.transactions.transactionId.senderID", 
+            //         foreignField: "_id", 
+            //         as: "wallet.transactions.transactionId.senderID"
+            //     }
+            // },  
+            ,{
+                $sort: {
+                    "wallet.transactions.transactionId.timestamp": -1
+                }
+            },
+            {
+                $project: {
+                    wallet: 1,
+                }
+            },
+            {
+                $skip: pageNo * docPerPage
+            },
+            {
+                $limit: docPerPage
+            },
+            {
+                $group: {
+                    _id: null, 
+                    transactions: {$push: "$wallet"}, 
+                }
+            }, 
+        ];
+
+        const pipeline2 = [
+            {
+                $match: { _id: new ObjectId(userDetails._id) }
+            },
+            {
+                $unwind: '$wallet.transactions'
+            },
+            {
+                $lookup: {
+                    from: 'transactions', // Replace with your actual transactions collection name
+                    localField: 'wallet.transactions.transactionId',
+                    foreignField: '_id',
+                    as: 'wallet.transactions.transactionId'
+                }
+            },
+            {
+                $unwind: '$wallet.transactions.transactionId'
+            },
+            {
+                $match: windowFilterQuery
+            },{
+                $group: {
+                    _id: null, 
+                    count: {$sum: 1}
+                }
+            }
+        ]
+
+        const user = await userModel.aggregate(pipeline)
+        const totalCount = await userModel.aggregate(pipeline2)
+
+        res.send({isSuccess: true, data: user[0], totalCount: totalCount[0]})
+    } catch (error) {   
         next(error)
     }
 }

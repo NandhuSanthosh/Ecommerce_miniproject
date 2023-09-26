@@ -1,6 +1,8 @@
 window.onload = loader();
 let currentWindowBtn, currentWindowContainer;
 let searchResult; 
+let currentPage = 0;
+let dataSet;
 
 function loader(){
     document.querySelector('.add_money_btn').addEventListener('click', addMoneyHandler)
@@ -25,14 +27,38 @@ function loader(){
     })
     pay_btn.addEventListener('click', pay_money)
 
+    // send money
     select_this_user_btn.addEventListener('click', ()=>{
         input_send_amount_container.classList.remove('d-none')
     })
     continue_payment_btn.addEventListener('click', sendToUserHandler)
+
+    // transaction history
+    document.querySelector('.transaction-history .all_btn').addEventListener('click', (e)=>{
+        document.querySelector('.transaction-history-btn-list-container .btn-link.active').classList.remove('active')
+        e.target.classList.add("active")
+        fetchAndDisplay()
+    })
+    document.querySelector('.transaction-history .send_btn').addEventListener('click', (e)=>{
+        document.querySelector('.transaction-history-btn-list-container .btn-link.active').classList.remove('active')
+        e.target.classList.add("active")
+        fetchAndDisplay(0, "betweenUsers")
+    })
+    document.querySelector('.transaction-history .purchase_btn').addEventListener('click', (e)=>{
+        document.querySelector('.transaction-history-btn-list-container .btn-link.active').classList.remove('active')
+        e.target.classList.add("active")
+        fetchAndDisplay(0, "purchase")
+    })
+    document.querySelector('.transaction-history .refund_btn').addEventListener('click', (e)=>{
+        document.querySelector('.transaction-history-btn-list-container .btn-link.active').classList.remove('active')
+        e.target.classList.add("active")
+        fetchAndDisplay(0, "refund")
+    })
 }
 
 function changeWindow(btn, header, container){
         btn.classList.add("active");
+        console.log(currentWindowBtn)
         if(currentWindowBtn) currentWindowBtn.classList.remove('active');
         currentWindowBtn = btn
 
@@ -55,6 +81,121 @@ function sendMoneyHandler(e){
 function transactionHistoryHandler(e){
     let container = document.querySelector('.transactionHistory')
     changeWindow(e.target, "Transaction History", container)
+    fetchAndDisplay(0);
+}
+
+function fetchAndDisplay(pno = 0, currentWindow, e){
+    
+    fetch("http://localhost:3000/wallet/get_tansaction_history?pno="+pno+`${currentWindow ? "&currentWindow=" + currentWindow : ""}`)
+    .then( response => response.json())
+    .then( data => {
+        if(data.isSuccess){
+            console.log(data)
+            document.querySelector('.transaction-history-list').innerHTML = ""
+            if(data.totalCount){
+                data.data.transactions.forEach( x => {
+                    document.querySelector('.transaction-history-list').append(createTransactionTile(x))
+                })
+            }
+            else{
+                document.querySelector('.transaction-history-list').innerHTML = 
+                `
+                    <div class="d-flex justify-content-center mt-3">
+                        No transactions here.
+                    </div>
+                `
+            }
+            currentPage = pno;  
+            configurePagination(data.totalCount?.count, pno)
+        }
+        else{
+            alert(data.errorMessage)
+        }
+    })
+}
+
+
+function configurePagination(count, currentPage){
+    const pagination = document.querySelector(".pagination");
+
+    if(!count || count <= 10) {
+        pagination.classList.add('d-none')
+        return;
+    }
+    else{
+        pagination.classList.remove("d-none")
+    }
+
+    pagination.innerHTML = ""
+    const pageCount = Math.floor(count / 10);
+
+    const li = document.createElement('li')
+    let template = `<li class="page-item ${currentPage == 0 ? "disabled" : ""}"><a class="page-link" href="#">Previous</a></li>`
+    li.innerHTML = template
+    if(currentPage != 0) {
+        li.addEventListener('click', ()=>{
+            fetchAndDisplay(currentPage - 1);
+        })
+    }
+    pagination.append(li)
+
+    for(let i = 0; i<=pageCount; i++){
+        const li = document.createElement('li')
+        let template = `<li class="page-item ${currentPage == i ? "active" : ""}"><a class="page-link" href="#">${i+1}</a></li>`
+        li.innerHTML = template;
+        li.addEventListener('click', ()=>{
+            fetchAndDisplay(i);
+        })
+        pagination.append(li)
+    }
+
+
+    const nextLi = document.createElement('li')
+    nextLi.innerHTML = `<li class="page-item ${currentPage == pageCount ? "disabled" : ""}"><a class="page-link" href="#">Next</a></li>`
+    if(currentPage != pageCount){
+        nextLi.addEventListener('click', ()=>{
+            fetchAndDisplay(currentPage + 1);
+        })
+    }
+    pagination.append(nextLi)
+}
+
+function createTransactionTile({transactions}){
+
+    let userTransactionDoc = transactions;
+    let transactionSpecificDoc = transactions.transactionId
+    let details;
+
+    if(transactionSpecificDoc.category == "addToWallet"){
+        details = "Added money"
+    }
+    else if(transactionSpecificDoc.category == "refund"){
+        details = "Refund from Fortnite"
+    }
+    else if(transactionSpecificDoc.category == "purchase"){
+        details = "Paid to Purchase"
+    }
+    else{
+        details = userTransactionDoc.type == "credit" ? transactionSpecificDoc.senderID.name : transactionSpecificDoc.receiverID.name
+    }
+
+    console.log(details)
+    let date = formatDate(transactionSpecificDoc.timestamp);
+    const template = `
+        <div class="d-flex justify-content-between">
+            <div class="details">
+                <div class="name">${details}</div>
+                <div class="date">${date}</div>
+            </div>
+            <div class="amount ${userTransactionDoc.type == "credit" ? "text-success" : "text-danger"}">
+                <div>${userTransactionDoc.type == "credit" ? "+" : "-"} ₹${transactionSpecificDoc.amount}</div>
+            </div>
+    </div>`
+
+    const div = document.createElement('div')
+    div.classList.add('transaction-tile', 'mb-3');
+    div.innerHTML = template;
+    return div;
 }
 
 function findUser(){
@@ -194,7 +335,6 @@ function sendToUserHandler(){
     if(amount > balance) 
         document.querySelector('.insufficient-fund-error').classList.remove('invisible');
     else{
-        console.log("wtf")
         document.querySelector('.insufficient-fund-error').classList.add('invisible');
         fetch("http://localhost:3000/wallet/send-to-user", {
             method: "POST", 
@@ -219,4 +359,27 @@ function sendToUserHandler(){
             }
         })
     }
+}
+
+
+function formatDate(inputDate) {
+  const options = {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  };
+
+  // Parse the input date string
+  const date = new Date(inputDate);
+
+  // Format the date using the specified options
+  const formattedDate = date.toLocaleString('en-US', options);
+
+  // Get the AM/PM indicator
+  const ampm = date.getHours() >= 12 ? 'PM' : 'AM';
+
+  // Combine the formatted date and AM/PM indicator
+  return `${formattedDate}`;
 }

@@ -22,7 +22,7 @@ const {errorHandler} = require('./Middleware/errorHandler');
 
 app.use(express.json())
 app.use(cookieParser())
-app.set('view engine', 'ejs')
+app.set('view engine', 'ejs')   
 app.use(express.static('./public'))
 
 

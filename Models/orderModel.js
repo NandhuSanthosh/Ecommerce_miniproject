@@ -176,7 +176,7 @@ orderSchema.statics.complete_order_handler = async function(id, addressId, payme
     const orderCreateAt = new Date();
     const extimatedDeliveryDate = new Date()
     extimatedDeliveryDate.setDate(orderCreateAt.getDate() + 5)
-    const doc = await this.findByIdAndUpdate(id, {$set: {status: "Order Pending", userAddressId: addressId, "paymentDetail.method": paymentMethod, }}, {new: true})
+    const doc = await this.findByIdAndUpdate(id, {$set: {status: "Preparing to Dispatch", userAddressId: addressId, "paymentDetail.method": paymentMethod, }}, {new: true})
     if(doc.coupon.code){
         const coupon = await couponModel.findOne({code: doc.coupon.code});
         coupon.numberOfCouponsUsed++;
@@ -394,7 +394,7 @@ orderSchema.statics.complete_order_details = async function(id){
             }
         }
     })
-.populate("userAddressId")
+    .populate("userAddressId")
 
     return order;
 }

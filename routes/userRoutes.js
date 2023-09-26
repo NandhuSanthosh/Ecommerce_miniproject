@@ -65,6 +65,7 @@ router.get('/wallet/find_user', isLogged, userControllers.get_userWallet);
 router.post("/wallet/create_payment_order", isLogged, userControllers.create_paymentOrder);
 router.post("/wallet/verify_payment", isLogged, userControllers.verify_payment)
 router.post("/wallet/send-to-user", isLogged, userControllers.post_sentToUser)
+router.get("/wallet/get_tansaction_history", isLogged, userControllers.get_transactionHistory)
 
 router.use(errorHandler);
     

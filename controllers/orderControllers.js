@@ -5,7 +5,7 @@ const userModels = require("../Models/userModels");
 const couponModel = require("../Models/couponModel");
 
 
-
+ 
 exports.post_checkout = async function(req, res, next){
     try {
         let {products} = req.body
@@ -263,6 +263,27 @@ exports.remove_coupon = async function(req, res, next){
         res.send({isSuccess: true, data : order})
 
         
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.get_order_invoice = async function(req, res, next){
+    try {
+        const {orderId} = req.query
+        if(!orderId) throw new Error("Please provide necessary informations.")
+
+        const order = await orderModel.findById(orderId)
+        .populate("userAddressId")
+        .populate("products.product", {
+            brand: 1, 
+            modelName: 1
+        })
+        if(!order) throw new Error("Order Id not valid.")
+
+        console.log(typeof order._id.toString())
+        const invoiceNumber = order._id.toString().slice(-5)
+        res.send({isSuccess: true, order, invoiceNumber})
     } catch (error) {
         next(error)
     }

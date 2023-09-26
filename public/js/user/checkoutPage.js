@@ -389,9 +389,9 @@ function verifyPayment(response, addressId){
     .then( response => response.json())
     .then( data => {
         if(data.isSuccess)
-        completeCheckout(addressId, "Online-Payment")
+            completeCheckout(addressId, "Online-Payment")
         else
-        alert("Something went wrong.")
+            alert("Something went wrong.")
     })
 }
 

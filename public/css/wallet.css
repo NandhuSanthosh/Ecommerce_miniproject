@@ -79,3 +79,37 @@ input{
     font-size: 36px;
     margin-left: 9px;
 }
+
+.transaction-history-btn-list-container{
+    border-bottom: 2px solid rgb(225, 225, 225);
+    margin-top: 15px;
+}
+
+.btn-link{
+    width: 60px;
+}
+.btn-link.active{
+    border-bottom: 2px solid black;
+    padding-bottom: 7px;
+}
+
+.transaction-tile{
+    padding: 10px 20px;
+    border-bottom: 1px solid #ebe9e9;
+}
+
+.details .name{
+    font-weight: 500;
+}
+.details .date{
+    font-size: 14px;
+    color: gray;
+}
+.amount{
+    font-weight: 500;
+    font-size: 20px;
+}
+.btn-link.focus,
+.btn-link:focus{
+    text-decoration: none;
+}
