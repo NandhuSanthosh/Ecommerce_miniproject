@@ -5,7 +5,7 @@ const userModels = require('./userModels');
 
 const orderStages = ["Order Pending", "Preparing to Dispatch", "Dispatched", 
 "Out for Delivery", "Delivered", "Canceled", "Return Request Processing", 
-"Return Request Granted", "Returned Completed"];
+"Return Request Granted", "Return Completed"];
 
 const orderSchema = new mongoose.Schema({
     userId: {
@@ -281,7 +281,7 @@ orderSchema.statics.cancel_return_request = async function(orderId){
 // ADMIN
 orderSchema.statics.find_all_order = async function(p = 0){
    const pageCount = 10;
-    const products = await this.find({}, {products: 1, userId: 1, totalPrice: 1, status: 1, userCredential: 1})
+    const products = await this.find({}, {products: 1, userId: 1, payable: 1, status: 1, userCredential: 1})
     .populate({
         path: "products.product", 
         select: "name images",
@@ -302,7 +302,7 @@ orderSchema.statics.fetch_all_stages = async function(){
 orderSchema.statics.update_order_status = async function(orderId, status, reason){
     if(!orderId || !status) throw new Error("Please provide necessary informations");
     if(!orderStages.includes(status)) throw new Error("Invalid status")
-    if((status == 'Canceled' || status == "Return Request Processing" || status == "Return Request Granted" || status == "Returned Completed") && !reason) 
+    if((status == 'Canceled' || status == "Return Request Processing" || status == "Return Request Granted" || status == "Return Completed") && !reason) 
         throw new Error("To process cannot be completed without specify cancelation reason")
     
     const updateQuery = {status}
@@ -318,14 +318,27 @@ orderSchema.statics.update_order_status = async function(orderId, status, reason
         updateQuery.cancelation = {}
         updateQuery.returned = {}
     }
-    else if(status == "Return Request Processing" || status == "Return Request Granted" || status == "Returned Completed"){
+    else if(status == "Return Request Processing" || status == "Return Request Granted" || status == "Return Completed"){
         updateQuery.returned = {
             returnedInitiatedBy: "admin", 
             returnReason : reason
         }
     }
 
-    const updatedOrder = await this.findByIdAndUpdate(orderId, {$set: updateQuery}, {new: true})
+    console.log("Wtf")
+    const updatedOrder = await this.findOneAndUpdate(
+        {
+            $and: [
+                {_id: orderId}, 
+                {
+                    status: {
+                        $nin : ["Canceled", "Return Completed"]
+                    }
+                }
+        ]},     
+        {$set: updateQuery}, 
+        {new: true}
+        )
     .populate("userId", "name")
     .populate({
         path: "products.product", 
@@ -337,6 +350,22 @@ orderSchema.statics.update_order_status = async function(orderId, status, reason
         }
     })
     .populate("userAddressId")
+
+    console.log(updatedOrder)
+    if(!updatedOrder){
+        throw new Error("The order is not eligible for the operation.")
+    }
+    if(updatedOrder.paymentDetail.method != "COD" && (status == "Return Completed" || status == "Canceled")){
+        const user = await userModels.findByIdAndUpdate(updatedOrder.userId,
+            {
+                $inc: {
+                    "wallet.balance" : updatedOrder.payable
+                }
+            }, {new : true})
+
+        console.log(user)
+    }
+
     if(updatedOrder.status != "Canceled" && Object.keys(updatedOrder.cancelation).length != 0){
         updatedOrder.cancelation = {}
         await updatedOrder.save();

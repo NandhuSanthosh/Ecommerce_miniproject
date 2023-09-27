@@ -43,7 +43,7 @@ class RenderHandlers{
                 </td>
                 <td class="">
                     <div class="total-price">
-                        <div class="price-container ">₹${order.totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                        <div class="price-container ">₹${order.payable.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                     </div>
                 </td>
                 <td>
