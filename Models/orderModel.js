@@ -214,8 +214,20 @@ orderSchema.statics.cancel_order = async function(orderId, reason){
             status: "Canceled"
         }
 
-        const order = this.findByIdAndUpdate(orderId, {$set: updateQuery,}, {new: true})
-        return order;
+        const updatedOrder = this.findByIdAndUpdate(orderId, {$set: updateQuery,}, {new: true})
+        console.log(updatedOrder)
+
+        if(order.paymentDetail.method != "COD" ){
+        const user = await userModels.findByIdAndUpdate(order.userId,
+            {
+                $inc: {
+                    "wallet.balance" : order.payable
+                }
+            }, {new : true})
+
+        console.log(user)
+    }
+        return updatedOrder;
 
     }
     else{
@@ -355,7 +367,7 @@ orderSchema.statics.update_order_status = async function(orderId, status, reason
     if(!updatedOrder){
         throw new Error("The order is not eligible for the operation.")
     }
-    if(updatedOrder.paymentDetail.method != "COD" && (status == "Return Completed" || status == "Canceled")){
+    if((updatedOrder.paymentDetail.method != "COD" && status == "Canceled") || (status == "Return Completed")){
         const user = await userModels.findByIdAndUpdate(updatedOrder.userId,
             {
                 $inc: {
