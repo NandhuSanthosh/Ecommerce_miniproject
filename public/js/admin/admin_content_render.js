@@ -12,7 +12,9 @@ function removeExcessiveEventListeners(blockUser){
 
 class RenderMethods{
     constructor(){
-        this.renderDashboard = renderDashboardFunction
+        this.renderDashboard = {
+            render: renderDashboardFunction
+        }
         this.renderUser = new UserHandlers();       
         this.renderCategories = new CategoryHandler();
         this.renderProducts = new ProductHandlers();
@@ -26,6 +28,8 @@ class RenderMethods{
 }
 
 function  renderDashboardFunction() {  
+        const paginationButtonList = document.getElementById('pagination-group-list')
+        paginationButtonList.classList.add('d-none')
 }
 
 async function fetchData(url){

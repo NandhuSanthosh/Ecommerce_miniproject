@@ -2,7 +2,8 @@ const { get_adminLogin , post_adminLogin, get_adminHome, get_otpAuth,
     get_otp, post_verifyOtp, get_users, patch_blockUser, get_categories, 
     post_createCategory, delete_category, patch_updateRequest, 
     get_complete_userDetails, get_forgotPassword, post_forgotPassword, 
-    get_resetPassword, post_resetPassword, get_user_serach_result, get_category_serach_result, get_all_categories
+    get_resetPassword, post_resetPassword, get_user_serach_result, get_category_serach_result, get_all_categories, 
+    get_dashboard_details, get_dashboard_monothy
 } = require('../controllers/adminControllers');
 const { get_products, post_product, delete_product, delete_image, patch_updateProduct, patch_addImage, get_serach_result } = require('../controllers/productControllers');
 const {isLogged, isNotLogged, parser, isAwaitingOtp} = require('../Middleware/adminAutherization')
@@ -68,7 +69,9 @@ router.get("/search_coupon", isLogged, get_coupons_search_result)
 
 
 
-
+// dashboard
+router.get("/get_dashboard_details", isLogged, get_dashboard_details)
+router.get('/dashmoard_monthy_chart', isLogged, get_dashboard_monothy)
 
 
 

@@ -215,7 +215,6 @@ orderSchema.statics.cancel_order = async function(orderId, reason){
         }
 
         const updatedOrder = this.findByIdAndUpdate(orderId, {$set: updateQuery,}, {new: true})
-        console.log(updatedOrder)
 
         if(order.paymentDetail.method != "COD" ){
         const user = await userModels.findByIdAndUpdate(order.userId,

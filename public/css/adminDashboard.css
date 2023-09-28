@@ -203,3 +203,27 @@ main{
     text-align: end;
     color: red;
 }
+
+.highlight{
+    border-radius: 7px;
+}
+
+.highlight.blue{
+    background-color: #ccf2fd2e;
+    border: 1px solid #a6e8fc;
+}
+
+.highlight.pink{
+    background-color: #ffb8ff2e;
+    border: 1px solid #ffc1ff;
+}
+
+.highlight.green{
+    background-color: #b1ffae54;
+    border: 1px solid #82ff7c;
+}
+
+.highlight.orange{
+    background-color: #ffeac46e;
+    border: 1px solid #ffcc6c;;
+}

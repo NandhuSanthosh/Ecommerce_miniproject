@@ -8,6 +8,8 @@ const otpModel = require('../Models/otpModel');
 const userModels = require('../Models/userModels');
 const categoryModel = require('../Models/categoryModel')
 const forgotPasswordTokensModel = require('../Models/forgotPasswordModel')
+const productModel = require('../Models/productModel')
+const orderModel = require("../Models/orderModel")
 
 const awaitingOtpStatus = "awaiting_otp";
 const loggedStats = "logged"
@@ -275,6 +277,96 @@ exports.post_resetPassword = async(req, res, next)=>{
         const jwtToken = createToken(user, threeDaysSeconds, "logged");
         res.cookie('aDAO', jwtToken, { maxAge: 3 * 24 * 60 * 60 * 1000 ,  httpOnly: true});
         res.send({isSuccess: true})
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+exports.get_dashboard_details = async function(req, res, next){
+    try {
+        const productCount = await productModel.countDocuments();
+        const userCount = await userModels.countDocuments();
+        const orderCount = await orderModel.countDocuments();
+
+        const order = await orderModel.aggregate([
+            {
+                $match: 
+                {
+                    status : {
+                        $nin: ["Canceled", "Return Request Processing", "Return Request Granted", "Return Completed"]
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: null, 
+                    totalRevinue: {$sum: "$payable"}
+                }
+            }
+        ])
+        console.log(order)
+        res.send({isSuccess: true, productCount, userCount, orderCount, totalRevinue: order[0].totalRevinue    })
+
+        
+    } catch (error) {
+        next(error)
+    }
+}
+
+exports.get_dashboard_monothy = async(req, res, next)=>{
+    try {
+        const year = parseInt(req.query.year)
+        let groupQuery, startingDate, endingDate
+        if(!req.query.month){
+            startingDate = new Date(year, 0, 1)
+            endingDate = new Date(year, 11, 31)
+            groupQuery = {
+                $group: {
+                    _id: { $month: '$orderCreateAt' }, 
+                    orderCount: { $sum: 1 } 
+                }
+            }
+        }
+        else{
+            const monthsWithDays = [31,28, 31,30,31,30,31,31,30,31,30,31];
+            let month = parseInt(req.query.month) - 1
+            let lastDate;
+            if(year % 4 == 0 && month+1 == 2){
+                lastDate = 29;
+            }
+            else{
+                lastDate = monthsWithDays[month]
+            }
+            startingDate = new Date(year, month, 1)
+            endingDate = new Date(year, month, lastDate)
+
+            groupQuery = {
+                $group: {
+                    _id: { $dayOfMonth: '$orderCreateAt' }, // Group by day of the month
+                    orderCount: { $sum: 1 } // Count orders on each day
+                }
+            }
+        }
+        
+        
+        
+        const order = await orderModel.aggregate([{
+            $match: {
+                orderCreateAt: {
+                    $gte: startingDate, // Start of the specified month
+                    $lt: endingDate // Start of the next month
+                }
+            }
+        }, 
+        groupQuery
+        , {
+            $sort : {
+                _id: 1
+            }
+        }])
+        console.log(order)
+        res.send({isSuccess: 1, order})
     } catch (error) {
         next(error)
     }

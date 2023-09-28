@@ -1,0 +1,259 @@
+
+<div class="headerText  mx-5 my-2">
+    Dashboard
+</div>
+
+<div class="row p-2">
+    <div class="col-12 col-md-6 col-lg-6 col-xl-3 mb-2 mb-md-4">
+        <div class="highlight blue p-3 p-lg-4">
+            <div class="details">
+                <div class="h4">Total Users</div>
+                <div class="h6 total-users">44,278</div>
+            </div>
+            <div class="hightlight-image"></div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6 col-xl-3 mb-2 mb-md-4">
+        <div class="highlight pink p-3 p-lg-4">
+            <div class="details">
+                <div class="h4">Total Products</div>
+                <div class="h6 total-products">44,278</div>
+            </div>
+            <div class="hightlight-image"></div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6 col-xl-3 mb-2 mb-md-4">
+        <div class="highlight green p-3 p-lg-4">
+            <div class="details">
+                <div class="h4">Total Orders</div>
+                <div class="h6 total-orders">44,278</div>
+            </div>
+            <div class="hightlight-image"></div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-6 col-xl-3 mb-2 mb-md-4">
+        <div class="highlight orange p-3 p-lg-4">
+            <div class="details">
+                <div class="h4">Total Revenue</div>
+                <div class="h6 total-revinue">44,278</div>
+            </div>
+            <div class="hightlight-image"></div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-4">
+        <div class="chart-details">
+            <div class="filter-container">
+                <div>
+                    <select name="filter-type" id="filter-type" >
+                        <option value="yearly">Yearly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                </div>
+                <div>
+                    <select name="yearly-filter" id="yearly-filter" class="">
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                    </select>
+                    <select name="monthy-filter" id="monthy-filter" class="d-none">
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-8">
+        <div class="chart-container p-1 p-md-3 p-lg-4">
+                <div class="chart-wrapper">
+                    <canvas id="chart"></canvas>
+                </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        fetch("http://localhost:3000/admin/get_dashboard_details")
+        .then( response => response.json())
+        .then( data => {
+            if(data.isSuccess){
+                console.log(data)
+                document.querySelector('.total-revinue').innerHTML = data.totalRevinue.toLocaleString()
+                document.querySelector('.total-orders').innerHTML = data.orderCount.toLocaleString()
+                document.querySelector('.total-products').innerHTML = data.productCount.toLocaleString()
+                document.querySelector('.total-users').innerHTML = data.userCount.toLocaleString()
+            }
+            else{
+                showModel("Something went wrong.")
+            }
+        })
+
+
+        const monthsWithDays = [
+                { month: 'January', days: 31 },
+                { month: 'February', days: 28 }, // Adjust for leap years
+                { month: 'March', days: 31 },
+                { month: 'April', days: 30 },
+                { month: 'May', days: 31 },
+                { month: 'June', days: 30 },
+                { month: 'July', days: 31 },
+                { month: 'August', days: 31 },
+                { month: 'September', days: 30 },
+                { month: 'October', days: 31 },
+                { month: 'November', days: 30 },
+                { month: 'December', days: 31 }
+            ];
+
+        let ctx = document.getElementById('chart').getContext('2d');
+        let myChart;
+
+
+        const monthlyFilter = document.querySelector('#monthy-filter')
+        const yearlyFilter = document.querySelector('#yearly-filter')
+        const filterType = document.querySelector('#filter-type')
+
+        filterType.addEventListener('change', function(){
+            if(this.value == "yearly"){
+                monthlyFilter.classList.add('d-none')
+            }
+            else{
+                monthlyFilter.classList.remove('d-none')
+            }
+        })
+        monthlyFilter.addEventListener('change', function(){
+            fetch("http://localhost:3000/admin/dashmoard_monthy_chart?month="+ this.value + "&year=" + yearlyFilter.value)
+            .then( response => response.json())
+            .then( data => {
+                if(data.isSuccess){
+                    // const lables =  populateLable(this.value, yearlyFilter.value)
+                    // const dataReport = new Array(lables.length).fill(0);
+                    // data.order.forEach( x => {
+                    //     dataReport[x._id] = x.orderCount;
+                    // })
+                    // populateChart(lables, dataReport)
+
+                    if(data.order.length == 0){
+                        return showModel("There was no order made in this month.")
+                    }
+                    
+                    const startingDate = data.order[0]._id;
+                    const endingDate = data.order[data.order.length - 1]._id;
+                    let labels = [];
+                    let dataReport = [];
+                    let currentDate = 0;
+                    for(let i = startingDate; i<=endingDate; i++){
+                        labels.push(i);
+                        if(data.order[currentDate]._id == i){
+                            dataReport.push(data.order[currentDate].orderCount);
+                            currentDate++;
+                        }
+                        else{
+                            dataReport.push(0);
+                        }
+                    }
+                    populateChart(labels, dataReport)
+
+                }
+                else{
+                    showModel(data.errorMessage)
+                }
+            })
+        })
+
+        yearlyFilter.addEventListener('change', function(){
+            if(filterType.value == "yearly"){
+                yearlyFilterHander();
+            }
+        })
+
+        function yearlyFilterHander(){
+            fetch("http://localhost:3000/admin/dashmoard_monthy_chart?&year=" + yearlyFilter.value)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.isSuccess) {
+                        const lables = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+                        const dataReport = new Array(12).fill(0);
+                        data.order.forEach(x => {
+                            dataReport[x._id - 1] = x.orderCount;
+                        })
+
+                        populateChart(lables, dataReport)
+                    }
+                    else {
+                        showModel(data.errorMessage)
+                    }
+                })
+        }
+
+        function populateChart(labels, data){
+            console.log(labels)
+            if(myChart) myChart.destroy();
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Number of Orders',
+                        data,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+
+
+        function populateLable(num, year){
+            num = num-1;
+
+            let days;
+            if(num == 1){
+                days = year % 4 == 0 ? 29 : 28;
+            }
+            else{
+                days = monthsWithDays[num].days
+            }
+            const arr = [];
+            for(let i = 1; i<=days; i++){
+                arr.push(i);
+            }
+            return arr;
+        }
+            
+        yearlyFilterHander();
+
+    </script>
