@@ -26,8 +26,9 @@ exports.isNotLogged = async function(req, res, next){
 }
 
 exports.isRegestered = async function(req, res, next){
-
+    console.log("isRegestered")
     if(await user_is_registered(req)){
+        console.log("here")
         next();
         return;
     }
@@ -39,6 +40,7 @@ exports.isRegestered = async function(req, res, next){
 
 exports.isLogged = async function(req, res, next){
     if(await user_is_logged_in(req)){
+        console.log("here")
         next();
         return;
     }
@@ -78,13 +80,16 @@ async function user_is_registered(req){
     else{
         if(req.cookies.uDAO){
             try {
+                console.log(req.cookies.uDAO)
                 result = await jwt.verify(req.cookies.uDAO, process.env.JWT_KEY);
             } catch (error) {
+                console.log(error)
                 return false;
             }
         }
     }
-
+    console.log(req.cookies.uDAO)
+    console.log("this is the result", result)
     if(result.status == "awaiting-otp"){
         req.userDetails = result;
         return true;        

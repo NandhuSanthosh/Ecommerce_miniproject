@@ -28,6 +28,7 @@ const twoPFiveSeconds = 2.5 * 60 // seconds
 const threeDaysSeconds = 3 * 24 * 60 * 60;
 
 function createToken(userDetails, maxAge, status, id){
+    console.log(status)
     return jwt.sign({
         userDetails, 
         status,
@@ -60,8 +61,10 @@ exports.post_login = async(req, res, next)=> {
         const result = await userModel.login(credentials, password);
         const {response, id} = await sentOtpHelper({userDetails: result});
         response.then( d=> {
-            const jwtToken = createToken(result, twoPFiveSeconds, "awaiting-otp", id);
+            const jwtToken = createToken({_id: result._id}, twoPFiveSeconds, "awaiting-otp", id);
+            console.log(jwtToken)
             res.cookie('uDAO', jwtToken, { maxAge: twoPFiveSeconds * 1000 ,  httpOnly: true});
+            
             res.send({isSuccess: true})
         })
         .catch( e => {
@@ -74,6 +77,7 @@ exports.post_login = async(req, res, next)=> {
 
 
 exports.get_otpAuthPage = async (req, res)=>{
+    console.log("here")
     const superSet = req.query.superSet
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.render('authViews/signup-login', {page: "otpAuth", associate, superSet})

@@ -19,7 +19,7 @@ function createTile(product, quantity, index){
                         </div>
                         <div class="rating"></div>
                         <div class="prices d-flex gap-2">
-                            <div class="currentprice">₹${(+product.currentPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                            <div class="currentprice">₹${(+product.currentPrice). }</div>
                         </div>
                         <div class="spacalities_brand">
                             <div class="freedelivery">${product.freeDelivery ? "Free Delivery" : ""}</div>

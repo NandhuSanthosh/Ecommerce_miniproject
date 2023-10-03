@@ -227,3 +227,18 @@ main{
     background-color: #ffeac46e;
     border: 1px solid #ffcc6c;;
 }
+
+.chart-details-container{
+    background-color: blueviolet;
+    color: white;
+    border-radius: 7px;
+    padding: 10px;
+    flex: 1;
+}
+
+.chart-details{
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    padding-bottom: 20px;
+}
