@@ -75,6 +75,15 @@ exports.post_login = async(req, res, next)=> {
     }
 }
 
+exports.get_logout = async(req, res, next) =>{
+    try {
+        res.clearCookie("uDAO");
+        res.redirect("./login")
+    } catch (error) {
+        next(error)
+    }
+}
+
 
 exports.get_otpAuthPage = async (req, res)=>{
     console.log("here")
