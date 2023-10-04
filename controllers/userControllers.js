@@ -212,7 +212,6 @@ exports.get_settings = async(req, res, next) =>{
     try {
         const userId = req.userDetails.userDetails._id;
         const addresses = await userModel.getAddress(userId);
-        console.log(req.userDetails.userDetails)
         res.render('authViews/settings', {userDetails: req.userDetails.userDetails, addresses})
     } catch (error) {
         next(error);

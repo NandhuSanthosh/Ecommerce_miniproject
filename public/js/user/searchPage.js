@@ -11,11 +11,13 @@ function render(currentProductSet = product){
 }
 
 function createProductTile(product){
-    console.log(product)
-    let price = product.actualPrice / 100 * (100 - (product.category?.offer || 0 + product.discount))
+    // console.log(product)
+    let price = product.actualPrice / 100 * (100 - ((product.category?.offer || 0) + product.discount))
     if(price < 0) price = 0;
-    let discount = product.category?.offer || 0 + product.discount;
+    let discount = (product.category?.offer || 0) + product.discount;
     if(discount > 100) discount = 100;
+
+    console.log((product.category?.offer || 0) + product.discount, product.category?.offer || 0, product.discount)
     
     const element = `<div class="image_container">
                     <img src="${product.images[0]}" alt="">
