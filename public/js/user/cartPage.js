@@ -1,5 +1,4 @@
 
-
 function createTile(product, quantity, index){
     const template = `
             <div class=" product_container position-relative  cart-product-tile-container mb-3">
@@ -19,7 +18,7 @@ function createTile(product, quantity, index){
                         </div>
                         <div class="rating"></div>
                         <div class="prices d-flex gap-2">
-                            <div class="currentprice">₹${(+product.currentPrice). }</div>
+                            <div class="currentprice">₹${(+product.currentPrice) }</div>
                         </div>
                         <div class="spacalities_brand">
                             <div class="freedelivery">${product.freeDelivery ? "Free Delivery" : ""}</div>
@@ -189,6 +188,7 @@ function loader(){
     container.innerHTML = ""
     
     const productList = product.products;
+    
     console.log(productList)
     if(productList.length == 0){
         document.querySelector('.cart-insight-container').classList.add('d-none')

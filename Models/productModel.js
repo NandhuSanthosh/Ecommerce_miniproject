@@ -153,7 +153,8 @@ productSchema.statics.get_search_result = async function(searchKey, page){
         ]   
             , isDeleted: false};
     
-    const result = await this.find(query).skip(page * docPerPage).limit(docPerPage);
+    const result = await this.find(query).skip(page * docPerPage).limit(docPerPage)
+    .populate("category", 'offer');
     const totalProducts = await this.countDocuments(query)
     return {products: result, totalProducts};
 }

@@ -1,6 +1,5 @@
 let currentProductSet = product
 const filteredList = product.data.map(x => x._id);
-console.log(totalProducts)
 
 function render(currentProductSet = product){
     const resultContainer = document.querySelector("#result-product-container")
@@ -12,6 +11,12 @@ function render(currentProductSet = product){
 }
 
 function createProductTile(product){
+    console.log(product)
+    let price = product.actualPrice / 100 * (100 - (product.category.offer + product.discount))
+    if(price < 0) price = 0;
+    let discount = product.category.offer + product.discount;
+    if(discount > 100) discount = 100;
+    
     const element = `<div class="image_container">
                     <img src="${product.images[0]}" alt="">
                 </div>
@@ -23,9 +28,9 @@ function createProductTile(product){
                     </div>
                     <div class="rating"></div>
                     <div class="prices d-flex gap-2">
-                        <div class="currentprice">₹${product.currentPrice.toLocaleString()}</div>
+                        <div class="currentprice">₹${price}</div>
                         <div class="actualprice">M.R.P: ₹${product.actualPrice.toLocaleString()}</div>
-                        <div class="discount">(${product.discount}% off)</div>
+                        <div class="discount">(${discount}% off)</div>
                     </div>
                     <div class="spacalities_brand">
                         <div class="brand">Brand: Sony</div>

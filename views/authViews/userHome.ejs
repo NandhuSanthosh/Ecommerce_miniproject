@@ -26,9 +26,10 @@
             
     <script>
         let product = <%- JSON.stringify(locals.product) %>
+        console.log(product)
     </script>
     <script>
-        let totalProducts = <%= locals.totalProducts %>
+        let totalProducts = '<%= locals.totalProducts %>'
     </script>
     </head>
         <body>

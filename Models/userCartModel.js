@@ -21,6 +21,7 @@ cartSchema.statics.edit_product = async function(cartId, productId, quantity){
         const removeResult = await this.updateOne({_id: cartId, "products.productId": productId}, {$pull: {"products": {"productId" : productId}}})
     }
     else{
+        
         const incrementResult = await this.updateOne({_id: cartId, "products.productId": productId}, {$set : {"products.$.quantity": quantity}})
         if(incrementResult.matchedCount == 0){
             const cart = await this.updateOne({_id: cartId}, {$addToSet: {products: {productId, quantity}}})    

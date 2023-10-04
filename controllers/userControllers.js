@@ -61,7 +61,7 @@ exports.post_login = async(req, res, next)=> {
         const result = await userModel.login(credentials, password);
         const {response, id} = await sentOtpHelper({userDetails: result});
         response.then( d=> {
-            const jwtToken = createToken({_id: result._id}, twoPFiveSeconds, "awaiting-otp", id);
+            const jwtToken = createToken({_id: result._id ,credentials: result.credentials, name: result.name}, twoPFiveSeconds, "awaiting-otp", id);
             console.log(jwtToken)
             res.cookie('uDAO', jwtToken, { maxAge: twoPFiveSeconds * 1000 ,  httpOnly: true});
             
@@ -100,7 +100,7 @@ exports.post_signin = async(req, res, next) => {
 
         const {response, id} = await sentOtpHelper({userDetails: user});
         response.then( d => {
-            const jwtToken = createToken(user, twoPFiveSeconds, "awaiting-otp", id);
+            const jwtToken = createToken({_id: user._id, credentials: result.credentials, name: result.name}, twoPFiveSeconds, "awaiting-otp", id);
             res.cookie('uDAO', jwtToken, { maxAge: twoPFiveSeconds * 1000 ,  httpOnly: true});    
             res.send({isSuccess: true, jwtToken})
         })
@@ -119,7 +119,7 @@ exports.get_otp = async(req, res) => {
     const result = req.userDetails;
     const {response, id} =await sentOtpHelper(result);
     response.then( d => {
-        const jwtToken = createToken(result.userDetails, twoPFiveSeconds, "awaiting-otp", id);
+        const jwtToken = createToken({_id: result.userDetails._id, credentials: result.userDetails.credentials, name: result.userDetails.name}, twoPFiveSeconds, "awaiting-otp", id);
         res.cookie('uDAO', jwtToken, { maxAge: twoPFiveSeconds * 1000 ,  httpOnly: true});                
         res.send({isSuccess: true})
     })
@@ -153,7 +153,7 @@ exports.post_verifyOtp = async(req, res) => {
         if(!userDetails.isVerified){
             userModel.verify(userDetails._id)
         }
-        const jwtToken = createToken(userDetails, threeDaysSeconds, "loggedIn");
+        const jwtToken = createToken({_id: userDetails._id, credentials: userDetails.credentials, name: userDetails.name}, threeDaysSeconds, "loggedIn");
         res.cookie('uDAO', jwtToken, { maxAge: 3 * 24 * 60 * 60 * 1000 ,  httpOnly: true});
         res.send({isSuccess: true})
     } catch (error) {
@@ -198,7 +198,7 @@ exports.post_resetPassword = async(req, res, next)=>{
         const credentail = await forgotPasswordTokensModel.validate_key(key)
         const user = await userModel.update_password(credentail, newPassword)
         await forgotPasswordTokensModel.expire_token(credentail)
-        const jwtToken = createToken(user, threeDaysSeconds, "loggedIn");
+        const jwtToken = createToken({_id: user._id, credentials: user.credentials, name: user.name}, threeDaysSeconds, "loggedIn");
         res.cookie('uDAO', jwtToken, { maxAge: 3 * 24 * 60 * 60 * 1000 ,  httpOnly: true});
         res.send({isSuccess: true})
     } catch (error) {
@@ -212,6 +212,7 @@ exports.get_settings = async(req, res, next) =>{
     try {
         const userId = req.userDetails.userDetails._id;
         const addresses = await userModel.getAddress(userId);
+        console.log(req.userDetails.userDetails)
         res.render('authViews/settings', {userDetails: req.userDetails.userDetails, addresses})
     } catch (error) {
         next(error);
@@ -269,7 +270,7 @@ exports.patch_updateName = async(req, res, next)=>{
         const newName = req.body.name;
         console.log(newName)
         const user = await userModel.update_name(id, newName);
-        const jwtToken = createToken(user,  threeDaysSeconds, "loggedIn");
+        const jwtToken = createToken({_id: user._id, credentials: user.credentials, name: user.name},  threeDaysSeconds, "loggedIn");
         res.cookie('uDAO', jwtToken, { maxAge: 3 * 24 * 60 * 60 * 1000 ,  httpOnly: true});
         res.send({isSuccess: true, user})
     } catch (error) {
