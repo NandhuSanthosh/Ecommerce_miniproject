@@ -4,37 +4,125 @@
     <!--Main Navigation-->
     <header>
         <!-- Sidebar -->
-        <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
-            <!-- <div class="position-sticky">
-                <div class="list-group list-group-flush mx-3 mt-4">
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
-                        <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Main dashboard</span>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple active">
-                        <i class="fas fa-chart-area fa-fw me-3"></i><span>Webiste traffic</span>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                            class="fas fa-lock fa-fw me-3"></i><span>Password</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                            class="fas fa-chart-line fa-fw me-3"></i><span>Analytics</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple">
-                        <i class="fas fa-chart-pie fa-fw me-3"></i><span>SEO</span>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                            class="fas fa-chart-bar fa-fw me-3"></i><span>Orders</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                            class="fas fa-globe fa-fw me-3"></i><span>International</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                            class="fas fa-building fa-fw me-3"></i><span>Partners</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                            class="fas fa-calendar fa-fw me-3"></i><span>Calendar</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                            class="fas fa-users fa-fw me-3"></i><span>Users</span></a>
-                    <a href="#" class="list-group-item list-group-item-action py-2 ripple"><i
-                            class="fas fa-money-bill fa-fw me-3"></i><span>Sales</span></a>
+        <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white p-2">
+            <div class="filter-sort-container">
+                <div class="fw-bold h5">Filter</div>
+                <div>
+                    <!-- brand -->
+                    <div class="filter">
+                        <div class="h6">
+                            Brand
+                        </div>
+                        <div class="filter-options brand-filter-container ps-2">
+                            <!-- js injection -->
+                        </div>
+                    </div>
+    
+                    <!-- price -->
+                    <div class="filter">
+                        <div class="h6">
+                            Price
+                        </div>
+                        <div class="filter-options ps-2">
+                            <div>
+                                <input name="price" data-start="0" data-end="1000" id="under-1k" type="radio" aria-label="Checkbox for following text input">
+                                <label for="under-1k">Under ₹1,000</label>
+                            </div>
+                            <div>
+                                <input name="price" id="btw1k-5k" data-start="1000" data-end="5000" type="radio" aria-label="Checkbox for following text input">
+                                <label for="btw1k-5k">₹1,000 - ₹5,000</label>
+                            </div>
+                            <div>
+                                <input name="price" id="btw5k-10k" data-start="5000" data-end="10000" type="radio" aria-label="Checkbox for following text input">
+                                <label for="btw5k-10k">₹5,000 - ₹10,000</label>
+                            </div>
+                            <div>
+                                <input name="price" id="btw10k-20k" data-start="10000" data-end="20000" type="radio" aria-label="Checkbox for following text input">
+                                <label for="btw10k-20k">₹10,000 - ₹20,000</label>
+                            </div>
+                            <div>
+                                <input name="price" id="above-20k"  data-start="20000" data-end="Infinity"  type="radio" aria-label="Checkbox for following text input">
+                                <label for="above-20k">Above ₹20,000</label>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- pay on delivery -->
+                    <div class="filter">
+                        <div class="h6">
+                            Pay On Delivery
+                        </div>
+                        <div class="filter-options ps-2">
+                            <div>
+                                <input name="payOnDelivery" id="payOnDelivery" type="checkbox" aria-label="Checkbox for following text input">
+                                <label for="payOnDelivery">Eligible for Pay On Delivery</label>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- discount -->
+                    <div class="filter">
+                        <div class="h6">
+                            Discount
+                        </div>
+                        <div class="filter-options discount-filter ps-2">
+                            <div>
+                                <input name="discount" id="10percent" value="10" type="radio" aria-label="Checkbox for following text input">
+                                <label for="10percent">10% Off or more</label>
+                            </div>
+                            <div>
+                                <input name="discount" id="25percent" value="25" type="radio" aria-label="Checkbox for following text input">
+                                <label for="25percent">25% Off or more</label>
+                            </div>
+                            <div>
+                                <input name="discount" id="35percent" value="35" type="radio" aria-label="Checkbox for following text input">
+                                <label for="35percent">35% Off or more</label>
+                            </div>
+                            <div>
+                                <input name="discount" id="50percent" value="50" type="radio" aria-label="Checkbox for following text input">
+                                <label for="50percent">50% Off or more</label>
+                            </div>
+                            <div>
+                                <input name="discount" id="60percent" value="60" type="radio" aria-label="Checkbox for following text input">
+                                <label for="60percent">60% Off or more</label>
+                            </div>
+                            <div>
+                                <input name="discount" id="80percent" value="80" type="radio" aria-label="Checkbox for following text input">
+                                <label for="80percent">80% Off or more</label>
+                            </div>
+                            
+                        </div>
+                    </div>
+    
+                    <!-- availability -->
+                    <div class="filter">
+                        <div class="h6">
+                            Availability
+                        </div>
+                        <div class="filter-options ps-2">
+                            <div>
+                                <input name="stockOnly" id="stockOnly" type="checkbox"
+                                    aria-label="Checkbox for following text input">
+                                <label for="stockOnly">In stock only</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div> -->
-            filter<br>sort
+                <hr class="filter-sort-diff">
+                <div>
+                    <div class="fw-bold h5">Sort</div>
+                    <div class="sort-options ps-2">
+                        <div>
+                            <input value="acc" name="priceSort" id="price-low-to-high" type="radio" aria-label="radio for following text input">
+                            <label for="price-low-to-high">Price low to high</label>
+                        </div>
+                        <div>
+                            <input value="dec" name="priceSort" id="price-high-to-low" type="radio" aria-label="radio for following text input">
+                            <label for="price-high-to-low">Price high to low</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </nav>
         <!-- Sidebar -->
     

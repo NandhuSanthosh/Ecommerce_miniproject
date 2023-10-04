@@ -1,19 +1,17 @@
 let currentProductSet = product
+const filteredList = product.data.map(x => x._id);
 console.log(totalProducts)
 
-function render(){
+function render(currentProductSet = product){
     const resultContainer = document.querySelector("#result-product-container")
     resultContainer.innerHTML = "";
-    console.log(currentProductSet)
     currentProductSet.data.forEach( (x, index)=>{
-         const productCard = createProductTile(x);
-        console.log(productCard);
+        const productCard = createProductTile(x);
         resultContainer.append(productCard);
     })
 }
 
 function createProductTile(product){
-    console.log(product.images[0])
     const element = `<div class="image_container">
                     <img src="${product.images[0]}" alt="">
                 </div>
@@ -44,12 +42,53 @@ function createProductTile(product){
 
 
 function configure(){
-    console.log('here');
     productSearch = document.getElementById('productSearch')
     productSearch.addEventListener('click', getData) 
     render()
+    populateBrandFilter()
 }
 
+function populateBrandFilter(){
+    const brands = [];
+    currentProductSet.data.map( x => {
+        if(brands.indexOf(x.brand) === -1) {
+            brands.push(x.brand);
+        }
+    })
+    const brandContainer = document.querySelector('.brand-filter-container');
+    // appending brands
+    brands.forEach( x => {
+        const tile = document.createElement('div')
+        const template = `
+            <input name="brand" id="${x.toLowerCase()}" type="checkbox" aria-label="Checkbox for following text input">
+            <label for="${x.toLowerCase()}">${x}</label>`
+        tile.innerHTML = template
+        brandContainer.append(tile)
+    })
+
+    // adding event listeners
+    const brandFilters = Array.from(brandContainer.querySelectorAll('[name="brand"]'))
+    brandFilters.forEach(x =>{
+        x.addEventListener('click', ()=>{
+            let currSelected = brandFilters.filter(x => x.checked)
+            let selectedBrands = currSelected.map( x => x.getAttribute('id'))
+            console.log(selectedBrands)
+            if(selectedBrands.length){
+                let currData = {data: currentProductSet.data.filter( x => {
+                    return selectedBrands.includes(x.brand.toLowerCase())
+                })}
+                // currData = currData.filter( x => {
+                //     filteredList.includes(x._id);
+                // })
+
+                render(currData)
+            }
+            else{
+                render(currentProductSet)
+            }
+        })
+    })
+}
 
 
 function getData(e){
@@ -57,7 +96,6 @@ function getData(e){
     
     if(searchKey && searchKey != ""){
         const url = `http://localhost:3000/get_search_result?searchKey=${searchKey}&p=0`
-        console.log(url)
         fetch(url)
         .then( response => response.json())
         .then( data => {
@@ -66,5 +104,79 @@ function getData(e){
         })
     }
 }
+
+// price filter configuration
+const priceFilters = document.querySelectorAll('[name="price"]')
+priceFilters.forEach( x => {
+    x.addEventListener('change', e => {
+        const starting = Number(e.target.dataset.start)
+        const ending = Number(e.target.dataset.end);
+        render( {data : currentProductSet.data.filter(x => {
+            return x.currentPrice >= starting && x.currentPrice <= ending
+        })})
+    })
+})
+
+// free delivery configuration
+const freeDelivery = document.querySelector('#payOnDelivery');
+freeDelivery.addEventListener('click', (e)=>{
+    if(freeDelivery.checked){
+        console.log('here')
+        render( {data: currentProductSet.data.filter( x => {
+            return x.isFreeDelivery
+        })})
+    }
+    else{
+        render();
+    }
+})
+
+// discount filter configuration
+const discountFields = document.querySelectorAll('[name="discount"]')
+discountFields.forEach( x => {
+    x.addEventListener('change', ()=>{
+        console.log(currentProductSet)
+        render( {data: currentProductSet.data.filter( product => {
+            return product.discount >= x.value
+        })})
+    })
+})
+
+// availability filter configuration
+const availabilityField = document.querySelector('#stockOnly');
+availabilityField.addEventListener('change', (e)=>{
+    if(availabilityField.checked){
+        console.log({data: currentProductSet.data.filter( x => {
+            return x.stock
+        })})
+        render( {data: currentProductSet.data.filter( x => {
+            return x.stock
+        })})
+    }
+})
+
+// price sort configuration
+const priceSortFields = document.querySelectorAll('[name="priceSort"]')
+priceSortFields.forEach( x => {
+    x.addEventListener('change', (e)=>{
+        let sortingFunc;
+        if(e.target.value == 'acc'){
+            sortingFunc = accPriceSort;
+        }
+        else{
+            sortingFunc = decPriceSort;
+        }
+
+        render( {data: currentProductSet.data.sort(sortingFunc)})
+    })
+
+    function accPriceSort(a, b){
+        return a.currentPrice - b.currentPrice
+    }
+    function decPriceSort(a, b){
+        return b.currentPrice - a.currentPrice
+    }
+})
+
 
 configure();

@@ -1,5 +1,6 @@
 nav {
     background-color: #5A6AFA;
+
 }
 
 .sidebar-buttons {
@@ -63,6 +64,13 @@ body {
     /* Scrollable contents if viewport is shorter than content. */
 }
 
+.filter-sort-container{
+    height: 100%;
+    overflow-y: scroll;
+    font-size: 13px;
+    font-weight: 500;
+}
+
 
 .result-header{
     font-size: 20px;
@@ -102,4 +110,9 @@ body {
 
 .details{
     flex: 1;
+}
+
+.filter-sort-diff{
+    height: 1px;
+    background: #00000085;
 }
