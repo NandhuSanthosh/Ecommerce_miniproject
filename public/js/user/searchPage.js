@@ -12,9 +12,9 @@ function render(currentProductSet = product){
 
 function createProductTile(product){
     console.log(product)
-    let price = product.actualPrice / 100 * (100 - (product.category.offer + product.discount))
+    let price = product.actualPrice / 100 * (100 - (product.category?.offer || 0 + product.discount))
     if(price < 0) price = 0;
-    let discount = product.category.offer + product.discount;
+    let discount = product.category?.offer || 0 + product.discount;
     if(discount > 100) discount = 100;
     
     const element = `<div class="image_container">
@@ -140,9 +140,11 @@ freeDelivery.addEventListener('click', (e)=>{
 const discountFields = document.querySelectorAll('[name="discount"]')
 discountFields.forEach( x => {
     x.addEventListener('change', ()=>{
-        console.log(currentProductSet)
+        // console.log(currentProductSet)
         render( {data: currentProductSet.data.filter( product => {
-            return product.discount >= x.value
+            const discount = product.category?.offer || 0 + product.discount;
+            console.log(discount)
+            return discount >= x.value
         })})
     })
 })

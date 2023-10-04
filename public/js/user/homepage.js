@@ -51,6 +51,11 @@ function createSection(highlights){
 
 function createProductTileOne(product){
     console.log(product)
+    let price = product.actualPrice / 100 * (100 - (product.category?.offer || 0 + product.discount))
+    if(price < 0) price = 0;
+    let discount = product.category?.offer || 0 + product.discount;
+    if(discount > 100) discount = 100;
+
     const template = 
     `<a href="${"http://localhost:3000/product_details/" + product._id}" class="product_link">
             <div class="product-image-container">
@@ -64,11 +69,11 @@ function createProductTileOne(product){
                             ${product.brand + " " + product.modelName}
                         </div>
                         <div class="product-price-details">
-                            <span class="payable-price">$${product.currentPrice}</span>
+                            <span class="payable-price">$${price}</span>
                             <span class="line-through og-price">$${product.actualPrice}</span>
                         </div>
                         <div>
-                            <span class="proudct-discount">${Math.ceil((product.actualPrice - product.currentPrice) /(product.actualPrice / 100))}% off</span>
+                            <span class="proudct-discount">${discount}% off</span>
                         </div>
                     </div>
                     <div class="btn-container">
