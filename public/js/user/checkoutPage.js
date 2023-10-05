@@ -368,14 +368,14 @@ function showPaymentModal(orderId, addressId){
                 "key": "rzp_test_vL7wkDlMCiOlxh", // Enter the Key ID generated from the Dashboard
                 "amount": order.totalPrice, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
                 "currency": "INR",
-                "name": order.userCredential,
+                // "name": order.userCredential,
                 "description": "Test Transaction",
                 "image": "",
                 "order_id": orderId , //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                 "handler": function (response) {
-                    alert(response.razorpay_payment_id);
-                    alert(response.razorpay_order_id);
-                    alert(response.razorpay_signature)
+                    // alert(response.razorpay_payment_id);
+                    // alert(response.razorpay_order_id);
+                    // alert(response.razorpay_signature)
                     verifyPayment(response, addressId);
                 },
                 "notes": {

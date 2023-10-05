@@ -86,11 +86,20 @@ function addToCartEventHandler(){
 
 
 function injectData(){
+        
+    let price = product.actualPrice / 100 * (100 - ((product.category?.offer || 0) + product.discount))
+    if(price < 0) price = 0;
+    price = Math.floor(price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+    let discount = product.discount + (product.category?.offer || 0)
+    if(discount > 100) discount = 100;
+    
+    console.log(product.category)
     product_name.innerHTML = product.name;
     product_brand.innerHTML = product.brand;
-    product_discount.innerHTML = `-${product.discount}%`;
+    product_discount.innerHTML = `-${discount}%`;
     product_actualPrice.innerHTML = `₹${product.actualPrice.toLocaleString()}`;
-    product_currentPrice.innerHTML = `₹${product.currentPrice.toLocaleString()}`;
+    product_currentPrice.innerHTML = `₹${price.toLocaleString()}`;
 
 
     updateSpacality(product);
@@ -102,7 +111,6 @@ function injectData(){
         image_list.append(createImageTile(product.images[i]))
     }
 
-    console.log(isInWishList)
     if(isInWishList) {
         document.querySelector('.heart').classList.add('is-active')
     }

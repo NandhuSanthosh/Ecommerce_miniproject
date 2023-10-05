@@ -2,6 +2,11 @@
 
 function createTile(product){
     console.log(product)
+    let price = product.actualPrice / 100 * (100 - ((product.category?.offer || 0) + product.discount))
+    if(price < 0) price = 0;
+    if(price != 0) price = Math.floor(price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+
     const template = `
             <div class=" product_container position-relative  cart-product-tile-container mb-3">
 
@@ -20,7 +25,7 @@ function createTile(product){
                         </div>
                         <div class="rating"></div>
                         <div class="prices d-flex gap-2">
-                            <div class="currentprice">₹${(+product.currentPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                            <div class="currentprice">₹${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                         </div>
                         <div class="spacalities_brand">
                             <div class="freedelivery">${product.freeDelivery ? "Free Delivery" : ""}</div>

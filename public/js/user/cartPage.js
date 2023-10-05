@@ -1,5 +1,12 @@
 
 function createTile(product, quantity, index){
+    let price = product.actualPrice / 100 * (100 - ((product.category?.offer || 0) + product.discount))
+    if(price < 0) price = 0;
+    if(price != 0) price = Math.floor(price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    let discount = product.discount + (product.category?.offer || 0)
+    if(discount > 100) discount = 100;
+
     const template = `
             <div class=" product_container position-relative  cart-product-tile-container mb-3">
 
@@ -18,7 +25,7 @@ function createTile(product, quantity, index){
                         </div>
                         <div class="rating"></div>
                         <div class="prices d-flex gap-2">
-                            <div class="currentprice">₹${(+product.currentPrice) }</div>
+                            <div class="currentprice">₹${price }</div>
                         </div>
                         <div class="spacalities_brand">
                             <div class="freedelivery">${product.freeDelivery ? "Free Delivery" : ""}</div>
@@ -188,6 +195,7 @@ function loader(){
     container.innerHTML = ""
     
     const productList = product.products;
+    console.log(productList)
     
     console.log(productList)
     if(productList.length == 0){
@@ -236,9 +244,14 @@ function getInsight(){
         ogTotal : 0,
     };
     product.products.forEach( x => {
+        let price = x.productId.actualPrice / 100 * (100 - ((x.productId.category?.offer || 0) + x.productId.discount))
+        if(price < 0) price = 0;
+        price = Math.floor(price)
+        console.log(price, x)
+
         insightDetails.isFreeDeliveryEligible &&= x.productId.isFreeDelivery
         insightDetails.count += x.quantity;
-        insightDetails.total += x.productId.currentPrice * x.quantity, 
+        insightDetails.total += price * x.quantity, 
         insightDetails.ogTotal += x.productId.actualPrice * x.quantity
     })
 

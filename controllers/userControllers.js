@@ -327,12 +327,13 @@ exports.get_wishList = async(req, res, next)  => {
     try {
         const userId = req.userDetails.userDetails._id;
         const userDetails = await userModel.findById(userId)
-        .populate("wishList", {
-            name: 1, 
-            images: 1, 
-            currentPrice: 1,
-            isFreeDelivery: 1,
-            warranty: 1
+        .populate({
+            path: "wishList", 
+            select: "name images currentPrice isFreeDelivery warranty actualPrice category discount",
+            populate: {
+                path: "category", 
+                select: "offer"
+            }   
         })
         res.render('./authViews/userHome.ejs', {page: "wishList-page", product: userDetails.wishList})
     } catch (error) {

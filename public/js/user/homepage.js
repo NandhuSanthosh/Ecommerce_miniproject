@@ -51,9 +51,10 @@ function createSection(highlights){
 
 function createProductTileOne(product){
     console.log(product)
-    let price = product.actualPrice / 100 * (100 - (product.category?.offer || 0 + product.discount))
+    let price = product.actualPrice / 100 * (100 - ((product.category?.offer || 0) + product.discount))
     if(price < 0) price = 0;
-    let discount = product.category?.offer || 0 + product.discount;
+    price = Math.ceil(price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    let discount = (product.category?.offer || 0) + product.discount;
     if(discount > 100) discount = 100;
 
     const template = 

@@ -136,7 +136,11 @@ productSchema.statics.update_product = async function(id, updateObject){
 
 productSchema.statics.get_single_product_details = async function(id){
     if(!id) throw new Error("Please provide all necessay details");
-    const product = await this.findOne({_id: id});
+    const product = await this.findOne({_id: id})
+    .populate({
+        path: "category", 
+        select: "offer"
+    });
     if(product) return product;
     else throw new Error("No such product listed.")
 }

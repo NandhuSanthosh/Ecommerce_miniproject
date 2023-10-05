@@ -12,7 +12,7 @@ exports.post_checkout = async function(req, res, next){
         const userId = req.userDetails.userDetails._id;
 
         const productIds = products.map( x => x.product);
-        const productDetails = await productModel.find({_id : {$in : productIds}}, {name: 1, currentPrice: 1, actualPrice: 1, stock: 1, isFreeDelivery : 1})
+        const productDetails = await productModel.find({_id : {$in : productIds}}, {name: 1, currentPrice: 1, actualPrice: 1, stock: 1, isFreeDelivery : 1, discount: 1})
         .populate("category", { offer: 1});
         console.log(productDetails)
 
@@ -29,12 +29,11 @@ exports.post_checkout = async function(req, res, next){
                 throw new Error(`${product.name} exceed stock, reduce the product count.`)
             }
 
-            let price = product.currentPrice;
+            console.log(product)
+            let price = product.actualPrice / 100 * (100 - ((product.category?.offer || 0) + product.discount))
+            price = Math.floor(price)
+            if(price < 0) price = 0;
 
-            if(product.category?.offer){
-                price = (price / 100) * (100 - product.category.offer)
-                price = Math.ceil(price)
-            }
             console.log("This is the price ", price)
             let obj = {
                 product : product._id, 
