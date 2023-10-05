@@ -516,7 +516,7 @@ exports.verify_payment = async (req, res, next) =>{
             const transaction = await transactionModel.create({
                 amount : amount, 
                 timestamp : new Date(),
-                senderID : userId, 
+                receiverID : userId, 
                 category : "addToWallet"
             })
             let user = await userModel.findById(userId)

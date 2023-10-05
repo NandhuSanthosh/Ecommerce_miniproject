@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const couponModel = require('./couponModel');
 const userModels = require('./userModels');
+const transactionsModel = require('./transactionsModel');
 
 
 const orderStages = ["Order Pending", "Preparing to Dispatch", "Dispatched", 
@@ -172,14 +173,34 @@ orderSchema.statics.find_order_details = async function(id){
     return doc
 }
 
-orderSchema.statics.complete_order_handler = async function(id, addressId, paymentMethod){
+orderSchema.statics.complete_order_handler = async function(id, addressId, paymentMethod, userId){
     if(!id || !addressId || !paymentMethod) throw new Error("Please provide necessary information")
     const orderCreateAt = new Date();
     const extimatedDeliveryDate = new Date()
     extimatedDeliveryDate.setDate(orderCreateAt.getDate() + 5)
     const doc = await this.findByIdAndUpdate(id, {$set: {status: "Preparing to Dispatch", userAddressId: addressId, "paymentDetail.method": paymentMethod, }}, {new: true})
     if(paymentMethod == "wallet"){
-        const user = await userModels.findByIdAndUpdate(doc.userId, {$inc: {"wallet.balance" : (-1 * doc.payable)}})
+        // const user = await userModels.findByIdAndUpdate(doc.userId, {$inc: {"wallet.balance" : (-1 * doc.payable)}})
+        let user = await userModels.findById(userId);
+
+        const transaction = await transactionsModel.create({
+            amount: doc.payable, 
+            timestamp: new Date(), 
+            senderID: userId, 
+            category: "purchase"
+        })
+
+        const transactionDoc = {
+            type: "debit",
+            transactionId: transaction._id, 
+            beforeBalance: user.wallet.balance, 
+            afterBalance: user.wallet.balance - doc.payable
+        }
+
+        // console.log("the transaction doc is ", transaction)
+        user = await userModels.findByIdAndUpdate(user._id, {$set: {"wallet.balance" : user.wallet.balance - doc.payable}, $push: {"wallet.transactions" : transactionDoc}})
+        // console.log("The udpated user details is ", user.wallet)
+        console.log(user.wallet)
     }
     if(doc.coupon.code){
         const coupon = await couponModel.findOne({code: doc.coupon.code});
@@ -204,7 +225,7 @@ orderSchema.statics.find_user_orders = async function(userId){
 orderSchema.statics.cancel_order = async function(orderId, reason){
     if(!orderId || !reason) throw new Error("Please provide necessary information.")
     const order = await this.findById(orderId);
-
+    const userId = order.userId;
     if(["Order Pending", "Preparing to Dispatch", "Dispatched", "Out for Delivery"].includes(order.status)){
         let updateQuery = {
             cancelation: {
@@ -214,18 +235,32 @@ orderSchema.statics.cancel_order = async function(orderId, reason){
             status: "Canceled"
         }
 
-        const updatedOrder = this.findByIdAndUpdate(orderId, {$set: updateQuery,}, {new: true})
+        const updatedOrder = await this.findByIdAndUpdate(orderId, {$set: updateQuery}, {new: true});
 
         if(order.paymentDetail.method != "COD" ){
-        const user = await userModels.findByIdAndUpdate(order.userId,
-            {
-                $inc: {
-                    "wallet.balance" : order.payable
-                }
-            }, {new : true})
+            console.log("not cod")
+            let user = await userModels.findById(userId);
 
-        console.log(user)
-    }
+            const transaction = await transactionsModel.create({
+                amount: order.payable, 
+                timestamp: new Date(), 
+                senderID: userId, 
+                category: "refund"
+            })
+
+            const transactionDoc = {
+                type: "credit",
+                transactionId: transaction._id, 
+                beforeBalance: user.wallet.balance, 
+                afterBalance: user.wallet.balance + order.payable
+            }
+
+            // console.log("the transaction doc is ", transaction)
+            user = await userModels.findByIdAndUpdate(user._id, {$set: {"wallet.balance" : user.wallet.balance + order.payable}, $push: {"wallet.transactions" : transactionDoc}})
+            // console.log("The udpated user details is ", user.wallet)
+            // console.log(user.wallet)
+
+        }
         return updatedOrder;
 
     }
@@ -336,7 +371,6 @@ orderSchema.statics.update_order_status = async function(orderId, status, reason
         }
     }
 
-    console.log("Wtf")
     const updatedOrder = await this.findOneAndUpdate(
         {
             $and: [
@@ -367,14 +401,25 @@ orderSchema.statics.update_order_status = async function(orderId, status, reason
         throw new Error("The order is not eligible for the operation.")
     }
     if((updatedOrder.paymentDetail.method != "COD" && status == "Canceled") || (status == "Return Completed")){
-        const user = await userModels.findByIdAndUpdate(updatedOrder.userId,
-            {
-                $inc: {
-                    "wallet.balance" : updatedOrder.payable
-                }
-            }, {new : true})
+            console.log("not cod")
+            console.log(updatedOrder)
+            let user = await userModels.findById(updatedOrder.userId);
 
-        console.log(user)
+            const transaction = await transactionsModel.create({
+                amount: updatedOrder.payable, 
+                timestamp: new Date(), 
+                senderID: updatedOrder.userId, 
+                category: "refund"
+            })
+
+            const transactionDoc = {
+                type: "credit",
+                transactionId: transaction._id, 
+                beforeBalance: user.wallet.balance, 
+                afterBalance: user.wallet.balance + updatedOrder.payable
+            }
+
+            user = await userModels.findByIdAndUpdate(updatedOrder.userId, {$set: {"wallet.balance" : user.wallet.balance + updatedOrder.payable}, $push: {"wallet.transactions" : transactionDoc}})
     }
 
     if(updatedOrder.status != "Canceled" && Object.keys(updatedOrder.cancelation).length != 0){

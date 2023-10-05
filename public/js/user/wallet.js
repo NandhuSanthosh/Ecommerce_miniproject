@@ -273,7 +273,7 @@ async function createOrder(amount){
 
 function showPaymentModal(orderId, amount){
     var options = {
-            "key": "rzp_test_9QykuCGBKbX49p", // Enter the Key ID generated from the Dashboard
+            "key": "rzp_test_vL7wkDlMCiOlxh", // Enter the Key ID generated from the Dashboard
             "amount": amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
             "currency": "INR",
             "name": credential,

@@ -3,6 +3,7 @@ const productModel = require("../Models/productModel");
 const userCartModel = require("../Models/userCartModel");
 const userModels = require("../Models/userModels");
 const couponModel = require("../Models/couponModel");
+const transactionsModel = require("../Models/transactionsModel");
 
 
  
@@ -80,14 +81,14 @@ exports.patch_complete_order = async function(req, res, next){
         const {addressId, paymentMethod} = req.body;
 
         if(paymentMethod == "wallet"){
-            const user = await userModels.findById(req.userDetails.userDetails._id);
+            let user = await userModels.findById(req.userDetails.userDetails._id);
             const order = await orderModel.findById(orderId);
             if(user.wallet.balance < order.payable){
                 throw new Error("Insufficient balance in wallet.")
             }
         }
 
-        const orderDoc = await orderModel.complete_order_handler(orderId, addressId, paymentMethod)
+        const orderDoc = await orderModel.complete_order_handler(orderId, addressId, paymentMethod, req.userDetails.userDetails._id)
         const link = "http://localhost:3000/order/get_orders"
         res.send({isSuccess: true, redirect: link})
     } catch (error) {
