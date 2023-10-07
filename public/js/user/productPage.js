@@ -5,10 +5,35 @@ document.querySelector('.wish_list_btn').addEventListener('click', addToWishList
 
 function addToWishListHandler(){
     fetch("http://localhost:3000/wishlist/add_to_wishList?productId=" + product._id)
-    .then( response => response.json())
+    .then( response => {
+        if (response.redirected) {
+            Swal.fire({
+                title: 'User Login Error?',
+                text: "Looks like you are not logged in, login to complete the operation!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Login'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = response.url;
+                    }
+                    else{
+                        return;
+                    }
+                })
+        }
+        return response.json()
+    })
     .then( data => {
         if(!data.isSuccess){
-            alert(data.errorMessage)
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.errorMessage,
+                // footer: '<a href="">Why do I have this issue?</a>'
+            })
         }
         else{
             if(data.isAdded){
@@ -42,14 +67,39 @@ function buyEventListener(){
         }, 
         body: JSON.stringify(body)
     })
-    .then( response => response.json())
+    .then( response => {
+        if (response.redirected) {
+            Swal.fire({
+                title: 'User Login Error?',
+                text: "Looks like you are not logged in, login to complete the operation!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Login'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = response.url;
+                    }
+                    else{
+                        return;
+                    }
+                })
+        }
+        return response.json()
+    })
     .then( data => {
         console.log(data)
         if(data.isSuccess){
             location.assign(data.redirect)
         }
         else{
-            alert(data.errorMessage)
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.errorMessage,
+                // footer: '<a href="">Why do I have this issue?</a>'
+            })
         }
     })
 }
@@ -69,15 +119,45 @@ function addToCartEventHandler(){
             productId
         })
     })
-    .then( response => response.json())
+    .then( response => {
+        if (response.redirected) {
+            Swal.fire({
+                title: 'User Login Error?',
+                text: "Looks like you are not logged in, login to complete the operation!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Login'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = response.url;
+                    }
+                    else{
+                        return;
+                    }
+                })
+        }
+        return response.json()
+    })
     .then( data => {
         if(data.isSuccess){
             // showModel
-            alert("Product sucessfully added")
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.errorMessage,
+                // footer: '<a href="">Why do I have this issue?</a>'
+            })
         }
         else{
             // showModel("no done")
-            alert(data.errorMessage)
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.errorMessage,
+                // footer: '<a href="">Why do I have this issue?</a>'
+            })
         }
     })
     // show success

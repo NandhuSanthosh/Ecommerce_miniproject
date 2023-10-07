@@ -107,7 +107,12 @@ function applyCoupenCode(orderId){
         const couponCode = document.querySelector('.coupen-input').value;
         const status = /^\S+$/.test(couponCode);
         if(!status){
-            alert("Not a valid coupen")
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: "Not a valid coupen",
+                // footer: '<a href="">Why do I have this issue?</a>'
+            })
             return;
         }
 
@@ -128,7 +133,12 @@ function applyCoupenCode(orderId){
                 injectInsightDetails(order)
             }
             else{
-                alert(data.errorMessage)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: data.errorMessage,
+                    // footer: '<a href="">Why do I have this issue?</a>'
+                })
             }
         })
     }
@@ -160,7 +170,12 @@ function removeCoupenCode(orderId) {
                 injectInsightDetails(order)
             }
             else{
-                alert(data.errorMessage)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: data.errorMessage,
+                    // footer: '<a href="">Why do I have this issue?</a>'
+                })
             }
         })
     }
@@ -219,20 +234,35 @@ function addAddressEventHandler(){
         .then (response => response.json())
         .then (data => {
             if(data.isSuccess){
-                alert("New address created")
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: "New address created",
+                    // footer: '<a href="">Why do I have this issue?</a>'
+                })
                 console.log(data)
                 userAddress.push(data.newAddress)
                 injectUserAddress();
                 address_collapse_btn.click()
             }
             else{
-                alert(data.errorMessage)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: data.errorMessage,
+                    // footer: '<a href="">Why do I have this issue?</a>'
+                })
             }
         })
     }
     else{
         const errorString = error.reduce( (acc, x) => acc + x + "\n", "")
-        alert(errorString)
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: errorString,
+            // footer: '<a href="">Why do I have this issue?</a>'
+        })
     }
 }   
 
@@ -267,7 +297,12 @@ function paymentMethodConfig(){
             document.querySelector('.wallet_balance').innerHTML = (data.data.balance || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
         else{
-            alert(data.errorMessage)
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.errorMessage,
+                // footer: '<a href="">Why do I have this issue?</a>'
+            })
         }
     })
 
@@ -300,7 +335,12 @@ async function placeOrderHandler(){
     })
     // collect payment method id
     if(!paymentMethod) {
-        alert("Please select one payment method.")
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: "Please select one payment method.",
+            // footer: '<a href="">Why do I have this issue?</a>'
+        })
         return;
     }
     else if(paymentMethod == 'online-payment'){
@@ -309,7 +349,12 @@ async function placeOrderHandler(){
     }
     else if(paymentMethod == 'wallet'){
         if(walletBalance < order.payable){
-            return alert("Insufficient fund in wallet.")
+            return Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text:"Insufficient fund in wallet.",
+                    // footer: '<a href="">Why do I have this issue?</a>'
+                })
         }
         completeCheckout(addressId, paymentMethod)
     }
@@ -333,11 +378,26 @@ function completeCheckout(addressId, paymentMethod){
     .then( response => response.json())
     .then( data => {
         if(data.isSuccess){
-            alert("Order sucessfully placed.")
-            location.assign(data.redirect);
+            Swal.fire({
+                icon: "success",
+                title: 'Order Placed',
+                text: "Order sucessfully placed.",
+                confirmButtonText: 'Close',
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    location.assign(data.redirect)
+                }
+            })
+
         }
         else{
-            alert(data.errorMessage);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.errorMessage,
+                // footer: '<a href="">Why do I have this issue?</a>'
+            })
         }
     })
 }
@@ -373,9 +433,6 @@ function showPaymentModal(orderId, addressId){
                 "image": "",
                 "order_id": orderId , //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                 "handler": function (response) {
-                    // alert(response.razorpay_payment_id);
-                    // alert(response.razorpay_order_id);
-                    // alert(response.razorpay_signature)
                     verifyPayment(response, addressId);
                 },
                 "notes": {
@@ -412,7 +469,12 @@ function verifyPayment(response, addressId){
         if(data.isSuccess)
             completeCheckout(addressId, "Online-Payment")
         else
-            alert("Something went wrong.")
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: "Something went wrong.",
+                // footer: '<a href="">Why do I have this issue?</a>'
+            })
     })
 }
 

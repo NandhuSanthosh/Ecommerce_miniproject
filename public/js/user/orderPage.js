@@ -166,7 +166,12 @@ function downloadInvoice(orderId){
             var pdfObject = jsPDFInvoiceTemplate.default(props); 
         }
         else{
-            alert(data.errorMessage)
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.errorMessage,
+                // footer: '<a href="">Why do I have this issue?</a>'
+            })
         }
         
     })
@@ -445,12 +450,22 @@ function removeOrderHandler(orderId, container){
             .then( response => response.json())
             .then( data => {
                 if(data.isSuccess){
-                    alert("Order sucessfully cancelled");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: "Order sucessfully cancelled",
+                        // footer: '<a href="">Why do I have this issue?</a>'
+                    })
                     updateOrderList(orderId, "Canceled")
                     loader()
                 }
                 else{
-                    alert(data.errorMessage)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.errorMessage,
+                        // footer: '<a href="">Why do I have this issue?</a>'
+                    })
                     // show failure
                 }
             })
@@ -467,12 +482,22 @@ function returnOrderHandler(orderId, container){
             .then( response => response.json())
             .then( data => {
                 if(data.isSuccess){
-                    alert("Order return request sucessfully send.");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: "Order return request sucessfully send.",
+                        // footer: '<a href="">Why do I have this issue?</a>'
+                    })
                     updateOrderList(orderId, "Return Request Processing")
                     loader()
                 }
                 else{
-                    alert(data.errorMessage)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.errorMessage,
+                        // footer: '<a href="">Why do I have this issue?</a>'
+                    })
                     // show failure
                 }
             })
@@ -491,12 +516,22 @@ function cancelReturnHandler(orderId){
             .then( response => response.json())
             .then( data => {
                 if(data.isSuccess){
-                    alert("Order return request is canceled.");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: "Order return request is canceled.",
+                        // footer: '<a href="">Why do I have this issue?</a>'
+                    })
                     updateOrderList(orderId, "Delivered")
                     loader()
                 }
                 else{
-                    alert(data.errorMessage)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.errorMessage,
+                        // footer: '<a href="">Why do I have this issue?</a>'
+                    })
                     // show failure
                 }
             })
@@ -581,7 +616,12 @@ function populateRecomendations(){
             })
         }
         else{
-            alert(data.errorMessage)
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.errorMessage,
+                // footer: '<a href="">Why do I have this issue?</a>'
+            })
         }
     })
 }

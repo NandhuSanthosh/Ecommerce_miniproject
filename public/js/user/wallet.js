@@ -108,7 +108,12 @@ function fetchAndDisplay(pno = 0, currentWindow, e){
             configurePagination(data.totalCount?.count, pno)
         }
         else{
-            alert(data.errorMessage)
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.errorMessage,
+                // footer: '<a href="">Why do I have this issue?</a>'
+            })
         }
     })
 }
@@ -214,12 +219,22 @@ function findUser(){
             }
             else{
                 document.querySelector('.user_tile').classList.add('d-none')
-                alert(data.errorMessage)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: data.errorMessage,
+                    // footer: '<a href="">Why do I have this issue?</a>'
+                })
             }
         })
     }
     else{
-        alert("Not a valid credential.")
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: "Not a valid credential.",
+            // footer: '<a href="">Why do I have this issue?</a>'
+        })
     }
 
     function validateEmail(email){
@@ -262,7 +277,12 @@ async function createOrder(amount){
             return data.orderId
         }
         else{
-            alert(data.errorMessage)
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.errorMessage,
+                // footer: '<a href="">Why do I have this issue?</a>'
+            })
             return false;
         }
     })
@@ -318,12 +338,23 @@ function verifyPayment(response, amount){
     .then( response => response.json())
     .then( data => {
         if(data.isSuccess){
-            alert("Money sucessfully added to your wallet!");
+            Swal.fire({
+                position: "top",
+                icon: 'Success',
+                title: 'Money Credited...',
+                text: "Money sucessfully added to your wallet!",
+                // footer: '<a href="">Why do I have this issue?</a>'
+            })
             balance = data.data
             wallet_balance.innerHTML = data.data.toLocaleString(undefined, { minimumFractionDigits: 2,maximumFractionDigits: 2,})
         }
         else{
-            alert(data.errorMessage)
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.errorMessage,
+                // footer: '<a href="">Why do I have this issue?</a>'
+            })
         }
     })
 }
@@ -351,10 +382,22 @@ function sendToUserHandler(){
                 console.log(data.data.toLocaleString(undefined, { minimumFractionDigits: 2,maximumFractionDigits: 2}))
                 wallet_balance.innerHTML = data.data.toLocaleString(undefined, { minimumFractionDigits: 2,maximumFractionDigits: 2})
                 console.log(wallet_balance)
-                alert("Money sucessfully send to the user.")
+                Swal.fire({
+                    position: "top",
+                    icon: 'success',
+                    title: 'Send',
+                    text: "Money sucessfully send to the user.",
+                    // footer: '<a href="">Why do I have this issue?</a>'
+                })
             }
             else{
-                alert(data.errorMessage)
+                Swal.fire({
+
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: data.errorMessage,
+                    // footer: '<a href="">Why do I have this issue?</a>'
+                })
             }
         })
     }

@@ -291,7 +291,12 @@ proceedToPayBtn.addEventListener('click', ()=>{
             location.assign(data.redirect)
         }
         else{
-            alert(data.errorMessage)
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.errorMessage,
+                // footer: '<a href="">Why do I have this issue?</a>'
+            })
         }
     })
 })

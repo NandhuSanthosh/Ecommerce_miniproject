@@ -49,7 +49,6 @@ exports.isLogged = async function(req, res, next){
         return res.redirect('/otp-Auth')
     }
     res.redirect('/login')
-
 }
 
 async function user_is_logged_in(req, next){

@@ -27,7 +27,7 @@ function createProductTile(product){
                         <a href="/product_details/${product._id}">
                             ${product.name}
                         </a> 
-                    </div>
+                    </div> 
                     <div class="rating"></div>
                     <div class="prices d-flex gap-2">
                         <div class="currentprice">₹${price}</div>
