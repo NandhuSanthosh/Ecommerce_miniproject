@@ -78,7 +78,7 @@ hr{
     font-size: 14px;
 }
 
-.toggle-cancel-form,
+.toggle-cancel-form, 
 .cancel-return,
 .return-button, 
 .complete_order_btn{
@@ -95,3 +95,25 @@ hr{
     font-size: 13px;
     color: #4d4d4d;
 }
+
+
+.recomented-container{
+    border: 1px solid #cdcdcd;
+    border-radius: 7px;
+    padding: 12px 15px;
+}
+
+.rec-img-cont img{
+    width: 100%;
+    border-radius: 7px;
+}
+
+.rec-details-cont .name{
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+

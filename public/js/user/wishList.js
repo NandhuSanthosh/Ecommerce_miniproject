@@ -98,13 +98,54 @@ function loader(){
     productList.forEach( (x)=> {
         container.append( createTile(x) )
     })
+    populateRecomendations();
 }
 
+function populateRecomendations(){
+    fetch("http://localhost:3000/highlights/get_top_section")
+    .then( response => response.json())
+    .then( data => {
+        if(data.isSuccess){
+            const recomentedProducts = data.data.products
+            const recomentedContainer = document.querySelector('.recomented-container .products-container')
+            recomentedProducts.map( product => {
+                recomentedContainer.append(createRecomentedProductTile(product))
+            })
+        }
+        else{
+            alert(data.errorMessage)
+        }
+    })
+}
+
+function createRecomentedProductTile(product){
+
+    let price = product.actualPrice / 100 * (100 - ((product.category?.offer || 0) + product.discount))
+    if(price < 0) price = 0;
+    price = Math.floor(price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+    const div = document.createElement('div')
+    div.classList.add("product", "row", "gap-2", "mb-3" , "col", "col-md-12");
+    const template = `
+    <div class="rec-img-cont col-12 col-md-4">
+        <img src="${product.images[0]}" alt="">
+    </div>
+    <div class="rec-details-cont col">
+        <a href="">
+            <div class="name">${product.name}</div>
+        </a>
+        <div class="price fw-bold">₹ ${price}</div>
+    </div>`
+    div.innerHTML = template;
+    return div;
+}
 
 function showModal(message){
     $('#exampleModal').modal();
     document.getElementById('modelContent').innerHTML = message
 }
+
+
 
 window.onload = loader;
 

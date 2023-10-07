@@ -31,7 +31,6 @@ function createOrderTile(order){
     const cancelBtn = div.querySelector(".cancel-return")
     const complete_order_btn = div.querySelector('.complete_order_btn')
     const invoiceDownloadBtn = div.querySelector('.download-invoice')
-    console.log(complete_order_btn)
     
     // adding eventlisteners
     toggleCancelFormBtn.addEventListener('click', toggleFormHandler(div.querySelector('.cancel-form')))
@@ -62,7 +61,6 @@ function downloadInvoice(orderId){
     .then( data => {
         if(data.isSuccess){
             const {order, invoiceNumber} = data;
-            console.log(order.products)
             const date = formatDate(new Date());
             var props = {
                 outputType: jsPDFInvoiceTemplate.OutputType.Save,
@@ -344,7 +342,6 @@ function orderStageFormatter(order){
 }
 
 function configureForm(div, button, reasonField, name, list, optionList){
-    console.log(list)
     optionList.forEach( (x, index)=>{
         list.append(createOptionTile(x, name, index, optionSelectEvent(button, reasonField)))
     })
@@ -354,7 +351,6 @@ function configureForm(div, button, reasonField, name, list, optionList){
         button.disabled = true;
         reasonField.classList.remove('d-none')
         reasonField.addEventListener('input', (e)=> {
-            console.log(e.target.value.length)
             if(e.target.value.length >= 10){
                 button.disabled = false;
             }
@@ -369,7 +365,6 @@ function configureForm(div, button, reasonField, name, list, optionList){
 function createOptionTile(x, name, index,  callback){
     const li = document.createElement('li');
     li.classList.add("list-group-item");
-    console.log(index)
     const template = `
         <input type="radio" name="${name}" id="${name}-option-${index}" value="${index}">
         <label for="option-${index}">${x}</label>`
@@ -443,7 +438,6 @@ function removeOrderHandler(orderId, container){
     return ()=>{
 
             const reason = findReason("cancelation-options", container, container.querySelector('.cancelation-reason-input-field'));
-            console.log(reason)
             const url = `http://localhost:3000/order/delete_order?id=${orderId}&cancelReason=${reason}`
             fetch(url, {
                 method: "DELETE"
@@ -452,7 +446,6 @@ function removeOrderHandler(orderId, container){
             .then( data => {
                 if(data.isSuccess){
                     alert("Order sucessfully cancelled");
-                    console.log(data)
                     updateOrderList(orderId, "Canceled")
                     loader()
                 }
@@ -467,7 +460,6 @@ function removeOrderHandler(orderId, container){
 function returnOrderHandler(orderId, container){
     return ()=>{
             const reason = findReason("return-options", container,  container.querySelector('.return-reason-input-field'));
-            console.log(reason)
             const url = `http://localhost:3000/order/return_order?id=${orderId}&returnReason=${reason}`
             fetch(url, {
                 method: "PATCH"
@@ -476,7 +468,6 @@ function returnOrderHandler(orderId, container){
             .then( data => {
                 if(data.isSuccess){
                     alert("Order return request sucessfully send.");
-                    console.log(data)
                     updateOrderList(orderId, "Return Request Processing")
                     loader()
                 }
@@ -501,7 +492,6 @@ function cancelReturnHandler(orderId){
             .then( data => {
                 if(data.isSuccess){
                     alert("Order return request is canceled.");
-                    console.log(data)
                     updateOrderList(orderId, "Delivered")
                     loader()
                 }
@@ -514,21 +504,17 @@ function cancelReturnHandler(orderId){
 }
 
 function findReason(name, container, inputField){
-    console.log(container, name)
     const radioButtons = container.querySelectorAll(`[name="${name}"]`);
     let selectedButton; 
     for(let x of radioButtons){
-        console.log(x)
         if(x.checked){
             selectedButton = x;
             break;
         }
     }
     
-    console.log(selectedButton.value)
     let reason = cancelationOptions[selectedButton.value];
     if(!reason){
-        console.log(inputField)
         return inputField.value;
     }
     else{
@@ -550,6 +536,7 @@ function updateOrderList(orderId, state){
 function loader(orders = userOrders){
     
     populateOrderList(orders)
+    populateRecomendations();
 
     filter_order.addEventListener('click', ()=> {
         if(currentFilter == "orders") return;
@@ -580,6 +567,45 @@ function loader(orders = userOrders){
         }))
         currentFilter = "canceled"
     })
+}
+
+function populateRecomendations(){
+    fetch("http://localhost:3000/highlights/get_top_section")
+    .then( response => response.json())
+    .then( data => {
+        if(data.isSuccess){
+            const recomentedProducts = data.data.products
+            const recomentedContainer = document.querySelector('.recomented-container .products-container')
+            recomentedProducts.map( product => {
+                recomentedContainer.append(createRecomentedProductTile(product))
+            })
+        }
+        else{
+            alert(data.errorMessage)
+        }
+    })
+}
+
+function createRecomentedProductTile(product){
+
+    let price = product.actualPrice / 100 * (100 - ((product.category?.offer || 0) + product.discount))
+    if(price < 0) price = 0;
+    price = Math.floor(price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
+    const div = document.createElement('div')
+    div.classList.add("product", "row", "gap-2", "mb-3" , "col", "col-md-12");
+    const template = `
+    <div class="rec-img-cont col-12 col-md-4">
+        <img src="${product.images[0]}" alt="">
+    </div>
+    <div class="rec-details-cont col">
+        <a href="http://localhost:3000/product_details/${product._id}">
+            <div class="name">${product.name}</div>
+        </a>
+        <div class="price fw-bold">₹ ${price}</div>
+    </div>`
+    div.innerHTML = template;
+    return div;
 }
 
 function populateOrderList(orders){
