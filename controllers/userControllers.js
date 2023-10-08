@@ -103,6 +103,7 @@ exports.post_signin = async(req, res, next) => {
         console.log(userDetails)
         const {referalCode} = userDetails;
         if(referalCode){
+            delete userDetails.referalCode
             let referedByUser = await userModel.findOne({referalCode});
             console.log("this is the user who refered me", referedByUser)
             if(!referedByUser){
@@ -636,6 +637,7 @@ exports.get_referals = async(req, res, next)=>{
         let user = await userModel.findById(userId);
         let {referalCode} = user;
         if(!referalCode){
+            console.log("This is from referal and the user doesn't contain any referal code")
             referalCode = await referalModel.get_string();
             user = await userModel.findByIdAndUpdate(userId, {$set: {referalCode}}, {new: true})
             console.log(user.referalCode)
