@@ -235,8 +235,8 @@ function addAddressEventHandler(){
         .then (data => {
             if(data.isSuccess){
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
+                    icon: 'success',
+                    title: 'Address Added',
                     text: "New address created",
                     // footer: '<a href="">Why do I have this issue?</a>'
                 })

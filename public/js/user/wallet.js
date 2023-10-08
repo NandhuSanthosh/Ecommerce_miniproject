@@ -8,6 +8,7 @@ function loader(){
     document.querySelector('.add_money_btn').addEventListener('click', addMoneyHandler)
     document.querySelector('.send_money_btn').addEventListener('click', sendMoneyHandler)
     document.querySelector('.transaction_history_btn').addEventListener('click', transactionHistoryHandler)
+    document.querySelector('.referal_btn').addEventListener('click', referalHandler )
 
     // search user
     user_search_btn.addEventListener('click', findUser)
@@ -54,6 +55,20 @@ function loader(){
         e.target.classList.add("active")
         fetchAndDisplay(0, "refund")
     })
+
+    // referal
+    document.querySelectorAll('.copy-to-clipboard').forEach( x => {
+        x.addEventListener('click', (e)=>{
+            navigator.clipboard.writeText(e.currentTarget.dataset.value);
+            Swal.fire({
+                position: "top",
+                icon: 'success',
+                title: 'Copied to clipboard!',
+                showConfirmButton: false,
+                timer: 1000
+            }) 
+        })
+    })
 }
 
 function changeWindow(btn, header, container){
@@ -81,6 +96,31 @@ function transactionHistoryHandler(e){
     let container = document.querySelector('.transactionHistory')
     changeWindow(e.target, "Transaction History", container)
     fetchAndDisplay(0);
+}
+function referalHandler(e){
+    let container = document.querySelector('.referalContainer');
+    changeWindow(e.target, "Referals", container)
+    fetchReferalLink();
+}
+
+function fetchReferalLink(){
+    fetch("http://localhost:3000/get_user_referals")
+    .then( response => response.json())
+    .then( data => {
+        if(data.isSuccess){
+            //  + " " + data.referalLink
+            document.querySelector('.referalCode').innerHTML     = data.referalCode
+            document.querySelector('.code-btn').dataset.value = data.referalCode
+            document.querySelector('.invite-link-btn').dataset.value = data.referalLink
+        }
+        else{
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: data.errorMessage,
+            })  
+        }
+    })
 }
 
 function fetchAndDisplay(pno = 0, currentWindow, e){
@@ -178,6 +218,9 @@ function createTransactionTile({transactions}){
     }
     else if(transactionSpecificDoc.category == "purchase"){
         details = "Paid to Purchase"
+    }
+    else if(transactionSpecificDoc.category == 'referal'){
+        details = "Referal Reward"
     }
     else{
         details = userTransactionDoc.type == "credit" ? transactionSpecificDoc.senderID.name : transactionSpecificDoc.receiverID.name

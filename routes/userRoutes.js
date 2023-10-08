@@ -69,6 +69,9 @@ router.post("/wallet/create_payment_order", isLogged, userControllers.create_pay
 router.post("/wallet/verify_payment", isLogged, userControllers.verify_payment)
 router.post("/wallet/send-to-user", isLogged, userControllers.post_sentToUser)
 
+// referals
+router.get('/get_user_referals', isLogged, userControllers.get_referals)
+
 router.use(errorHandler);
     
 

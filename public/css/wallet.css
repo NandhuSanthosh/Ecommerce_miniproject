@@ -113,3 +113,18 @@ input{
 .btn-link:focus{
     text-decoration: none;
 }
+
+.referal-details .details{
+    color: #272727;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.copy-to-clipboard{
+}
+
+.side-image{
+    bottom: 0;
+    right: 0;
+}

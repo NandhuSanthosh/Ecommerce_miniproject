@@ -8,6 +8,7 @@ const addressModel = require("../Models/addressModel");
 const otpModel = require("../Models/otpModel");
 const userModel = require("../Models/userModels")
 const transactionModel = require("../Models/transactionsModel")
+const referalModel = require("../Models/referalModel")
 
 const forgotPasswordTokensModel = require('../Models/forgotPasswordModel')
 const jwt = require("jsonwebtoken");
@@ -45,9 +46,12 @@ exports.get_login = (req, res)=>{
 }
 
 // 
-exports.get_signup = (req, res)=>{
+exports.get_signup = async(req, res)=>{
+
+    const refCode = req.query.ref
+
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
-    res.render('authViews/signup-login', {page : "signup", associate, superSet: "signup"})
+    res.render('authViews/signup-login', {page : "signup", associate, superSet: "signup", refCode})
 }
 
 
@@ -96,11 +100,24 @@ exports.get_otpAuthPage = async (req, res)=>{
 exports.post_signin = async(req, res, next) => {
     const userDetails = req.body;
     try{
+        console.log(userDetails)
+        const {referalCode} = userDetails;
+        if(referalCode){
+            let referedByUser = await userModel.findOne({referalCode});
+            console.log("this is the user who refered me", referedByUser)
+            if(!referedByUser){
+                throw new Error("Invalid refereal code.")
+            }
+            userDetails.referedBy = referedByUser._id;
+        }
+
         const user = await userModel.create(userDetails);
+
+        
 
         const {response, id} = await sentOtpHelper({userDetails: user});
         response.then( d => {
-            const jwtToken = createToken({_id: user._id, credentials: result.credentials, name: result.name}, twoPFiveSeconds, "awaiting-otp", id);
+            const jwtToken = createToken({_id: user._id, credentials: user.credentials, name: user.name}, twoPFiveSeconds, "awaiting-otp", id);
             res.cookie('uDAO', jwtToken, { maxAge: twoPFiveSeconds * 1000 ,  httpOnly: true});    
             res.send({isSuccess: true, jwtToken})
         })
@@ -147,10 +164,34 @@ exports.post_verifyOtp = async(req, res) => {
     const {otp} = req.body;
     try {
         const result = req.userDetails;
+        
         const otpDoc = await otpModel.findDoc(result.id, otp);
 
         const {userDetails} = result;
         if(!userDetails.isVerified){
+            let amount = 100;
+            const user = await userModel.findById(userDetails._id)
+            if(user.referedBy){
+                const referedUserId = user.referedBy;
+                const transaction = await transactionModel.create({
+                    amount : amount, 
+                    timestamp : new Date(),
+                    receiverID : referedUserId, 
+                    category : "referal"
+                })
+                let referedUser = await userModel.findById(referedUserId)
+                const newBalance = referedUser.wallet.balance + amount;
+                const transactionDoc = {
+                    type: "credit",
+                    transactionId: transaction._id, 
+                    beforeBalance: referedUser.wallet.balance, 
+                    afterBalance: newBalance
+                };
+                console.log(transactionDoc)
+
+                referedUser = await userModel.findByIdAndUpdate(referedUserId, {$set: {"wallet.balance" : newBalance}, $push: {"wallet.transactions" : transactionDoc}})
+                console.log(referedUser);
+            }
             userModel.verify(userDetails._id)
         }
         const jwtToken = createToken({_id: userDetails._id, credentials: userDetails.credentials, name: userDetails.name}, threeDaysSeconds, "loggedIn");
@@ -585,6 +626,25 @@ exports.post_sentToUser = async(req, res, next) => {
         res.send({isSuccess: true, data: updatedSender.wallet.balance})
     } catch (error) {
         next(error)
+    }
+}
+
+
+exports.get_referals = async(req, res, next)=>{
+    try {
+        const userId = req.userDetails.userDetails._id;
+        let user = await userModel.findById(userId);
+        let {referalCode} = user;
+        if(!referalCode){
+            referalCode = await referalModel.get_string();
+            user = await userModel.findByIdAndUpdate(userId, {$set: {referalCode}}, {new: true})
+            console.log(user.referalCode)
+            referalCode = user.referalCode;
+        }
+        const referalLink = "http://localhost:3000/signin?ref=" + referalCode;
+        res.send({isSuccess: true, referalCode, referalLink})
+    } catch (error) {
+        
     }
 }
 

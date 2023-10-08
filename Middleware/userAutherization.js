@@ -109,7 +109,7 @@ async function user_is_registered(req, next){
 async function isBlocked(id){
     const user = await userModels.findById(id, {isBlocked: 1});
     
-    console.log("this is user blocked status: ", user)
+    // console.log("this is user blocked status: ", user)
     return false;
     // return user.isBlocked
 }

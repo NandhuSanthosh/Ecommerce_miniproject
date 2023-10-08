@@ -151,7 +151,14 @@ signupBtn?.addEventListener('click', (e)=>{
         const body = {
             name: extractValue(fullName), 
             credentials,
-            password: extractValue(password)
+            password: extractValue(password),
+        }
+
+        const referalCode = document.querySelector('.referal-code-input').value.trim();
+        console.log(referalCode)
+        if(referalCode){
+            body.referalCode = referalCode;
+            console.log(referalCode )
         }
 
         fetch('http://localhost:3000/signin', {

@@ -81,13 +81,18 @@ const userSchema = new mongoose.Schema({
             }, 
             beforeBalance: {
                 type: Number, 
-                required: true
             }, 
             afterBalance: {
                 type: Number, 
-                required: true
             }
         }]
+    },
+    referalCode: {
+        type: String
+    },
+    referedBy: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Users"
     }
 })
 

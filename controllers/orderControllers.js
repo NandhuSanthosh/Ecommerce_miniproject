@@ -173,17 +173,19 @@ exports.apply_coupon = async function(req, res, next){
         if(order.coupon.code) throw new Error("There is already a coupon applied in this order.")
         if(new Date(coupon.expiry) < new Date()) throw new Error("Coupon expired!")
         
-        const couponCategories = coupon.categories.map( x => x._id.toString())
         const products = order.products;
         let expensiveProductInCategory;
         let totalPrice = 0;
         if(coupon.categories.length){
+            const couponCategories = coupon.categories.map( x => x._id.toString())
             for(let item of order.products){
-                if(couponCategories.includes(item.product.category._id.toString())){
+                console.log(item.product.category)
+                if(couponCategories.includes(item.product.category?._id.toString())){
                     let currPrice = item.price * item.quantity
                     if(!expensiveProductInCategory || currPrice  > totalPrice){
                         totalPrice = currPrice;
                         expensiveProductInCategory = item;
+                        console.log("This is a iterations of category")
                     }
                 }
             }
@@ -197,10 +199,13 @@ exports.apply_coupon = async function(req, res, next){
         }
 
 
+        console.log(expensiveProductInCategory, "This is the expensive product in the category")
         if(!expensiveProductInCategory){
             throw new Error("The coupon can't be applied on any of the products in the cart.")
         }
-            
+
+
+        
         let discount = coupon.discount.discountType == "percentage-discount" ?  (expensiveProductInCategory.payable / 100)* coupon.discount.percentage : expensiveProductInCategory.price < coupon.discount.amount ? 0 : expensiveProductInCategory.price - coupon.discount.amount;
         discount = Math.ceil(discount)
         expensiveProductInCategory.coupon.discount = discount;

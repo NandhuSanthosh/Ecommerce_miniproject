@@ -19,7 +19,7 @@ const transactionSchema = new mongoose.Schema({
     },
     category: {
         type: String, 
-        enum: ["purchase", "refund", "betweenUsers", "addToWallet"]
+        enum: ["purchase", "refund", "betweenUsers", "addToWallet", "referal"]
     }
 })
 
