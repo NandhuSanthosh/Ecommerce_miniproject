@@ -6,7 +6,8 @@ const couponModel = require("../Models/couponModel");
 const transactionsModel = require("../Models/transactionsModel");
 
 
- 
+// handles checkout, caculates prices, create order doc, make sure that the products and in stock
+// and returns the checkout page link which can be used in the front end to redirect to checkout page
 exports.post_checkout = async function(req, res, next){
     try {
         let {products} = req.body
@@ -15,7 +16,6 @@ exports.post_checkout = async function(req, res, next){
         const productIds = products.map( x => x.product);
         const productDetails = await productModel.find({_id : {$in : productIds}}, {name: 1, currentPrice: 1, actualPrice: 1, stock: 1, isFreeDelivery : 1, discount: 1})
         .populate("category", { offer: 1});
-        console.log(productDetails)
 
         let discount = 0, totalPrice = 0, isFreeDelivery = true;
         const productObjForDB = productDetails.map( product => {
@@ -30,12 +30,10 @@ exports.post_checkout = async function(req, res, next){
                 throw new Error(`${product.name} exceed stock, reduce the product count.`)
             }
 
-            console.log(product)
             let price = product.actualPrice / 100 * (100 - ((product.category?.offer || 0) + product.discount))
             price = Math.floor(price)
             if(price < 0) price = 0;
 
-            console.log("This is the price ", price)
             let obj = {
                 product : product._id, 
                 productName : product.name, 
@@ -62,6 +60,7 @@ exports.post_checkout = async function(req, res, next){
     }
 }
 
+// render checkout page with all the necessary details (user address, order details)
 exports.get_checkout = async function(req, res, next){
     try {
         const id = req.params.id;
@@ -75,6 +74,9 @@ exports.get_checkout = async function(req, res, next){
     }
 }
 
+// in the checkout page, the details required for the order is accepted from the user 
+// and these details and added to the order doc 
+// if the payment is from the wallet checkes wallet balance and makes the order and then updates the wallet
 exports.patch_complete_order = async function(req, res, next){
     try {
         const orderId = req.params.id
@@ -96,6 +98,7 @@ exports.patch_complete_order = async function(req, res, next){
     }
 }
 
+// return orders made by a user
 exports.get_orders = async function(req, res, next){
     try {
         const userId = req.userDetails.userDetails._id;
@@ -106,6 +109,7 @@ exports.get_orders = async function(req, res, next){
     }
 }
 
+// udpates the status of a order to cancel (conditions applied)
 exports.cancel_order_user = async function(req, res, next){
     try {
         const orderId = req.query.id
@@ -117,6 +121,7 @@ exports.cancel_order_user = async function(req, res, next){
     }
 }
 
+// handles order return request
 exports.return_order_user = async function(req, res, next){
     try {
         const orderId = req.query.id;
@@ -128,6 +133,7 @@ exports.return_order_user = async function(req, res, next){
     }
 }
 
+// handles cancel order return request
 exports.cancel_return_order = async function(req, res, next){
     try {
         const orderId = req.query.id;
@@ -179,13 +185,11 @@ exports.apply_coupon = async function(req, res, next){
         if(coupon.categories.length){
             const couponCategories = coupon.categories.map( x => x._id.toString())
             for(let item of order.products){
-                console.log(item.product.category)
                 if(couponCategories.includes(item.product.category?._id.toString())){
                     let currPrice = item.price * item.quantity
                     if(!expensiveProductInCategory || currPrice  > totalPrice){
                         totalPrice = currPrice;
                         expensiveProductInCategory = item;
-                        console.log("This is a iterations of category")
                     }
                 }
             }
@@ -199,7 +203,6 @@ exports.apply_coupon = async function(req, res, next){
         }
 
 
-        console.log(expensiveProductInCategory, "This is the expensive product in the category")
         if(!expensiveProductInCategory){
             throw new Error("The coupon can't be applied on any of the products in the cart.")
         }
@@ -210,7 +213,6 @@ exports.apply_coupon = async function(req, res, next){
         discount = Math.ceil(discount)
         expensiveProductInCategory.coupon.discount = discount;
         expensiveProductInCategory.coupon.isApplied = true;
-        console.log(discount, expensiveProductInCategory.quantity)
         expensiveProductInCategory.payable = expensiveProductInCategory.price - discount;
         discount *=  expensiveProductInCategory.quantity
 
@@ -250,7 +252,6 @@ exports.remove_coupon = async function(req, res, next){
         const products = order.products;
         let couponAppliedProduct;
         products.forEach( x => {
-            console.log(x)
             if(x.coupon.isApplied ){
                 couponAppliedProduct = x;
             }
@@ -281,6 +282,7 @@ exports.remove_coupon = async function(req, res, next){
     }
 }
 
+// return the details of the order which can be used to create the invoice
 exports.get_order_invoice = async function(req, res, next){
     try {
         const {orderId} = req.query
@@ -294,7 +296,6 @@ exports.get_order_invoice = async function(req, res, next){
         })
         if(!order) throw new Error("Order Id not valid.")
 
-        console.log(typeof order._id.toString())
         const invoiceNumber = order._id.toString().slice(-5)
         res.send({isSuccess: true, order, invoiceNumber})
     } catch (error) {
@@ -303,6 +304,7 @@ exports.get_order_invoice = async function(req, res, next){
 }
 
 // ADMIN
+// return the different states a order can be, which is used to updated the order state
 exports.get_order_stages = async function(req, res, next){
     try {
         const orderStages = await orderModel.fetch_all_stages();
@@ -312,6 +314,7 @@ exports.get_order_stages = async function(req, res, next){
     }
 }
 
+// retuns all the orders (pagination)
 exports.get_all_order = async function(req, res, next){
     try {
         const p = req.query.pno;
@@ -322,6 +325,7 @@ exports.get_all_order = async function(req, res, next){
     }
 }
 
+// handles order state update 
 exports.patch_update_status = async function(req, res, next){
     try {
         const {id, status, cancelReason} = req.query;
@@ -342,6 +346,7 @@ exports.patch_update_estimateDeliveryDate = async function(req, res, next){
     }
 }
 
+// returns the order list based on the search key, matching is done on user credential and product name
 exports.get_serach_result = async function(req, res, next){
     try {
         const searchKey = req.query.searchKey;
@@ -354,6 +359,7 @@ exports.get_serach_result = async function(req, res, next){
     }
 }
 
+// returns the complete details of a order (price and discount, address, user details, product details etc)
 exports.get_complete_order_details = async function(req, res, next){
     try {
         const id = req.params.id

@@ -18,6 +18,7 @@ const { createOrder, verify_payment } = require("../Middleware/onlinePayment");
 
 const associate = "user";
 
+// renders the home page
 exports.get_home = async function(req, res){
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.render('./authViews/userHome.ejs', {product: {}})
@@ -28,8 +29,9 @@ exports.get_home = async function(req, res){
 const twoPFiveSeconds = 2.5 * 60 // seconds
 const threeDaysSeconds = 3 * 24 * 60 * 60;
 
+// create jwt token with user details
+// parameters are userdetails, maxAge which is the expiry time for the token, status user current state, and user id
 function createToken(userDetails, maxAge, status, id){
-    console.log(status)
     return jwt.sign({
         userDetails, 
         status,
@@ -39,23 +41,20 @@ function createToken(userDetails, maxAge, status, id){
     })
 }
 
-
+// render login page
 exports.get_login = (req, res)=>{
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.render("authViews/signup-login", {page: "login", associate})
 }
 
-// 
+// render signin page
 exports.get_signup = async(req, res)=>{
-
     const refCode = req.query.ref
-
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.render('authViews/signup-login', {page : "signup", associate, superSet: "signup", refCode})
 }
 
-
-
+// login request handler, checkes the credentails and if valid sets authentication token for otp page
 exports.post_login = async(req, res, next)=> {
     const {credentials, password} = req.body;
     try {
@@ -66,7 +65,6 @@ exports.post_login = async(req, res, next)=> {
         const {response, id} = await sentOtpHelper({userDetails: result});
         response.then( d=> {
             const jwtToken = createToken({_id: result._id ,credentials: result.credentials, name: result.name}, twoPFiveSeconds, "awaiting-otp", id);
-            console.log(jwtToken)
             res.cookie('uDAO', jwtToken, { maxAge: twoPFiveSeconds * 1000 ,  httpOnly: true});
             
             res.send({isSuccess: true})
@@ -79,6 +77,7 @@ exports.post_login = async(req, res, next)=> {
     }
 }
 
+// clears user authentication token and redirects to login page
 exports.get_logout = async(req, res, next) =>{
     try {
         res.clearCookie("uDAO");
@@ -88,33 +87,27 @@ exports.get_logout = async(req, res, next) =>{
     }
 }
 
-
+// render otp page, associate is to specify whether it is admin or user
 exports.get_otpAuthPage = async (req, res)=>{
-    console.log("here")
     const superSet = req.query.superSet
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.render('authViews/signup-login', {page: "otpAuth", associate, superSet})
 }
 
-
+// creates user document, check referal code, and apply authentication token.
 exports.post_signin = async(req, res, next) => {
     const userDetails = req.body;
     try{
-        console.log(userDetails)
         const {referalCode} = userDetails;
         if(referalCode){
             delete userDetails.referalCode
             let referedByUser = await userModel.findOne({referalCode});
-            console.log("this is the user who refered me", referedByUser)
             if(!referedByUser){
                 throw new Error("Invalid refereal code.")
             }
             userDetails.referedBy = referedByUser._id;
         }
-
         const user = await userModel.create(userDetails);
-
-        
 
         const {response, id} = await sentOtpHelper({userDetails: user});
         response.then( d => {
@@ -129,10 +122,9 @@ exports.post_signin = async(req, res, next) => {
     catch(error){
         next(error);
     }
-    
-    // res.send("here")
 }
 
+// sends otp to user credential (email or password)
 exports.get_otp = async(req, res) => {
     const result = req.userDetails;
     const {response, id} =await sentOtpHelper(result);
@@ -146,28 +138,28 @@ exports.get_otp = async(req, res) => {
     })
 }
 
+// based on which credential type user uses to sign in (email or mobile) send the otp to it.
 async function sentOtpHelper(result){
     const { id, otp} = await createOtpDocument(result.userDetails.credentials.email ? result.userDetails.credentials.email : result.userDetails.credentials.mobile.number, "user")
-        const message = `${otp} is the One Time Password(OTP) for registration. OTP is valid for next 2 minutes and 30 seconds. Plese do not share with anyone`;
-        if(result.userDetails.credentials.email){
-            return {id, response: sendResponseMail(message, otp, result.userDetails.credentials.email, result.userDetails.name)}
+    const message = `${otp} is the One Time Password(OTP) for registration. OTP is valid for next 2 minutes and 30 seconds. Plese do not share with anyone`;
+    if(result.userDetails.credentials.email){
+        return {id, response: sendResponseMail(message, otp, result.userDetails.credentials.email, result.userDetails.name)}
 
-        }else{
-            // return {id, response: sendOtp(message)}
-            console.log(otp)
-            return {id, response: new Promise((res, rej)=>{res()})}
-        }
+    }else{
+        // return {id, response: sendOtp(message)}
+        return {id, response: new Promise((res, rej)=>{res()})}
+    }
 }
 
-
+// verifies the otp user sends and updates the jwt token.
+// if the user is signing in then user account status is updated, if referal code is used referal reward is given to refered user.
 exports.post_verifyOtp = async(req, res) => {
     // find the doucment using user cookie
     const {otp} = req.body;
     try {
         const result = req.userDetails;
-        
-        const otpDoc = await otpModel.findDoc(result.id, otp);
 
+        const otpDoc = await otpModel.findDoc(result.id, otp);
         const {userDetails} = result;
         if(!userDetails.isVerified){
             let amount = 100;
@@ -188,10 +180,8 @@ exports.post_verifyOtp = async(req, res) => {
                     beforeBalance: referedUser.wallet.balance, 
                     afterBalance: newBalance
                 };
-                console.log(transactionDoc)
 
                 referedUser = await userModel.findByIdAndUpdate(referedUserId, {$set: {"wallet.balance" : newBalance}, $push: {"wallet.transactions" : transactionDoc}})
-                console.log(referedUser);
             }
             userModel.verify(userDetails._id)
         }
@@ -203,11 +193,13 @@ exports.post_verifyOtp = async(req, res) => {
     }
 }
 
+// render forgot password page
 exports.get_forgotPassword = async(req, res) => {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.render("authViews/signup-login", {page: "forgot-password", associate})
 }
 
+// takes the user credential and sends resent otp link if user exists
 exports.post_forgotPassword = async(req, res, next)=>{
     try {
         const {credentail} = req.body;
@@ -222,6 +214,7 @@ exports.post_forgotPassword = async(req, res, next)=>{
     }
 }
 
+// render reset password page
 exports.get_resetPassword = async(req, res, next)=>{
     try {
         // take key
@@ -233,6 +226,7 @@ exports.get_resetPassword = async(req, res, next)=>{
     }
 }
 
+// updates user password
 exports.post_resetPassword = async(req, res, next)=>{
     try {
         const {newPassword} = req.body
@@ -248,8 +242,7 @@ exports.post_resetPassword = async(req, res, next)=>{
     }
 }
 
-
-
+// render user settings page
 exports.get_settings = async(req, res, next) =>{
     try {
         const userId = req.userDetails.userDetails._id;
@@ -305,11 +298,11 @@ exports.patch_address = async(req, res, next)=>{
     }
 }
 
+// updare user name handler
 exports.patch_updateName = async(req, res, next)=>{
     try {
         const id = req.userDetails.userDetails._id;
         const newName = req.body.name;
-        console.log(newName)
         const user = await userModel.update_name(id, newName);
         const jwtToken = createToken({_id: user._id, credentials: user.credentials, name: user.name},  threeDaysSeconds, "loggedIn");
         res.cookie('uDAO', jwtToken, { maxAge: 3 * 24 * 60 * 60 * 1000 ,  httpOnly: true});
@@ -323,7 +316,6 @@ exports.patch_changePassword = async(req, res, next)=>{
     try {
         const {currentPassword, newPassword} = req.body;
         const result = await userModel.change_password(req.userDetails.userDetails._id, currentPassword, newPassword)
-        console.log(result)
         res.send({isSuccess: true, result})
     } catch (error) {
         next(error)
@@ -365,6 +357,7 @@ exports.post_removeFromWishList = async(req, res, next) => {
     }
 }
 
+// render wishlist page
 exports.get_wishList = async(req, res, next)  => {
     try {
         const userId = req.userDetails.userDetails._id;
@@ -385,6 +378,7 @@ exports.get_wishList = async(req, res, next)  => {
 
 
 // WALLET
+// render wallet page with wallet balace and credential
 exports.get_wallet = async(req, res, next) => {
     try {
         const {userDetails} =  req.userDetails
@@ -394,6 +388,8 @@ exports.get_wallet = async(req, res, next) => {
         next(error)
     }
 }
+
+// find user with credential, used in wallet send money option
 exports.get_userWallet = async(req, res, next) => {
     try {
         const credentail = req.query.userCredential
@@ -413,6 +409,7 @@ exports.get_userWallet = async(req, res, next) => {
     }
 }
 
+// return the transaction history of the user 
 exports.get_transactionHistory = async(req, res, next) => {
     try {
         const pageNo = req.query.pno;
@@ -426,8 +423,6 @@ exports.get_transactionHistory = async(req, res, next) => {
                 "wallet.transactions.transactionId.category" : currentWindow
             }   
         }
-        console.log(req.query)
-        console.log(windowFilterQuery)
         
         const pipeline = [
             {
@@ -450,22 +445,22 @@ exports.get_transactionHistory = async(req, res, next) => {
             {
                 $match: windowFilterQuery
             }
-            // {
-            //     $lookup: {
-            //         from: 'Users', 
-            //         localField: "wallet.transactions.transactionId.receiverID", 
-            //         foreignField: "_id", 
-            //         as: "wallet.transactions.transactionId.receiverID"
-            //     }
-            // },  
-            // {
-            //     $lookup: {
-            //         from: 'Users', 
-            //         localField: "wallet.transactions.transactionId.senderID", 
-            //         foreignField: "_id", 
-            //         as: "wallet.transactions.transactionId.senderID"
-            //     }
-            // },  
+            ,{
+                $lookup: {
+                    from: 'users', 
+                    localField: "wallet.transactions.transactionId.receiverID", 
+                    foreignField: "_id", 
+                    as: "wallet.transactions.transactionId.receiverID"
+                }
+            },  
+            {
+                $lookup: {
+                    from: 'users', 
+                    localField: "wallet.transactions.transactionId.senderID", 
+                    foreignField: "_id", 
+                    as: "wallet.transactions.transactionId.senderID"
+                }
+            } 
             ,{
                 $sort: {
                     "wallet.transactions.transactionId.timestamp": -1
@@ -520,7 +515,6 @@ exports.get_transactionHistory = async(req, res, next) => {
 
         const user = await userModel.aggregate(pipeline)
         const totalCount = await userModel.aggregate(pipeline2)
-
         res.send({isSuccess: true, data: user[0], totalCount: totalCount[0]})
     } catch (error) {   
         next(error)
@@ -538,18 +532,19 @@ exports.get_wallet_balance = async(req, res, next) => {
     }
 }
 
+// user can add money to the wallet user razor pay, this controller handlers razorpay payment order creation
 exports.create_paymentOrder = async(req, res, next) => {
     try {
         const amount = req.body.amount;
         if(amount <= 0) throw new Error("The amount is not valid")
         const orderId = await createOrder(amount)
-        console.log(orderId)
         res.send({isSuccess: true, orderId})
     } catch (error) {
         next(error)
     }
 }
 
+// verify payment and add money to wallet and updates transaction history 
 exports.verify_payment = async (req, res, next) =>{
     try {
         if(verify_payment(req.body.response)){
@@ -569,11 +564,9 @@ exports.verify_payment = async (req, res, next) =>{
                 beforeBalance: user.wallet.balance, 
                 afterBalance: newBalance
             };
-            console.log(transactionDoc)
             user.wallet.transactions.push(transactionDoc)
 
             user = await userModel.findByIdAndUpdate(user._id, {$set: {"wallet.balance" : newBalance}, $push: {"wallet.transactions" : transactionDoc}})
-            console.log(user);
             res.send({isSuccess: true, data: newBalance})
         }
         else{
@@ -585,12 +578,12 @@ exports.verify_payment = async (req, res, next) =>{
 
 }
 
+// send money to user handler, checks whether user has necessary amount in the wallet and if user has
+// it is send to the beneficiary wallet and transaction history is updated for both the users
 exports.post_sentToUser = async(req, res, next) => {
     try {
         const senderID = req.userDetails.userDetails._id
         const {receiverID, amount} = req.body;
-
-        console.log(senderID, receiverID, amount)
 
         if(!receiverID || !amount) throw new Error("Please provide necessary details");
 
@@ -623,24 +616,22 @@ exports.post_sentToUser = async(req, res, next) => {
         const updatedSender = await userModel.findByIdAndUpdate(senderID, {$set: {"wallet.balance" : sender.wallet.balance - amount}, $push: {"wallet.transactions" : senderTransactionDoc}}, {new: true})
         const updatedReceiver = await userModel.findByIdAndUpdate(receiverID, {$set: {"wallet.balance" : receiver.wallet.balance + amount}, $push: {"wallet.transactions" : receiverTransactionDoc}}, {new: true})
         
-        console.log(updatedSender, updatedReceiver)
         res.send({isSuccess: true, data: updatedSender.wallet.balance})
     } catch (error) {
         next(error)
     }
 }
 
-
+// if user has referal code then returns it
+// else creates a referal code and returns it
 exports.get_referals = async(req, res, next)=>{
     try {
         const userId = req.userDetails.userDetails._id;
         let user = await userModel.findById(userId);
         let {referalCode} = user;
         if(!referalCode){
-            console.log("This is from referal and the user doesn't contain any referal code")
             referalCode = await referalModel.get_string();
             user = await userModel.findByIdAndUpdate(userId, {$set: {referalCode}}, {new: true})
-            console.log(user.referalCode)
             referalCode = user.referalCode;
         }
         const referalLink = "http://localhost:3000/signin?ref=" + referalCode;

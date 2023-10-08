@@ -18,6 +18,9 @@ const associate = 'admin'
 const twoPFiveSeconds = 2.5 * 60 // seconds
 const threeDaysSeconds = 3 * 24 * 60 * 60;
 
+// creates a jwt and 
+// the parameters are the user details, max age of the token, status(state of user), and id of user
+// returns the created token, 
 function createToken(userDetails, maxAge, status, id){
     const obj = {
         userDetails, 
@@ -29,10 +32,9 @@ function createToken(userDetails, maxAge, status, id){
     })
 }
 
-
+// handles admin login post request, checks user credentials and redirect to home if valid.
 exports.post_adminLogin = async function (req, res){
     const {credentials, password} = req.body
-    console.log(req.body);
     try {
         if(!credentials.email || !password) throw new Error("Provide proper details");
         const user = await adminModel.login(credentials, password);
@@ -48,21 +50,26 @@ exports.post_adminLogin = async function (req, res){
     }
 }
 
+// render user home page
 exports.get_adminHome = async function (req, res){
-
     res.render("adminViews/adminDashboard")
 }
 
+// render admin login page
 exports.get_adminLogin = async function (req, res){
-
+    // the same login page is used for both admin and normal user
+    // so the page variable specifies that it is a login page and the associate specifies that it is admin
     res.render('authViews/signup-login', {page: "login", associate: "admin"})
 }
 
+// render otp page
 exports.get_otpAuth = async function (req, res){
     const superSet = req.query.superSet
     res.render('authViews/signup-login', {page: "otpAuth", associate: "admin", superSet})
 }
 
+// sends otp to the email and sends a sucess message
+// and also set the jwt token
 exports.get_otp = async function (req, res){
     const {adminDetails} = req
     try{
@@ -80,17 +87,19 @@ exports.get_otp = async function (req, res){
 
 }
 
+// create otp and save that in the collection
+// sends the otp to the user
 async function setOtpHelper(adminDetails){
     const {id, otp} = await createOtpDocument(adminDetails.userDetails.email, "admin")
     const message = `${otp} is the One Time Password(OTP) for registration. OTP is valid for next 2 minutes and 30 seconds. Plese do not share with anyone`;
     return {id, response: sendResponseMail(message, otp, adminDetails.userDetails.email, adminDetails.userDetails.name)}
 }
 
+// varify user otp and update cookie
 exports.post_verifyOtp = async function(req, res){
     const {otp} = req.body;
     try{
         const result = req.adminDetails;
-        console.log("post_verifcation", result)
         const otpDoc = await otpModel.findDoc(result.id, otp)
         const jwtToken = createToken(result.userDetails, threeDaysSeconds, loggedStats)
         res.cookie('aDAO', jwtToken, {maxAge: threeDaysSeconds * 1000, httpOnly: true})
@@ -104,6 +113,8 @@ exports.post_verifyOtp = async function(req, res){
 
 
 // USER RELATED CONTROLLERS
+
+// return user list (pagination) along with the total number of users
 exports.get_users = async function(req, res){
     try {
         const pageNumber = req.query.pno
@@ -118,6 +129,7 @@ exports.get_users = async function(req, res){
     }
 }
 
+// return complete user details (address etc) to show in the user details modal
 exports.get_complete_userDetails = async function(req, res, next){
     try {
         const id = req.params.id;
@@ -128,8 +140,8 @@ exports.get_complete_userDetails = async function(req, res, next){
     }
 }
 
+// blocks the spcified user.
 exports.patch_blockUser = async function(req, res){
-    
     try {
         if(!req.body.userId) throw new Error("Please provide necessary information: ID")
         const status = await userModels.blockUser(req.body.userId);
@@ -143,14 +155,14 @@ exports.patch_blockUser = async function(req, res){
         res.send({isSuccess: false, errorMessage: error.message})
     }
 }
+
+// fetch the user with name matches the search key and returs it (pagination)
 exports.get_user_serach_result = async function(req, res, next){
     try {
         const searchKey = req.query.searchKey;
         const page = req.query.pno;
-        console.log(req.query)
         if(!searchKey) throw new Error("Please provide necessary informations")
         const {user, totalCount} = await userModels.get_search_result(searchKey, page)
-        console.log(user.length)
         res.send({isSuccess: true,data: user, totalCount});
     } catch (error) {
         next(error)
@@ -159,6 +171,7 @@ exports.get_user_serach_result = async function(req, res, next){
 
 
 // CATEGORY RELATED CONTROLLERS
+// return category list (pagination)
 exports.get_categories = async function(req, res){
     try {
         const pageNumber = req.query.pno
@@ -169,6 +182,7 @@ exports.get_categories = async function(req, res){
     }
 }
 
+// return name of all the categories
 exports.get_all_categories = async function(req, res){
     try {
         const categories = await categoryModel.find({}, {category: 1});
@@ -207,6 +221,7 @@ exports.delete_category = async function(req, res){
     }
 }
 
+// update category
 exports.patch_updateRequest = async function(req, res){
     const id = req.params.id;
     const fieldsToUpdate = req.body.diff
@@ -220,15 +235,13 @@ exports.patch_updateRequest = async function(req, res){
     }
 }
 
+// return the category which matchs the search key
 exports.get_category_serach_result = async function(req, res, next){
     try {
         const searchKey = req.query.searchKey;
         const page = req.query.pno;
-        console.log(page)
-        console.log(req.query)
         if(!searchKey) throw new Error("Please provide necessary informations")
         const {user, totalCount} = await categoryModel.get_search_result(searchKey, page)
-        console.log(user.length)
         res.send({isSuccess: true,data: user, totalCount});
     } catch (error) {
         next(error)
@@ -239,11 +252,13 @@ exports.get_category_serach_result = async function(req, res, next){
 
 
 // forgot password and reset password
+// render forgot password page where user can enter email
 exports.get_forgotPassword = async(req, res) => {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.render("authViews/signup-login", {page: "forgot-password", associate})
 }
 
+// validate the email user provided (checks whether the email exists) sends a reset password link to user email 
 exports.post_forgotPassword = async(req, res, next)=>{
     try {
         const {credentail} = req.body;
@@ -251,11 +266,13 @@ exports.post_forgotPassword = async(req, res, next)=>{
         const newToken = await forgotPasswordTokensModel.create_new_token(credentail.email)
         const link = "http://localhost:3000/admin/reset_password/"+newToken.key
         sendPasswordResetMail(userName, link, credentail.email)
+        res.send({isSuccess: true})
     } catch (error) {
         next(error)
     }
 }
 
+// render reset password page
 exports.get_resetPassword = async(req, res, next)=>{
     try {
         // take key
@@ -267,6 +284,7 @@ exports.get_resetPassword = async(req, res, next)=>{
     }
 }
 
+// updates password and sets authentication token, then redirect to admin home
 exports.post_resetPassword = async(req, res, next)=>{
     try {
         const {newPassword} = req.body
@@ -282,7 +300,7 @@ exports.post_resetPassword = async(req, res, next)=>{
     }
 }
 
-
+// returns information required to populate dashboard
 exports.get_dashboard_details = async function(req, res, next){
     try {
         const productCount = await productModel.countDocuments();
@@ -305,7 +323,6 @@ exports.get_dashboard_details = async function(req, res, next){
                 }
             }
         ])
-        console.log(order)
         res.send({isSuccess: true, productCount, userCount, orderCount, totalRevinue: order[0].totalRevinue    })
 
         
@@ -314,6 +331,7 @@ exports.get_dashboard_details = async function(req, res, next){
     }
 }
 
+// return admin dashboard chart data 
 exports.get_dashboard_monothy = async(req, res, next)=>{
     try {
         const year = parseInt(req.query.year)
@@ -365,7 +383,6 @@ exports.get_dashboard_monothy = async(req, res, next)=>{
                 _id: 1
             }
         }])
-        console.log(order)
         res.send({isSuccess: 1, order})
     } catch (error) {
         next(error)

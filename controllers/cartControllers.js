@@ -1,21 +1,21 @@
 const userCartModel = require("../Models/userCartModel");
 const userModels = require("../Models/userModels");
 
+// updated products in the card, this function is responsible for adding, removing, incrementing and decrements
+// products in the cart
 exports.post_edit_product =  async function(req, res, next){
     try {
         const userId = req.userDetails.userDetails._id;
         const {productId, quantity} = req.body;
-        console.log(productId, quantity)
         const cartId = await userModels.getCart(userId);
-        console.log("this is the cart id", cartId)
         const userCart = await userCartModel.edit_product(cartId, productId, quantity);
-        console.log(userCart)
         res.send({isSuccess: true})
     } catch (error) {      
         next(error)
     }
 }    
 
+// return products details in a users cart
 exports.get_cart_products = async function(req, res, next){
     try {
         const userId = req.userDetails.userDetails._id; 

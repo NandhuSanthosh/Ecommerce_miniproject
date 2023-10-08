@@ -1,6 +1,6 @@
 const CountryCode = require('../Models/countryCodeModel')
 
+// returns the country codes, used in user signin page
 exports.get_countyCode = (req, res)=> {
-    console.log("here")
-   res.send(CountryCode.getCountryCodes());
+    res.send(CountryCode.getCountryCodes());
 }

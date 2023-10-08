@@ -1,5 +1,6 @@
 const couponModal = require('../Models/couponModel')
 
+
 exports.post_createCoupon = async function(req, res, next){
     try {
         let {code, discountType, percentage, amount, expiry, minSpend, categories, usageLimit} = req.body
@@ -34,7 +35,7 @@ exports.post_createCoupon = async function(req, res, next){
     }
 }
 
-
+// update coupon details
 exports.patch_coupon = async function(req, res, next){
     try {
         const {couponId} = req.query
@@ -58,7 +59,6 @@ exports.patch_coupon = async function(req, res, next){
         }
 
         let discountUpdateQuery = {}
-        console.log(req.body)
         if(discountType == 'percentage-discount'){
             if(!percentage) throw new Error("Please provide percentage when changing the discount type to percentage-discount.")
             if(percentage > 100 || percentage < 0) throw new Error("Please enter a valid percentage")
@@ -101,6 +101,7 @@ exports.patch_coupon = async function(req, res, next){
     }
 }
 
+// get coupon list (pagination)
 exports.get_coupons = async function(req, res, next){
     try {
         let pno = req.query.pno || 0;
@@ -121,6 +122,7 @@ exports.get_coupons = async function(req, res, next){
     }
 }
 
+// returns coupon list based on serach key
 exports.get_coupons_search_result = async function(req, res, next){
     try {
         let pno = req.query.pno || 0;

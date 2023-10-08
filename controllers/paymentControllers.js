@@ -8,6 +8,7 @@ var instance = new Razorpay({
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
+// create a razor pay payment order which can be used to make a payment and returns the order details
 exports.post_create_order = (req, res, next)=>{
     try {
         const amount = req.body.amount * 100;
@@ -17,11 +18,9 @@ exports.post_create_order = (req, res, next)=>{
         };
         instance.orders.create(options, function(err, order) {
             if(!err){
-                console.log(order.id);
                 res.send({isSuccess: true, orderId : order.id})
             }
             else{
-                console.log(err)
                 res.send({isSuccess: false, errorMessage: err.message})
             }
         });
@@ -30,6 +29,7 @@ exports.post_create_order = (req, res, next)=>{
     }
 }
 
+// verifies the payment request
 exports.post_verify = (req, res, next)=>{
     let body = req.body.response.razorpay_order_id +
     '|' + req.body.response.razorpay_payment_id;

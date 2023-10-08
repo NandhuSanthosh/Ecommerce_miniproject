@@ -95,7 +95,7 @@ function sendMoneyHandler(e){
 function transactionHistoryHandler(e){
     let container = document.querySelector('.transactionHistory')
     changeWindow(e.target, "Transaction History", container)
-    fetchAndDisplay(0);
+    fetchAndDisplay();
 }
 function referalHandler(e){
     let container = document.querySelector('.referalContainer');
@@ -223,7 +223,7 @@ function createTransactionTile({transactions}){
         details = "Referal Reward"
     }
     else{
-        details = userTransactionDoc.type == "credit" ? transactionSpecificDoc.senderID.name : transactionSpecificDoc.receiverID.name
+        details = userTransactionDoc.type == "credit" ? transactionSpecificDoc.senderID[0].name : transactionSpecificDoc.receiverID[0].name
     }
 
     console.log(details)
