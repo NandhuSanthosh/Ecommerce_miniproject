@@ -74,6 +74,9 @@
                     </select>
                 </div>
             </div>
+            <div class="mt-2">
+                <button class="btn btn-light report-download-btn">Download Report</button>
+            </div>
             <div class="chart-details-container mt-3">
                 <div class="h4">This chart displays order statistics.</div>
             </div>
@@ -94,6 +97,8 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/jspdf-invoice-template@1.4.0/dist/index.js"></script>
     <script>
         fetch("http://localhost:3000/admin/get_dashboard_details")
         .then( response => response.json())
@@ -128,6 +133,7 @@
 
         let ctx = document.getElementById('chart').getContext('2d');
         let myChart;
+        let reportPeriodMonth, reportPeriodYear;
 
 
         const monthlyFilter = document.querySelector('#monthy-filter')
@@ -154,6 +160,8 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.isSuccess) {
+                        reportPeriodMonth = monthlyFilter.value;
+                        reportPeriodYear = yearlyFilter.value
                         // const lables =  populateLable(this.value, yearlyFilter.value)
                         // const dataReport = new Array(lables.length).fill(0);
                         // data.order.forEach( x => {
@@ -269,6 +277,155 @@
             return arr;
         }
     
+        document.querySelector(".report-download-btn").addEventListener('click', ()=>{
+            // const { order, invoiceNumber } = data;
+            // const date = formatDate(new Date());
+            let period;
+            console.log(reportPeriodMonth, reportPeriodYear)
+            let url;
+            if(filterType.value == "yearly"){
+                period = reportPeriodYear;
+                url = `http://localhost:3000/admin/get_report_data?year=${reportPeriodYear}`
+            }
+            else{
+                url =  `http://localhost:3000/admin/get_report_data?month=${reportPeriodMonth}&year=${reportPeriodYear}`
+                period = monthsWithDays[monthlyFilter.value - 1].month;
+            }
+
+            console.log(url)
+            fetch(url)
+            .then( response => response.json())
+            .then( data => {
+                if(data.isSuccess){
+                    let reportData = data.data.map( x => {
+                        const a = {};
+                        a.product = x.products.map( pro => pro.productName);
+                        a.totalPrice = x.totalPrice;
+                        a.payable = x.payable
+                        a.discount = x.discount
+                        return a;
+                    })
+                    downloadReport(reportData)
+                }
+            })
+
+            function downloadReport(reportData, totalPrice, totalDiscount){
+                let reportOf = "September"
+                const order = {
+                    products: [{
+                        product: {
+                            brand: "Brand",
+                            modelName: "Model name"
+                        }, 
+                        price: 5555, 
+                        payable: 4444, 
+                        quantity: 22, 
+                    }]
+                }
+                var props = {
+                    outputType: jsPDFInvoiceTemplate.OutputType.Save,
+                    returnJsPDFDocObject: true,
+                    fileName: "Report " + period,
+                    orientationLandscape: false,
+                    compress: true,
+                    logo: {
+                        src: "http://localhost:3000/accets/userHeaderLogo.jpeg",
+                        type: 'PNG', //optional, when src= data:uri (nodejs case)
+                        width: 30.33, //aspect ratio = width/height
+                        height: 20.66,
+                        margin: {
+                            top: 0, //negative or positive num, from the current position
+                            left: 0 //negative or positive num, from the current position
+                        }
+                    },
+                    stamp: {
+                        inAllPages: true, //by default = false, just in the last page
+                        src: "https://raw.githubusercontent.com/edisonneza/jspdf-invoice-template/demo/images/qr_code.jpg",
+                        type: 'JPG', //optional, when src= data:uri (nodejs case)
+                        width: 20, //aspect ratio = width/height
+                        height: 20,
+                        margin: {
+                            top: 0, //negative or positive num, from the current position
+                            left: 0 //negative or positive num, from the current position
+                        }
+                    },
+                    business: {
+                        name: "Fortnite Web store Sales Report",
+                        address: "Kazhakuttam, North Trivandrum, Kerala",
+                        phone: "+91 6238973581",
+                        email: "forniteWebStore@gmail.com",
+                        email_1: "nandhusanthosh87@gmail.com",
+                        website: "www.fornite.com",
+                    },
+                    contact: {
+                        // label: "Invoice issued for:",
+                        // name: "order.userAddressId.name",
+                        // address: "order.userAddressId.addressLine1",
+                        // phone: "order.userAddressId.mobileNumber",
+                    },
+                    invoice: {
+                        // label: "Invoice #: ",
+                        // num: "invoiceNumber",
+                        invGenDate: "Invoice Date: " + new Date().toLocaleDateString(),
+                        headerBorder: false,
+                        tableBodyBorder: false,
+                        header: [
+                            {
+                                title: "#",
+                                style: {
+                                    width: 10
+                                }
+                            },
+                            {
+                                title: "Title",
+                                style: {
+                                    width: 70
+                                }
+                            },
+                            { title: "Price" },
+                            { title: "Discount" },
+                            { title: "Total" }
+                        ],
+                        table: Array.from(reportData, (item, index) => ([
+                            index + 1,
+                            item.product,
+                            item.totalPrice,
+                            item.totalPrice - item.payable,
+                            item.payable,
+                        ])),
+                        additionalRows: [{
+                            col1: 'Total:',
+                            col2: totalPrice,
+                            style: {
+                                fontSize: 14 //optional, default 12
+                            }
+                        },
+                        {
+                            col1: 'Discount:',
+                            col2: totalDiscount,
+                            style: {
+                                fontSize: 10 //optional, default 12
+                            }
+                        },
+                        {
+                            col1: 'SubTotal:',
+                            col2: totalPrice - totalDiscount,
+                            style: {
+                                fontSize: 10 //optional, default 12
+                            }
+                        }],
+                    },
+                    // footer: {
+                        // text: "The invoice is created on a computer and is valid without the signature and stamp.",
+                    // },
+                    pageEnable: true,
+                    pageLabel: "Page ",
+                };
+                var pdfObject = jsPDFInvoiceTemplate.default(props);
+            }
+        }
+        )
+
         const currentDate = new Date();
         monthlyFilter.value = currentDate.getMonth() + 1;
         yearlyFilter.value = currentDate.getFullYear();

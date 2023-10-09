@@ -75,8 +75,8 @@ function createProductTileOne(product){
                             ${product.brand + " " + product.modelName}
                         </div>
                         <div class="product-price-details">
-                            <span class="payable-price">$${price}</span>
-                            <span class="line-through og-price">$${product.actualPrice}</span>
+                            <span class="payable-price">₹${price}</span>
+                            <span class="line-through og-price">₹${product.actualPrice}</span>
                         </div>
                         <div>
                             <span class="proudct-discount">${discount}% off</span>

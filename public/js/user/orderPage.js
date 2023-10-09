@@ -8,7 +8,7 @@ const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Fri
 const cancelationOptions = ["I found a better deal elsewhere.", "I no longer need the product.", "I ordered the wrong item by mistake.", "The estimated delivery time is too long."]
 const returnOptions = ["The item arrived in a damaged or defective condition.", "The product received does not match the one ordered.", "The product did not meet the expected quality or performance standards.", "The product is missing components or accessories."]
 
-let currentFilter = "orders"
+let currentFilter = "orders" 
 
 function createOrderTile(order){
     const template = createOrderTemplate(order)

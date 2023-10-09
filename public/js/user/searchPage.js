@@ -14,13 +14,14 @@ function createProductTile(product){
     // console.log(product)
     let price = product.actualPrice / 100 * (100 - ((product.category?.offer || 0) + product.discount))
     if(price < 0) price = 0;
+    price = Math.floor(price)
     let discount = (product.category?.offer || 0) + product.discount;
     if(discount > 100) discount = 100;
 
     console.log((product.category?.offer || 0) + product.discount, product.category?.offer || 0, product.discount)
     
     const element = `<div class="image_container">
-                    <img src="${product.images[0]}" alt="">
+                    <img src="${product.images[0]}" alt=""> 
                 </div>
                 <div class="details p-3">
                     <div class="product-name">
@@ -30,8 +31,8 @@ function createProductTile(product){
                     </div> 
                     <div class="rating"></div>
                     <div class="prices d-flex gap-2">
-                        <div class="currentprice">₹${price}</div>
-                        <div class="actualprice">M.R.P: ₹${product.actualPrice.toLocaleString()}</div>
+                        <div class="currentprice">₹${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                        <div class="actualprice">M.R.P: ₹${product.actualPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                         <div class="discount">(${discount}% off)</div>
                     </div>
                     <div class="spacalities_brand">
