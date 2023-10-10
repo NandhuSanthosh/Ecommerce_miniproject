@@ -38,5 +38,6 @@ mongoose
   );
 
 app.listen(process.env.PORT || process.env.PORT_NUMBER, "0.0.0.0", () => {
+  console.log("Port : ", process.env.PORT, "PORT NUMBER : ", procuess.env.PORT_NUMBER);
   console.log("Server is up on port : ", process.env.PORT || process.env.PORT_NUMBER);
 });
