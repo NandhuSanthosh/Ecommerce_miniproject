@@ -292,7 +292,7 @@ exports.post_forgotPassword = async (req, res, next) => {
       credentail.email || credentail.mobile
     );
     if (credentail.email) {
-      const link = "http://nandhu.shop/reset_password/" + newToken.key;
+      const link = "http://localhost:3000/reset_password/" + newToken.key;
       sendPasswordResetMail(userName, link, credentail.email);
     }
   } catch (error) {
@@ -781,7 +781,7 @@ exports.get_referals = async (req, res, next) => {
       );
       referalCode = user.referalCode;
     }
-    const referalLink = "http://nandhu.shop/signin?ref=" + referalCode;
+    const referalLink = "http://localhost:3000/signin?ref=" + referalCode;
     res.send({ isSuccess: true, referalCode, referalLink });
   } catch (error) {}
 };

@@ -293,7 +293,7 @@ class Settings {
     const currPass = currentPassword.value;
     const newPass = newPassword.value;
 
-    fetch("http://nandhu.shop/change_password", {
+    fetch("http://localhost:3000/change_password", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -407,7 +407,7 @@ class Settings {
   updateNameEvent() {
     const newName = username.value.trim();
     // request
-    fetch("http://nandhu.shop/update_name", {
+    fetch("http://localhost:3000/update_name", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -439,7 +439,7 @@ class Settings {
     if (isValid) {
       // request
       const body = { addressDetails: updatedFields };
-      fetch("http://nandhu.shop/add_address", {
+      fetch("http://localhost:3000/add_address", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -488,7 +488,7 @@ class Settings {
       const { isValid, updatedFields } = this.findUpdatedFields();
       if (isValid) {
         const body = { updatedData: updatedFields };
-        await fetch("http://nandhu.shop/edit_address/" + id, {
+        await fetch("http://localhost:3000/edit_address/" + id, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -599,7 +599,7 @@ class Settings {
     return async () => {
       const status = confirm("Do you really want to delete the address.");
       if (status) {
-        fetch("http://nandhu.shop/delete_address/" + id, {
+        fetch("http://localhost:3000/delete_address/" + id, {
           method: "DELETE",
         })
           .then((response) => response.json())

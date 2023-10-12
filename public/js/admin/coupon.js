@@ -155,7 +155,7 @@ class CoupenHandlers {
   searchCouponHandler() {
     const key = searchCouponInput.value;
     console.log(key);
-    const url = "http://nandhu.shop/admin/search_coupon?searchKey=" + key;
+    const url = "http://localhost:3000/admin/search_coupon?searchKey=" + key;
     this.dataFetchApiEndPoint = url;
     fetch(url)
       .then((response) => response.json())
@@ -190,7 +190,7 @@ class CoupenHandlers {
   async getAllCategory() {
     if (!this.category.length)
       this.category = await fetchData(
-        "http://nandhu.shop/admin/get_all_categories"
+        "http://localhost:3000/admin/get_all_categories"
       );
     console.log(this.category);
     return this.category;

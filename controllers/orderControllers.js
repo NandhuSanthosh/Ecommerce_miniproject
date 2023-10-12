@@ -76,7 +76,7 @@ exports.post_checkout = async function (req, res, next) {
       discount,
       isFreeDelivery
     );
-    const link = "http://nandhu.shop/order/get_checkout_page/" + orderDoc;
+    const link = "http://localhost:3000/order/get_checkout_page/" + orderDoc;
     res.send({ isSuccess: true, redirect: link });
   } catch (error) {
     next(error);
@@ -120,7 +120,7 @@ exports.patch_complete_order = async function (req, res, next) {
       paymentMethod,
       req.userDetails.userDetails._id
     );
-    const link = "http://nandhu.shop/order/get_orders";
+    const link = "http://localhost:3000/order/get_orders";
     res.send({ isSuccess: true, redirect: link });
   } catch (error) {
     next(error);

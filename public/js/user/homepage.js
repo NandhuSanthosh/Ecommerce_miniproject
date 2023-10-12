@@ -1,5 +1,5 @@
 async function loader() {
-  const topSectionUrl = "http://nandhu.shop/highlights/get_top_section";
+  const topSectionUrl = "http://localhost:3000/highlights/get_top_section";
   const highlights = await fetchHighlights(topSectionUrl);
   if (highlights) {
     const section = createSection(highlights);
@@ -7,7 +7,7 @@ async function loader() {
     document.querySelector("main").append(section);
   }
   const fillerContent = await fetchHighlights(
-    "http://nandhu.shop/highlights/get_highlights"
+    "http://localhost:3000/highlights/get_highlights"
   );
   fillerContent.forEach((x) => {
     const section = createSection(x);
@@ -67,7 +67,7 @@ function createProductTileOne(product) {
   if (discount > 100) discount = 100;
 
   const template = `<a href="${
-    "http://nandhu.shop/product_details/" + product._id
+    "http://localhost:3000/product_details/" + product._id
   }" class="product_link">
             <div class="product-image-container">
                 <img width="100%" src="${product.images[0]}" alt="">

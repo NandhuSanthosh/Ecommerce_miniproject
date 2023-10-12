@@ -75,7 +75,9 @@ function createOrderTile(order) {
   returnSubmitBtn.addEventListener("click", returnOrderHandler(order._id, div));
   cancelBtn.addEventListener("click", cancelReturnHandler(order._id, div));
   complete_order_btn.addEventListener("click", () => {
-    location.assign("http://nandhu.shop/order/get_checkout_page/" + order._id);
+    location.assign(
+      "http://localhost:3000/order/get_checkout_page/" + order._id
+    );
   });
   invoiceDownloadBtn.addEventListener("click", () => {
     downloadInvoice(order._id);
@@ -109,7 +111,7 @@ function createOrderTile(order) {
 }
 
 function downloadInvoice(orderId) {
-  fetch("http://nandhu.shop/order/get_invoice?orderId=" + orderId, {
+  fetch("http://localhost:3000/order/get_invoice?orderId=" + orderId, {
     method: "get",
   })
     .then((response) => response.json())
@@ -124,7 +126,7 @@ function downloadInvoice(orderId) {
           orientationLandscape: false,
           compress: true,
           logo: {
-            src: "http://nandhu.shop/accets/userHeaderLogo.jpeg",
+            src: "http://localhost:3000/accets/userHeaderLogo.jpeg",
             type: "PNG", //optional, when src= data:uri (nodejs case)
             width: 30.33, //aspect ratio = width/height
             height: 20.66,
@@ -538,7 +540,7 @@ function removeOrderHandler(orderId, container) {
       container,
       container.querySelector(".cancelation-reason-input-field")
     );
-    const url = `http://nandhu.shop/order/delete_order?id=${orderId}&cancelReason=${reason}`;
+    const url = `http://localhost:3000/order/delete_order?id=${orderId}&cancelReason=${reason}`;
     fetch(url, {
       method: "DELETE",
     })
@@ -573,7 +575,7 @@ function returnOrderHandler(orderId, container) {
       container,
       container.querySelector(".return-reason-input-field")
     );
-    const url = `http://nandhu.shop/order/return_order?id=${orderId}&returnReason=${reason}`;
+    const url = `http://localhost:3000/order/return_order?id=${orderId}&returnReason=${reason}`;
     fetch(url, {
       method: "PATCH",
     })
@@ -606,7 +608,7 @@ function cancelReturnHandler(orderId) {
     const status = confirm("Do you really want to cancel the return request.");
     if (!status) return;
 
-    const url = `http://nandhu.shop/order/cancel_return?id=${orderId}`;
+    const url = `http://localhost:3000/order/cancel_return?id=${orderId}`;
     fetch(url, {
       method: "PATCH",
     })
@@ -705,7 +707,7 @@ function loader(orders = userOrders) {
 }
 
 function populateRecomendations() {
-  fetch("http://nandhu.shop/highlights/get_top_section")
+  fetch("http://localhost:3000/highlights/get_top_section")
     .then((response) => response.json())
     .then((data) => {
       if (data.isSuccess) {
@@ -744,7 +746,7 @@ function createRecomentedProductTile(product) {
         <img src="${product.images[0]}" alt="">
     </div>
     <div class="rec-details-cont col">
-        <a href="http://nandhu.shop/product_details/${product._id}">
+        <a href="http://localhost:3000/product_details/${product._id}">
             <div class="name">${product.name}</div>
         </a>
         <div class="price fw-bold">₹ ${price}</div>

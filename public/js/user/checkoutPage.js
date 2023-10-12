@@ -136,7 +136,7 @@ function applyCoupenCode(orderId) {
       return;
     }
 
-    fetch("http://nandhu.shop/order/apply_coupon?orderId=" + orderId, {
+    fetch("http://localhost:3000/order/apply_coupon?orderId=" + orderId, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -178,7 +178,7 @@ function addCouponAppliedInfo(coupon) {
 
 function removeCoupenCode(orderId) {
   return (e) => {
-    fetch("http://nandhu.shop/order/remove_coupon?orderId=" + orderId, {
+    fetch("http://localhost:3000/order/remove_coupon?orderId=" + orderId, {
       method: "PATCH",
     })
       .then((response) => response.json())
@@ -255,7 +255,7 @@ function addAddressEventHandler() {
   if (isValid) {
     // request
     const body = { addressDetails: updatedFields };
-    fetch("http://nandhu.shop/add_address", {
+    fetch("http://localhost:3000/add_address", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -315,7 +315,7 @@ function findUpdatedFieldsNewAddress() {
 }
 function paymentMethodConfig() {
   //wallet balance update
-  fetch("http://nandhu.shop/wallet/get_balance")
+  fetch("http://localhost:3000/wallet/get_balance")
     .then((response) => response.json())
     .then((data) => {
       if (data.isSuccess) {
@@ -393,7 +393,7 @@ async function placeOrderHandler() {
 }
 
 function completeCheckout(addressId, paymentMethod) {
-  fetch("http://nandhu.shop/order/complete_order/" + order._id, {
+  fetch("http://localhost:3000/order/complete_order/" + order._id, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -429,7 +429,7 @@ function completeCheckout(addressId, paymentMethod) {
 }
 
 async function createOrder() {
-  return await fetch("http://nandhu.shop/payment/create_order", {
+  return await fetch("http://localhost:3000/payment/create_order", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -482,7 +482,7 @@ function showPaymentModal(orderId, addressId) {
 }
 
 function verifyPayment(response, addressId) {
-  fetch("http://nandhu.shop/payment/verify", {
+  fetch("http://localhost:3000/payment/verify", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
