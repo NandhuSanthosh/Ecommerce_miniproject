@@ -107,7 +107,7 @@ class CategoryHandler {
   searchProductHandler() {
     const key = categorySearchInput.value;
     console.log(key);
-    const url = "http://localhost:3000/admin/search_category?searchKey=" + key;
+    const url = "http://nandhu.shop/admin/search_category?searchKey=" + key;
     this.dataFetchApiEndPoint = url;
     fetch(url)
       .then((response) => response.json())
@@ -145,7 +145,7 @@ class CategoryHandler {
     const cate = addCategory.value;
     const desc = addDescription.value;
     const offerValue = offer.value;
-    const url = "http://localhost:3000/admin/create_category";
+    const url = "http://nandhu.shop/admin/create_category";
     try {
       if (cate == "" || desc == "") {
         const errorMessage = `Please provide all the necessary information : ${
@@ -294,7 +294,7 @@ class CategoryHandler {
   updateCategoryEvent(value) {
     return () => {
       let status = this.validateUpdateCategoryValues(value);
-      const url = "http://localhost:3000/admin/update_category/" + value._id;
+      const url = "http://nandhu.shop/admin/update_category/" + value._id;
 
       try {
         if (!status) throw new Error("Please enter valid values.");
@@ -345,7 +345,7 @@ class CategoryHandler {
         "Do you really want to delete the category, this action cannot be undone."
       );
       if (status) {
-        const url = "http://localhost:3000/admin/delete_category";
+        const url = "http://nandhu.shop/admin/delete_category";
         fetch(url, {
           method: "delete",
           headers: {

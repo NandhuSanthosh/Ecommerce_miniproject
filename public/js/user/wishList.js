@@ -73,8 +73,7 @@ function createTile(product) {
 function deleteCartItem(productId) {
   return () => {
     fetch(
-      "http://localhost:3000/wishlist/remove_from_wishList?productId=" +
-        productId,
+      "http://nandhu.shop/wishlist/remove_from_wishList?productId=" + productId,
       {
         method: "DELETE",
       }
@@ -115,7 +114,7 @@ function loader() {
 }
 
 function populateRecomendations() {
-  fetch("http://localhost:3000/highlights/get_top_section")
+  fetch("http://nandhu.shop/highlights/get_top_section")
     .then((response) => response.json())
     .then((data) => {
       if (data.isSuccess) {
