@@ -67,7 +67,7 @@ function createProductTileOne(product) {
   if (discount > 100) discount = 100;
 
   const template = `<a href="${
-    "http://localhost:3000/product_details/" + product._id
+    "http://nandhu.shop/product_details/" + product._id
   }" class="product_link">
             <div class="product-image-container">
                 <img width="100%" src="${product.images[0]}" alt="">
