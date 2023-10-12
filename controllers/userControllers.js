@@ -199,6 +199,7 @@ async function sentOtpHelper(result) {
       : result.userDetails.credentials.mobile.number,
     "user"
   );
+  console.log(otp);
   const message = `${otp} is the One Time Password(OTP) for registration. OTP is valid for next 2 minutes and 30 seconds. Plese do not share with anyone`;
   if (result.userDetails.credentials.email) {
     return {

@@ -1,3 +1,2 @@
-let str = "ab";
-str.append("hh");
-console.log(str)
+let a = "nandhu";
+console.log(a + 1)
