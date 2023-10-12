@@ -60,9 +60,9 @@ function credentailInputEvent(field) {
 
 function getRequestUrl() {
   if (associate == "admin") {
-    return "http://localhost:3000/admin/forgot_password";
+    return "http://nandhu.shop/admin/forgot_password";
   } else {
-    return "http://localhost:3000/forgot_password";
+    return "http://nandhu.shop/forgot_password";
   }
 }
 

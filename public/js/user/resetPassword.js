@@ -29,13 +29,13 @@ function resetPasswordHandler() {
 function getUrls() {
   if (associate == "admin") {
     return {
-      url: "http://localhost:3000/admin/reset_password/",
-      successUrl: "http://localhost:3000/admin/",
+      url: "http://nandhu.shop/admin/reset_password/",
+      successUrl: "http://nandhu.shop/admin/",
     };
   }
   return {
-    url: "http://localhost:3000/reset_password/",
-    successUrl: "http://localhost:3000/",
+    url: "http://nandhu.shop/reset_password/",
+    successUrl: "http://nandhu.shop/",
   };
 }
 
@@ -43,7 +43,7 @@ function changePasswordHandler() {
   const currPass = currentPassword.value;
   const newPass = newPassword.value;
 
-  fetch("http://localhost:3000/change_password", {
+  fetch("http://nandhu.shop/change_password", {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",

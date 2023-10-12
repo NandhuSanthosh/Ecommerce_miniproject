@@ -14,7 +14,7 @@ backBtn.addEventListener("click", (e) => {
 });
 
 function redirectPage() {
-  const baseUrl = "http://localhost:3000/";
+  const baseUrl = "http://nandhu.shop/";
   const logout = "/?bthp=true";
   let route;
   console.log(associate, superSet);
@@ -55,9 +55,9 @@ async function requestOtp() {
 
 function getRequestOtpUrl() {
   if (associate == "user") {
-    return "http://localhost:3000/request-otp";
+    return "http://nandhu.shop/request-otp";
   } else if (associate == "admin") {
-    return "http://localhost:3000/admin/request-otp";
+    return "http://nandhu.shop/admin/request-otp";
   }
 }
 
@@ -89,13 +89,13 @@ function sendOtpVerificationRequest() {
 function getOtpVerificationUrls() {
   if (associate == "admin") {
     return {
-      requestUrl: "http://localhost:3000/admin/verify-otp?superSet=" + superSet,
-      successUrl: "http://localhost:3000/admin/",
+      requestUrl: "http://nandhu.shop/admin/verify-otp?superSet=" + superSet,
+      successUrl: "http://nandhu.shop/admin/",
     };
   } else if (associate == "user") {
     return {
-      requestUrl: "http://localhost:3000/verify-otp?superSet=" + superSet,
-      successUrl: "http://localhost:3000/",
+      requestUrl: "http://nandhu.shop/verify-otp?superSet=" + superSet,
+      successUrl: "http://nandhu.shop/",
     };
   }
 }

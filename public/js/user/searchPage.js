@@ -116,7 +116,7 @@ function getData(e) {
   const searchKey = productSearchInput.value;
 
   if (searchKey && searchKey != "") {
-    const url = `http://localhost:3000/get_search_result?searchKey=${searchKey}&p=0`;
+    const url = `http://nandhu.shop/get_search_result?searchKey=${searchKey}&p=0`;
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
