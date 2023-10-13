@@ -417,6 +417,7 @@ class Settings {
       .then((response) => response.json())
       .then((data) => {
         if (data.isSuccess) {
+          userDetails.name = newName;
           showModal("Name sucessfully updated!");
         } else {
           showModal(data.errorMessage);
@@ -436,6 +437,7 @@ class Settings {
   addAddressEventHandler() {
     const { isValid, updatedFields, error } =
       this.findUpdatedFieldsNewAddress();
+    console.log("address is valid " + isValid);
     if (isValid) {
       // request
       const body = { addressDetails: updatedFields };
