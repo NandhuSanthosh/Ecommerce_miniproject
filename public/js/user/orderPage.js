@@ -546,8 +546,8 @@ function removeOrderHandler(orderId, container) {
       .then((data) => {
         if (data.isSuccess) {
           Swal.fire({
-            icon: "error",
-            title: "Oops...",
+            icon: "success",
+            title: "Success",
             text: "Order sucessfully cancelled",
             // footer: '<a href="">Why do I have this issue?</a>'
           });
@@ -581,8 +581,8 @@ function returnOrderHandler(orderId, container) {
       .then((data) => {
         if (data.isSuccess) {
           Swal.fire({
-            icon: "error",
-            title: "Oops...",
+            icon: "success",
+            title: "Returned",
             text: "Order return request sucessfully send.",
             // footer: '<a href="">Why do I have this issue?</a>'
           });
@@ -614,8 +614,8 @@ function cancelReturnHandler(orderId) {
       .then((data) => {
         if (data.isSuccess) {
           Swal.fire({
-            icon: "error",
-            title: "Oops...",
+            icon: "success",
+            title: "Request Canceled!",
             text: "Order return request is canceled.",
             // footer: '<a href="">Why do I have this issue?</a>'
           });
