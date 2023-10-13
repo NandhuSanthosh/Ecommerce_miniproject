@@ -418,6 +418,7 @@ class Settings {
       .then((data) => {
         if (data.isSuccess) {
           userDetails.name = newName;
+          nameUpdateBtn.classList.add("disabled");
           showModal("Name sucessfully updated!");
         } else {
           showModal(data.errorMessage);
