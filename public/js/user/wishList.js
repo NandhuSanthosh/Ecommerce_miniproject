@@ -122,6 +122,7 @@ function populateRecomendations() {
         const recomentedContainer = document.querySelector(
           ".recomented-container .products-container"
         );
+        recomentedContainer.innerHTML = "";
         recomentedProducts.map((product) => {
           recomentedContainer.append(createRecomentedProductTile(product));
         });
@@ -153,7 +154,7 @@ function createRecomentedProductTile(product) {
         <img src="${product.images[0]}" alt="">
     </div>
     <div class="rec-details-cont col">
-        <a href="">
+        <a href="http://nandhu.shop/product_details/${product._id}">
             <div class="name">${product.name}</div>
         </a>
         <div class="price fw-bold">₹ ${price}</div>
