@@ -510,8 +510,9 @@ class Settings {
             }
           });
       } else {
-        const errorString = error.reduce((acc, x) => acc + x + "<br>", "");
-        showModal(errorString);
+        showModal(
+          "Check the verify the fields you just updated, some data is invalid."
+        );
       }
     };
   }
