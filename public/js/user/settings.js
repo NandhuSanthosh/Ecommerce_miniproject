@@ -437,7 +437,6 @@ class Settings {
   addAddressEventHandler() {
     const { isValid, updatedFields, error } =
       this.findUpdatedFieldsNewAddress();
-    console.log("address is valid " + isValid);
     if (isValid) {
       // request
       const body = { addressDetails: updatedFields };
@@ -510,6 +509,9 @@ class Settings {
               // show failure
             }
           });
+      } else {
+        const errorString = error.reduce((acc, x) => acc + x + "<br>", "");
+        showModal(errorString);
       }
     };
   }
