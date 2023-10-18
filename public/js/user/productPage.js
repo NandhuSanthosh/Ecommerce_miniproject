@@ -5,7 +5,9 @@ document
   .addEventListener("click", addToWishListHandler);
 
 function addToWishListHandler() {
-  fetch("http://nandhu.shop/wishlist/add_to_wishList?productId=" + product._id)
+  fetch(
+    "http://nandhu.shop/wishlist/add_to_wishList?productId=" + product._id
+  )
     .then((response) => {
       if (response.redirected) {
         Swal.fire({

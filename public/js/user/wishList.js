@@ -73,7 +73,8 @@ function createTile(product) {
 function deleteCartItem(productId) {
   return () => {
     fetch(
-      "http://nandhu.shop/wishlist/remove_from_wishList?productId=" + productId,
+      "http://nandhu.shop/wishlist/remove_from_wishList?productId=" +
+        productId,
       {
         method: "DELETE",
       }

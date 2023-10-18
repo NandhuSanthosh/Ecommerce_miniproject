@@ -1,0 +1,37 @@
+<div class="orderSectionContainer">
+
+    <div class="orderSectionHeader d-flex align-items-center justify-content-between mx-5 my-2">
+        <div class="headerText">
+            Orders
+        </div>
+        <div class="orderTableControllers d-flex gap-2 align-items-center">
+            <div class="orderSeachCancel">
+                <button class="btn fs-6 cancel-search-btn order d-none">
+                    search <span class="fw-bold">x</span>
+                </button>
+            </div>
+            <div class="orderTableSearch me-3 position-relative" >
+                <input id="orderSearchInput" class="form-control rounded" placeholder='Search'
+                    style="min-width: 225px" />
+                <i class="bi bi-search search-icon" id="orderSearchButton"></i>
+            </div>
+        </div>
+    </div> 
+
+
+    <table class="table orderTable">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Products</th>
+                <th scope="col">User</th>
+                <th scope="col" class="">Total Price</th>
+                <th scope="col">Status</th>
+                <th scope="col"></th>
+            </tr>   
+        </thead>
+        <tbody id="orderTableBody">
+
+        </tbody>
+    </table>
+</div>

@@ -1,2 +1,1 @@
-let a = "nandhu";
-console.log(a + 1)
+console.log(10000 < "Infinity")

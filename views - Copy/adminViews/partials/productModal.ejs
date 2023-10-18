@@ -1,0 +1,136 @@
+<!-- Modal -->
+
+
+
+<div class="modal fade" id="productModal" data-backdrop="static" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <img src="/accets/form-bg3.png" alt="">
+            </div>
+            <div class="modal-body p-2 p-md-4 p-lg-5">
+                <div class="modal-body-header">
+                    <h5 class="modal-title" id="modalheader">
+                        Add Product
+                    </h5>
+                </div>
+                <form>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="form-group">
+                                <label for="category">Name</label>
+                                <textarea class="form-control input-field" id="product_name"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Brand</label>
+                                <input type="text" class="form-control input-field" id="product_brand" rows="3">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Model Name</label>
+                                <input type="text" class="form-control input-field" id="product_model" rows="3">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Color</label>
+                                <input type="text" class="form-control input-field" id="product_color" rows="3">
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-group">
+                                <label for="description">Actual Price</label>
+                                <input type="text" class="form-control input-field" id="product_actualPrice" rows="3">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Current Price</label>
+                                <input type="text" class="form-control input-field" id="product_currentPrice" rows="3">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Discount</label>
+                                <input type="text" class="form-control input-field" id="product_discount" rows="3">
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row mb-3">
+                                <div class="col-6 form-check d-flex align-items-center">
+                                    <input class="form-check-input form-checkbox" type="checkbox"
+                                        id="product_isFreeDelivery">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        Free Delivery
+                                    </label>
+                                </div>
+                                <div class="col-6 form-group  d-flex align-items-center">
+                                    <input type="checkbox" class="form-check-input form-checkbox"
+                                        id="product_isPayOnDelivery">
+                                    <label class="form-check-label" for="description">Pay on Delivery</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Replacement</label>
+                                <input type="text" class="form-control  input-field" id="product_replacement" rows="3">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Warranty</label>
+                                <input type="text" class="form-control input-field" id="product_warranty" rows="3">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Quantity</label>
+                                <input type="text" class="form-control input-field" id="product_quantity" rows="3">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">About Product</label>
+                                <button id="add_about" type="button" class="btn btn-secondary">Add</button>
+                                <div id="aboutProdcutList">
+                                    <input type="text" class="form-control input-field" rows="3">
+                                    <input type="text" class="form-control input-field" rows="3">
+                                    <input type="text" class="form-control input-field" rows="3">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item mb-0" id="category_container">
+                            <label for="product_category">Category</label>
+                            <select class="form-control" name="category" id="product_category">
+                                <option value="">Choose category</option>
+                                <!-- <option value="two">two</option>
+                                <option value="three">three</option>
+                                <option value="four">four</option>
+                                <option value="five">five</option>
+                                <option value="six">six</option>
+                                <option value="seven">seven</option> -->
+                            </select>
+                        </li>
+                        <li class="list-group-item" id="imageConatiner">
+                        </li>
+                        <li class="list-group-item" id="addImageBtnContainer">
+                            <div class="mb-3">
+                                <label for="imageInput" class="form-label file_input_label input-field">
+                                    <span class="file_intput_button">Add Image</span>
+                                </label>
+                                <input id="imageInput" class="form-control d-none" type="file">
+                                <button id="addImageBtn" type="button"
+                                    class="btn btn-primary disabled my-2">Add</button>
+                                <div id="imagePreviewContainer"></div>
+                            </div>
+                        </li>
+                        
+                    </ul>
+                </form>
+                <div class="modal-btns d-flex justify-content-between">
+                    <div>
+                        <button type="button" id="deleteProduct" class="btn btn-danger d-none" data-dismiss="modal">Delete</button>
+                        <button type="button" id="updateProduct" class="btn btn-warning d-none" data-dismiss="modal">Update</button>
+                        <button type="button" id="addProduct" class="btn btn-primary d-none">Add</button>
+                    </div>
+                    <div>
+                        <button id="modalCloseBtn" type="button" class="btn bg-shade-three" data-dismiss="modal">Close</button>
+                        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <img class="m-0" src="/accets/form-bg3.png" alt="">
+            </div>
+    </div>
+</div>
+</div>
+
+<link rel="stylesheet" href="../css/productModal.css">

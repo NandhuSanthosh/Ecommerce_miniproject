@@ -75,7 +75,9 @@ function createOrderTile(order) {
   returnSubmitBtn.addEventListener("click", returnOrderHandler(order._id, div));
   cancelBtn.addEventListener("click", cancelReturnHandler(order._id, div));
   complete_order_btn.addEventListener("click", () => {
-    location.assign("http://nandhu.shop/order/get_checkout_page/" + order._id);
+    location.assign(
+      "http://nandhu.shop/order/get_checkout_page/" + order._id
+    );
   });
   invoiceDownloadBtn.addEventListener("click", () => {
     downloadInvoice(order._id);

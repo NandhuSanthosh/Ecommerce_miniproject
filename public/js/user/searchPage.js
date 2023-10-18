@@ -1,30 +1,42 @@
 let currentProductSet = product;
 const filteredList = product.data.map((x) => x._id);
+let filter = {
+  brandFilter: [],
+  discountFilter: 0,
+  priceFilter: {
+    starting: 0,
+    ending: "Infinity",
+  },
+  deliveryFilter: false,
+};
 
-function render(currentProductSet = product) {
+function render(products = product) {
+  currentProductSet = products;
+  console.log("the current product set is from render: ", currentProductSet)
   const resultContainer = document.querySelector("#result-product-container");
+  const noProductContainer = document.querySelector(".no-result-container");
+
   resultContainer.innerHTML = "";
-  currentProductSet.data.forEach((x, index) => {
-    const productCard = createProductTile(x);
-    resultContainer.append(productCard);
-  });
+  
+  if (products.data.length) {
+    resultContainer.classList.remove("d-none");
+    noProductContainer.classList.add("d-none");
+    products.data.forEach((x, index) => {
+      const productCard = createProductTile(x);
+      resultContainer.append(productCard);
+    });
+  } else {
+    resultContainer.classList.add("d-none");
+    noProductContainer.classList.remove("d-none");
+  }
 }
 
 function createProductTile(product) {
   // console.log(product)
-  let price =
-    (product.actualPrice / 100) *
-    (100 - ((product.category?.offer || 0) + product.discount));
-  if (price < 0) price = 0;
-  price = Math.floor(price);
-  let discount = (product.category?.offer || 0) + product.discount;
-  if (discount > 100) discount = 100;
+  let ar = findPayable(product)
+  console.log(ar)
+  
 
-  console.log(
-    (product.category?.offer || 0) + product.discount,
-    product.category?.offer || 0,
-    product.discount
-  );
 
   const element = `<div class="image_container">
                     <img src="${product.images[0]}" alt=""> 
@@ -37,7 +49,7 @@ function createProductTile(product) {
                     </div> 
                     <div class="rating"></div>
                     <div class="prices d-flex gap-2">
-                        <div class="currentprice">₹${price.toLocaleString(
+                        <div class="currentprice">₹${product.payable.toLocaleString(
                           undefined,
                           { minimumFractionDigits: 2, maximumFractionDigits: 2 }
                         )}</div>
@@ -45,7 +57,7 @@ function createProductTile(product) {
                           undefined,
                           { minimumFractionDigits: 2, maximumFractionDigits: 2 }
                         )}</div>
-                        <div class="discount">(${discount}% off)</div>
+                        <div class="discount">(${product.finalDiscount}% off)</div>
                     </div>
                     <div class="spacalities_brand">
                         <div class="brand">Brand: Sony</div>
@@ -65,15 +77,18 @@ function configure() {
   productSearch.addEventListener("click", getData);
   render();
   populateBrandFilter();
+  filterEventListenerAdder();
 }
 
 function populateBrandFilter() {
   const brands = [];
   currentProductSet.data.map((x) => {
-    if (brands.indexOf(x.brand) === -1) {
-      brands.push(x.brand);
+    let brand = formatString(x.brand);
+    if (brands.indexOf(brand) === -1) {
+      brands.push(brand);
     }
   });
+  console.log(brands)
   const brandContainer = document.querySelector(".brand-filter-container");
   // appending brands
   brands.forEach((x) => {
@@ -83,33 +98,7 @@ function populateBrandFilter() {
             <label for="${x.toLowerCase()}">${x}</label>`;
     tile.innerHTML = template;
     brandContainer.append(tile);
-  });
-
-  // adding event listeners
-  const brandFilters = Array.from(
-    brandContainer.querySelectorAll('[name="brand"]')
-  );
-  brandFilters.forEach((x) => {
-    x.addEventListener("click", () => {
-      let currSelected = brandFilters.filter((x) => x.checked);
-      let selectedBrands = currSelected.map((x) => x.getAttribute("id"));
-      console.log(selectedBrands);
-      if (selectedBrands.length) {
-        let currData = {
-          data: currentProductSet.data.filter((x) => {
-            return selectedBrands.includes(x.brand.toLowerCase());
-          }),
-        };
-        // currData = currData.filter( x => {
-        //     filteredList.includes(x._id);
-        // })
-
-        render(currData);
-      } else {
-        render(currentProductSet);
-      }
-    });
-  });
+  })
 }
 
 function getData(e) {
@@ -126,87 +115,168 @@ function getData(e) {
   }
 }
 
-// price filter configuration
-const priceFilters = document.querySelectorAll('[name="price"]');
-priceFilters.forEach((x) => {
-  x.addEventListener("change", (e) => {
-    const starting = Number(e.target.dataset.start);
-    const ending = Number(e.target.dataset.end);
-    render({
-      data: currentProductSet.data.filter((x) => {
-        return x.currentPrice >= starting && x.currentPrice <= ending;
-      }),
+
+function filterEventListenerAdder(){
+  // brand filter
+  const brandFields = document.querySelectorAll('[name="brand"]');
+  brandFields.forEach( (x) => {
+    x.addEventListener("change", (e)=>{
+      if(e.target.checked) filter.brandFilter.push(e.target.id)
+      else filter.brandFilter = filter.brandFilter.filter( x => x != e.target.id)
+      updateFilter();
+
+    })
+  })
+  
+  // price filter configuration
+  const priceFilters = document.querySelectorAll('[name="price"]');
+  priceFilters.forEach((x) => {
+    x.addEventListener("change", (e) => {
+      const starting = Number(e.target.dataset.start);
+      let ending = Number(e.target.dataset.end);
+      if(ending == Infinity) ending = "Infinity"
+
+      filter.priceFilter = {
+        starting,
+        ending,
+      };
+      updateFilter();
     });
   });
-});
-
-// free delivery configuration
-const freeDelivery = document.querySelector("#payOnDelivery");
-freeDelivery.addEventListener("click", (e) => {
-  if (freeDelivery.checked) {
-    console.log("here");
-    render({
-      data: currentProductSet.data.filter((x) => {
-        return x.isFreeDelivery;
-      }),
-    });
-  } else {
-    render();
-  }
-});
-
-// discount filter configuration
-const discountFields = document.querySelectorAll('[name="discount"]');
-discountFields.forEach((x) => {
-  x.addEventListener("change", () => {
-    // console.log(currentProductSet)
-    render({
-      data: currentProductSet.data.filter((product) => {
-        const discount = product.category?.offer || 0 + product.discount;
-        console.log(discount);
-        return discount >= x.value;
-      }),
+  
+  // pay on delivery filter
+  const payOnDelivery = document.querySelector("#payOnDelivery");
+  payOnDelivery.addEventListener("click", (e) => {
+    if (payOnDelivery.checked) {
+      filter.deliveryFilter = true;
+    } else {
+      filter.deliveryFilter = false;
+    }
+    updateFilter();
+  });
+  
+  // discount filter configuration
+  const discountFields = document.querySelectorAll('[name="discount"]');
+  discountFields.forEach((x) => {
+    x.addEventListener("change", (e) => {
+      filter.discountFilter = e.target.value;
+      updateFilter();
     });
   });
-});
-
-// availability filter configuration
-const availabilityField = document.querySelector("#stockOnly");
-availabilityField.addEventListener("change", (e) => {
-  if (availabilityField.checked) {
-    console.log({
-      data: currentProductSet.data.filter((x) => {
-        return x.stock;
-      }),
-    });
-    render({
-      data: currentProductSet.data.filter((x) => {
-        return x.stock;
-      }),
-    });
-  }
-});
+  
+  // availability filter configuration
+  const availabilityField = document.querySelector("#stockOnly");
+  availabilityField.addEventListener("change", (e) => {
+    filter.availabilityFilter = e.target.checked;
+    updateFilter();
+  });
+  
+  
+}
 
 // price sort configuration
 const priceSortFields = document.querySelectorAll('[name="priceSort"]');
 priceSortFields.forEach((x) => {
-  x.addEventListener("change", (e) => {
-    let sortingFunc;
-    if (e.target.value == "acc") {
-      sortingFunc = accPriceSort;
+  x.addEventListener("change", sortProduct);
+})
+
+
+// sort the current product list
+function sortProduct(){
+  let sortingFunc;
+
+  let status;
+  for(let x of priceSortFields){
+      if(x.checked) {
+          status = x.value;
+          break;
+      }
+  }
+
+
+  if(!status){
+    render();
+    return;
+  }
+  console.log("This is the sort status from sort function: ", status)
+  if (status == "acc") {
+    sortingFunc = accPriceSort;
+  } else {
+    sortingFunc = decPriceSort;
+  }
+
+  console.log("the current product set is ", currentProductSet)
+  render({ data: currentProductSet.data.sort(sortingFunc) });
+}
+
+
+// function to sort in assending order
+function accPriceSort(a, b) {
+  return findPayable(a) - findPayable(b);
+}
+
+// function to sort in decending order
+function decPriceSort(a, b) {
+  return findPayable(b) - findPayable(a);
+}
+
+
+// calculates the price and total discount of a product
+function findPayable(a){
+  if(a.payable) return a.payable;
+  let categoryDiscount; 
+  if(Array.isArray(a.category)){
+    categoryDiscount = a.category[0].offer;
+  }
+  else{
+    categoryDiscount = a.category?.offer || 0
+  }
+  let discount = categoryDiscount + a.discount;
+  if (discount > 100) discount = 100;
+
+
+  let price =
+    (a.actualPrice / 100) *
+    (100 - discount);
+  if (price < 0) price = 0;
+  price = Math.floor(price);
+  a.payable = price;
+  a.finalDiscount = discount;
+  return price;
+}
+
+// fetch data from the server based on the filter
+function updateFilter() {
+  const searchKey = productSearchInput.value;
+  fetch("http://nandhu.shop/fetch_filtered_result", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ filter, searchKey }),
+  })
+  .then((response) => response.json())
+  .then((data) => {
+    if (data.isSuccess) {
+      console.log(data.products)
+      currentProductSet.data = data.products;
+      sortProduct();
+      // render({data: data.products})
     } else {
-      sortingFunc = decPriceSort;
+      alert(data.errorMessage);
+    }
+  });
+}
+
+// format a string into a praticular format (eg: "abc" => "Abc")
+function formatString(str) {
+    // Ensure the string is not empty
+    if (str.length === 0) {
+        return str;
     }
 
-    render({ data: currentProductSet.data.sort(sortingFunc) });
-  });
-
-  function accPriceSort(a, b) {
-    return a.currentPrice - b.currentPrice;
-  }
-  function decPriceSort(a, b) {
-    return b.currentPrice - a.currentPrice;
-  }
-});
+    // Convert the first character to uppercase and the rest to lowercase
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
 
 configure();

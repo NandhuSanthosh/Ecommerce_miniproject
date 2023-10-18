@@ -1,0 +1,154 @@
+<div class="userSectionContainer">
+
+    <div class="userSectionHeader d-flex align-items-center justify-content-between mx-5 my-2">
+        <div class="headerText">
+            Coupon
+        </div>
+        <div class="userTableControllers d-flex gap-2 align-items-center">
+            <!-- search tab -->
+            <div class="productSeachCancel">
+                <button class="btn fs-6 cancel-search-btn coupon d-none">
+                    search <span class="fw-bold">x</span>
+                </button>
+            </div>
+            <div class="userTableSearch me-3">
+                <input id="searchCouponInput" class="form-control rounded" placeholder='Search'
+                    style="min-width: 225px" />
+                <i class="bi bi-search search-icon " id="searchCouponBtn"></i>
+            </div>
+            <!-- Add Product -->
+            <div>
+                <button id="add_coupon_btn" type="button" class="btn btn-primary">Add Coupon+</button>
+            </div>
+        </div>
+    </div>
+
+
+    <table class="table userTable">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Code</th>
+                <th scope="col">Discount</th>
+                <th scope="col">Used Count</th>
+                <th scope="col">Active</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody id="coupenTableBody">
+
+
+        </tbody>
+    </table>
+</div>
+
+
+
+<!-- Modal -->
+
+
+
+<div class="modal fade" id="couponModal" data-backdrop="static" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header p-0">
+                <img width="100%" src="/accets/form-bg3.png" alt="">
+            </div>
+            <div class="modal-body p-2 p-md-4 p-lg-5">
+                <div class="modal-body-header">
+                    <h5 class="modal-title fw-bold" id="couponModalHeader" style="color: black">
+                        Coupon Details
+                    </h5>
+                </div>
+                <form>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="form-group">
+                                <label for="category">Coupon Code</label>
+                                <input class="form-control input-field" id="coupon_code">
+                            </div>
+                            <div class="form-group">
+                                <label for="coupon_category">Discount Type</label>
+                                <select class="form-control" name="category" id="coupon_discountType">
+                                    <option value="">Choose Discount type</option>
+                                    <option value="percentage-discount">Percentage Discount</option>
+                                    <option value="amount-discount">Amount Discount</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Discount</label>
+                                <input type="number" class="form-control input-field" id="coupon_discount" rows="3">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Number of coupon used</label>
+                                <input type="number" class="form-control input-field" id="coupon_numberOfUsed" rows="3" readonly>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <h5 class="modal-title mb-3" id="couponModalHeader" style="color: black">
+                                Restrictions
+                            </h5>
+                            <div class="form-group">
+                                <label for="description">Minimum Spend</label>
+                                <input type="number" class="form-control input-field" id="coupon_minSpend" rows="3" placeholder="Minimum Spend is 0">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Usage Limit</label>
+                                <input type="number" class="form-control input-field" id="coupon_useageLimit" rows="3" placeholder="Usage limit is infinite.">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Expiry Date</label>
+                                <input type="text" id="coupon_expiry_date" class="date-input" readonly placeholder="Expiry Date is infinite.">
+                            </div>
+                        </li>
+                        <li class="list-group-item mb-0" id="category_container">
+                            <label for="coupon_category">Category</label>
+                            <select class="form-control" name="coupon_category" id="coupon_category">
+                                <option value="">Choose category</option>
+
+                            </select>
+                            <div id="category_list_container">
+                                
+                            </div>
+                        </li>
+                        <li  class="list-group-item mb-0" id="user_container">
+                            <label for="coupon_category">Used Users</label>
+                            <div id="user_list_container">
+                                <div class="user-tile-container">
+                                    <span>Toys</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </form>
+                <div class="modal-btns d-flex justify-content-between mt-2">
+                    <div>
+                        <button type="button" id="activate_btn" class="btn btn-danger d-none"
+                            >Activate</button>
+                        <button type="button" id="deactivate_btn" class="btn btn-warning d-none"
+                            >Deactivate</button>
+                        <button type="button" class="btn btn-primary " id="update_button">Update</button>
+                        <button type="button" class="btn btn-primary " id="create_coupon_btn">Add</button>
+                    </div>
+                    <div>
+                        <button id="modalCloseBtn" type="button" class="btn bg-shade-three"
+                            data-dismiss="modal">Close</button>
+                        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between p-0">
+                <img class="m-0 w-100" src="/accets/form-bg3.png" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="../css/productModal.css">
+
+<script>
+    function displayCouponModal(){
+        $('#couponModal').modal();
+    }
+</script>

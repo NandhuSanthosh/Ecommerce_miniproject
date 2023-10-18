@@ -1,0 +1,48 @@
+<!-- Modal -->
+<div class="modal fade" id="userDetailsModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">User Details</h5>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="card-title mb-0" id="userDetailsName"></h5>
+                        </div>
+                        <p class="card-text" id="userDetailsCredentials">nandhusanthosh87@gmail.com</p>
+                    </div>
+
+                        <!-- TO SHOW USER ADDRESS -->
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="addressHeader mt-2 mb-3">
+                                    <span class="address-header">User Addresses</span>
+                                </div>
+                                <div class="addressesContainer">
+                                    <!-- js injection -->
+                                </div>
+                            </li>
+                            <!-- <li class="list-group-item">Dapibus ac facilisis in</li>
+                            <li class="list-group-item">Vestibulum at eros</li> -->
+                        </ul>
+                    <!-- <div class="card-body">
+                        <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a>
+                    </div> -->
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <div>
+                    <button type="button" id="blockUser" class="btn btn-danger" data-dismiss="modal">Block</button>
+                </div>
+                <div>
+                    <button id="modalCloseBtn"  type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

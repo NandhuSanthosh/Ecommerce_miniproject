@@ -3,9 +3,9 @@ const countryCodeValueField = document.getElementById("country-code-value");
 let countryCodes;
 async function getAllCountryCode() {
   if (!countryCodes) {
-    countryCodes = await fetch("http://nandhu.shop/utility/countryCodes").then(
-      (data) => data.json()
-    );
+    countryCodes = await fetch(
+      "http://nandhu.shop/utility/countryCodes"
+    ).then((data) => data.json());
   }
   return countryCodes;
 }

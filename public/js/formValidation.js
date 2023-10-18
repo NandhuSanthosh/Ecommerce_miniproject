@@ -174,7 +174,9 @@ signupBtn?.addEventListener("click", (e) => {
       .then((response) => response.json())
       .then((d) => {
         if (d.isSuccess) {
-          location.assign("http://nandhu.shop/otp-Auth?superSet=" + superSet);
+          location.assign(
+            "http://nandhu.shop/otp-Auth?superSet=" + superSet
+          );
         } else {
           showModel(d.errorMessage);
         }

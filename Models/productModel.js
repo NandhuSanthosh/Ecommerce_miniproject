@@ -146,7 +146,8 @@ productSchema.statics.get_single_product_details = async function(id){
 }
 
 productSchema.statics.get_search_result = async function(searchKey, page){
-    const docPerPage = 10;
+    const docPerPage = 100;
+    page = 0;
     const category = await categoryModel.find({category: { $regex: searchKey, $options: 'i' }}, {_id: 1})
     const categoryIds = category.map( x => x._id)
     console.log(categoryIds)
@@ -157,8 +158,9 @@ productSchema.statics.get_search_result = async function(searchKey, page){
         ]   
             , isDeleted: false};
     
-    const result = await this.find(query).skip(page * docPerPage).limit(docPerPage)
-    .populate("category", 'offer');
+    const result = await this.find(query)
+    // .skip(page * docPerPage).limit(docPerPage)
+    .populate("category", 'offer category');
     const totalProducts = await this.countDocuments(query)
     return {products: result, totalProducts};
 }

@@ -524,7 +524,8 @@ class RenderHandlers {
 
   searchOrderHandler() {
     const key = orderSearchInput.value;
-    const url = "http://nandhu.shop/admin/orders/search_order?searchKey=" + key;
+    const url =
+      "http://nandhu.shop/admin/orders/search_order?searchKey=" + key;
     this.dataFetchApiEndPoint = url;
     fetch(url)
       .then((response) => response.json())

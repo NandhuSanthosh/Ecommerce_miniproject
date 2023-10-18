@@ -1,0 +1,48 @@
+<!-- Modal -->
+<div class="modal fade" id="categoryDetailsModal" data-backdrop="static" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Category Details</h5>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <form>
+                            <div class="form-group"> 
+                                <label for="category">Category</label>
+                                <input type="email" class="form-control" id="category" >
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea class="form-control" id="description" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="offer">Offer(Percentage)</label>
+                                <div>
+                                    <input type="number" class="form-control" id="offer_details" rows="3" max="100" min="0">
+                                    <p class="offer-error d-none" style="font-size: 12px">Category value should be a positive number less than 100</p>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <div>
+                    <button id="modalCloseBtn" type="button" class="btn btn-secondary"
+                    data-dismiss="modal">Close</button>
+                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                </div>
+                <div>
+                    <button type="button" id="updateCategoryBtn" class="btn btn-warning disabled" data-dismiss="modal">Update</button>
+                    <button type="button" id="deleteCategoryBtn" class="btn btn-danger" data-dismiss="modal">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
