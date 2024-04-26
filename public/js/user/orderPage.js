@@ -76,7 +76,7 @@ function createOrderTile(order) {
   cancelBtn.addEventListener("click", cancelReturnHandler(order._id, div));
   complete_order_btn.addEventListener("click", () => {
     location.assign(
-      process.env.URL + "/order/get_checkout_page/" + order._id
+       "/order/get_checkout_page/" + order._id
     );
   });
   invoiceDownloadBtn.addEventListener("click", () => {
@@ -111,7 +111,7 @@ function createOrderTile(order) {
 }
 
 function downloadInvoice(orderId) {
-  fetch(process.env.URL + "/order/get_invoice?orderId=" + orderId, {
+  fetch( "/order/get_invoice?orderId=" + orderId, {
     method: "get",
   })
     .then((response) => response.json())
@@ -126,7 +126,7 @@ function downloadInvoice(orderId) {
           orientationLandscape: false,
           compress: true,
           logo: {
-            src: process.env.URL + "/accets/userHeaderLogo.jpeg",
+            src:  "/accets/userHeaderLogo.jpeg",
             type: "PNG", //optional, when src= data:uri (nodejs case)
             width: 30.33, //aspect ratio = width/height
             height: 20.66,
@@ -540,7 +540,7 @@ function removeOrderHandler(orderId, container) {
       container,
       container.querySelector(".cancelation-reason-input-field")
     );
-    const url = process.env.URL + `/order/delete_order?id=${orderId}&cancelReason=${reason}`;
+    const url =  `/order/delete_order?id=${orderId}&cancelReason=${reason}`;
     fetch(url, {
       method: "DELETE",
     })
@@ -575,7 +575,7 @@ function returnOrderHandler(orderId, container) {
       container,
       container.querySelector(".return-reason-input-field")
     );
-    const url = process.env.URL + `/order/return_order?id=${orderId}&returnReason=${reason}`;
+    const url =  `/order/return_order?id=${orderId}&returnReason=${reason}`;
     fetch(url, {
       method: "PATCH",
     })
@@ -608,7 +608,7 @@ function cancelReturnHandler(orderId) {
     const status = confirm("Do you really want to cancel the return request.");
     if (!status) return;
 
-    const url = process.env.URL + `/order/cancel_return?id=${orderId}`;
+    const url =  `/order/cancel_return?id=${orderId}`;
     fetch(url, {
       method: "PATCH",
     })
@@ -707,7 +707,7 @@ function loader(orders = userOrders) {
 }
 
 function populateRecomendations() {
-  fetch(process.env.URL + "/highlights/get_top_section")
+  fetch( "/highlights/get_top_section")
     .then((response) => response.json())
     .then((data) => {
       if (data.isSuccess) {

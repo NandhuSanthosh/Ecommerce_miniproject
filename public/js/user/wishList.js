@@ -73,7 +73,7 @@ function createTile(product) {
 function deleteCartItem(productId) {
   return () => {
     fetch(
-      process.env.URL + "/wishlist/remove_from_wishList?productId=" +
+       "/wishlist/remove_from_wishList?productId=" +
         productId,
       {
         method: "DELETE",
@@ -115,7 +115,7 @@ function loader() {
 }
 
 function populateRecomendations() {
-  fetch(process.env.URL + "/highlights/get_top_section")
+  fetch( "/highlights/get_top_section")
     .then((response) => response.json())
     .then((data) => {
       if (data.isSuccess) {

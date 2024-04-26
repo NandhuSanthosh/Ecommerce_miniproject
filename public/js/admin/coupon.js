@@ -155,7 +155,7 @@ class CoupenHandlers {
   searchCouponHandler() {
     const key = searchCouponInput.value;
     console.log(key);
-    const url = process.env.URL + "/admin/search_coupon?searchKey=" + key;
+    const url =  "/admin/search_coupon?searchKey=" + key;
     this.dataFetchApiEndPoint = url;
     fetch(url)
       .then((response) => response.json())
@@ -190,7 +190,7 @@ class CoupenHandlers {
   async getAllCategory() {
     if (!this.category.length)
       this.category = await fetchData(
-        process.env.URL + "/admin/get_all_categories"
+         "/admin/get_all_categories"
       );
     console.log(this.category);
     return this.category;

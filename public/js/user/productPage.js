@@ -6,7 +6,7 @@ document
 
 function addToWishListHandler() {
   fetch(
-    process.env.URL + "/wishlist/add_to_wishList?productId=" + product._id
+     "/wishlist/add_to_wishList?productId=" + product._id
   )
     .then((response) => {
       if (response.redirected) {
@@ -63,7 +63,7 @@ function buyEventListener() {
 
   console.log(body);
 
-  fetch(process.env.URL + "/order/post_checkout", {
+  fetch( "/order/post_checkout", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -110,7 +110,7 @@ function addToCartEventHandler() {
   const productId = product._id;
 
   // request
-  fetch(process.env.URL + "/add_routes", {
+  fetch( "/add_routes", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -1,5 +1,5 @@
 async function loader() {
-  const topSectionUrl = process.env.URL + "/highlights/get_top_section";
+  const topSectionUrl =  "/highlights/get_top_section";
   const highlights = await fetchHighlights(topSectionUrl);
   if (highlights) {
     const section = createSection(highlights);
@@ -7,7 +7,7 @@ async function loader() {
     document.querySelector("main").append(section);
   }
   const fillerContent = await fetchHighlights(
-    process.env.URL + "/highlights/get_highlights"
+     "/highlights/get_highlights"
   );
   fillerContent.forEach((x) => {
     const section = createSection(x);
@@ -67,7 +67,7 @@ function createProductTileOne(product) {
   if (discount > 100) discount = 100;
 
   const template = `<a href="${
-    process.env.URL + "/product_details/" + product._id
+     "/product_details/" + product._id
   }" class="product_link">
             <div class="product-image-container">
                 <img width="100%" src="${product.images[0]}" alt="">

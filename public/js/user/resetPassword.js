@@ -29,13 +29,13 @@ function resetPasswordHandler() {
 function getUrls() {
   if (associate == "admin") {
     return {
-      url: process.env.URL + "/admin/reset_password/",
-      successUrl: process.env.URL + "/admin/",
+      url:  "/admin/reset_password/",
+      successUrl:  "/admin/",
     };
   }
   return {
-    url: process.env.URL + "/reset_password/",
-    successUrl: process.env.URL + "/",
+    url:  "/reset_password/",
+    successUrl:  "/",
   };
 }
 
@@ -43,7 +43,7 @@ function changePasswordHandler() {
   const currPass = currentPassword.value;
   const newPass = newPassword.value;
 
-  fetch(process.env.URL + "/change_password", {
+  fetch( "/change_password", {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",

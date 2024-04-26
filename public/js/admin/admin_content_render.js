@@ -1,6 +1,6 @@
 const userTableBody = document.getElementById("userTableBody");
 const userDetailModalCloseButton = document.getElementById("modalCloseBtn");
-const baseUrl = process.env.URL + "/";
+const baseUrl =  "/";
 
 function removeExcessiveEventListeners(blockUser) {
   var old_element = blockUser;

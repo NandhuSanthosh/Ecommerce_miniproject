@@ -293,7 +293,7 @@ class Settings {
     const currPass = currentPassword.value;
     const newPass = newPassword.value;
 
-    fetch(process.env.URL + "/change_password", {
+    fetch( "/change_password", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -407,7 +407,7 @@ class Settings {
   updateNameEvent() {
     const newName = username.value.trim();
     // request
-    fetch(process.env.URL + "/update_name", {
+    fetch( "/update_name", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -441,7 +441,7 @@ class Settings {
     if (isValid) {
       // request
       const body = { addressDetails: updatedFields };
-      fetch(process.env.URL + "/add_address", {
+      fetch( "/add_address", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -490,7 +490,7 @@ class Settings {
       const { isValid, updatedFields } = this.findUpdatedFields();
       if (isValid) {
         const body = { updatedData: updatedFields };
-        await fetch(process.env.URL + "/edit_address/" + id, {
+        await fetch( "/edit_address/" + id, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -605,7 +605,7 @@ class Settings {
     return async () => {
       const status = confirm("Do you really want to delete the address.");
       if (status) {
-        fetch(process.env.URL + "/delete_address/" + id, {
+        fetch( "/delete_address/" + id, {
           method: "DELETE",
         })
           .then((response) => response.json())

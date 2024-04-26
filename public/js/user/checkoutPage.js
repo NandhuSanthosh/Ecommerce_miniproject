@@ -136,7 +136,7 @@ function applyCoupenCode(orderId) {
       return;
     }
 
-    fetch(process.env.URL + "/order/apply_coupon?orderId=" + orderId, {
+    fetch( "/order/apply_coupon?orderId=" + orderId, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -178,7 +178,7 @@ function addCouponAppliedInfo(coupon) {
 
 function removeCoupenCode(orderId) {
   return (e) => {
-    fetch(process.env.URL + "/order/remove_coupon?orderId=" + orderId, {
+    fetch( "/order/remove_coupon?orderId=" + orderId, {
       method: "PATCH",
     })
       .then((response) => response.json())
@@ -255,7 +255,7 @@ function addAddressEventHandler() {
   if (isValid) {
     // request
     const body = { addressDetails: updatedFields };
-    fetch(process.env.URL + "/add_address", {
+    fetch( "/add_address", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -315,7 +315,7 @@ function findUpdatedFieldsNewAddress() {
 }
 function paymentMethodConfig() {
   //wallet balance update
-  fetch(process.env.URL + "/wallet/get_balance")
+  fetch( "/wallet/get_balance")
     .then((response) => response.json())
     .then((data) => {
       if (data.isSuccess) {
@@ -393,7 +393,7 @@ async function placeOrderHandler() {
 }
 
 function completeCheckout(addressId, paymentMethod) {
-  fetch(process.env.URL + "/order/complete_order/" + order._id, {
+  fetch( "/order/complete_order/" + order._id, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -429,7 +429,7 @@ function completeCheckout(addressId, paymentMethod) {
 }
 
 async function createOrder() {
-  return await fetch(process.env.URL + "/payment/create_order", {
+  return await fetch( "/payment/create_order", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -482,7 +482,7 @@ function showPaymentModal(orderId, addressId) {
 }
 
 function verifyPayment(response, addressId) {
-  fetch(process.env.URL + "/payment/verify", {
+  fetch( "/payment/verify", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

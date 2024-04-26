@@ -248,7 +248,7 @@ function findPayable(a){
 // fetch data from the server based on the filter
 function updateFilter() {
   const searchKey = productSearchInput.value;
-  fetch(process.env.URL + "/fetch_filtered_result", {
+  fetch( "/fetch_filtered_result", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

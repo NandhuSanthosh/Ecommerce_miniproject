@@ -195,7 +195,7 @@ function updateProductListDelete(productId) {
 }
 
 function requestCartUpdate(productId, quantity) {
-  return fetch(process.env.URL + "/add_routes", {
+  return fetch( "/add_routes", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -305,7 +305,7 @@ proceedToPayBtn.addEventListener("click", () => {
   };
   console.log(body);
 
-  fetch(process.env.URL + "/order/post_checkout", {
+  fetch( "/order/post_checkout", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

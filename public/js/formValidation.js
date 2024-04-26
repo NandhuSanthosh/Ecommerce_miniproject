@@ -119,13 +119,13 @@ loginBtn?.addEventListener("click", (e) => {
 function getLoginUrl() {
   if (associate == "user") {
     return {
-      reqUrl: process.env.URL + "/login",
-      successUrl: process.env.URL + "/otp-auth?superSet=login",
+      reqUrl:  "/login",
+      successUrl:  "/otp-auth?superSet=login",
     };
   }
   return {
-    reqUrl: process.env.URL + "/admin/login",
-    successUrl: process.env.URL + "/admin/otp-auth?superSet=login",
+    reqUrl:  "/admin/login",
+    successUrl:  "/admin/otp-auth?superSet=login",
   };
 }
 
@@ -164,7 +164,7 @@ signupBtn?.addEventListener("click", (e) => {
       console.log(referalCode);
     }
 
-    fetch(process.env.URL + "/signin", {
+    fetch( "/signin", {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -175,7 +175,7 @@ signupBtn?.addEventListener("click", (e) => {
       .then((d) => {
         if (d.isSuccess) {
           location.assign(
-            process.env.URL + "/otp-Auth?superSet=" + superSet
+             "/otp-Auth?superSet=" + superSet
           );
         } else {
           showModel(d.errorMessage);

@@ -76,7 +76,7 @@ exports.post_checkout = async function (req, res, next) {
       discount,
       isFreeDelivery
     );
-    const link = process.env.URL + "/order/get_checkout_page/" + orderDoc;
+    const link =  "/order/get_checkout_page/" + orderDoc;
     res.send({ isSuccess: true, redirect: link });
   } catch (error) {
     next(error);
@@ -120,7 +120,7 @@ exports.patch_complete_order = async function (req, res, next) {
       paymentMethod,
       req.userDetails.userDetails._id
     );
-    const link = process.env.URL + "/order/get_orders";
+    const link =  "/order/get_orders";
     res.send({ isSuccess: true, redirect: link });
   } catch (error) {
     next(error);

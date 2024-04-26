@@ -136,7 +136,7 @@ function referalHandler(e) {
 }
 
 function fetchReferalLink() {
-  fetch(process.env.URL + "/get_user_referals")
+  fetch( "/get_user_referals")
     .then((response) => response.json())
     .then((data) => {
       if (data.isSuccess) {
@@ -157,7 +157,7 @@ function fetchReferalLink() {
 
 function fetchAndDisplay(pno = 0, currentWindow, e) {
   fetch(
-    process.env.URL + "/wallet/get_tansaction_history?pno=" +
+     "/wallet/get_tansaction_history?pno=" +
       pno +
       `${currentWindow ? "&currentWindow=" + currentWindow : ""}`
   )
@@ -292,7 +292,7 @@ function findUser() {
     validateEmail(credential) || validateMobile(credential);
 
   if (isValidCredential) {
-    fetch(process.env.URL + "/wallet/find_user?userCredential=" + credential)
+    fetch( "/wallet/find_user?userCredential=" + credential)
       .then((response) => response.json())
       .then((data) => {
         if (data.isSuccess) {
@@ -347,7 +347,7 @@ async function pay_money() {
 }
 
 async function createOrder(amount) {
-  return await fetch(process.env.URL + "/wallet/create_payment_order", {
+  return await fetch( "/wallet/create_payment_order", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -409,7 +409,7 @@ function showPaymentModal(orderId, amount) {
 }
 
 function verifyPayment(response, amount) {
-  fetch(process.env.URL + "/wallet/verify_payment", {
+  fetch( "/wallet/verify_payment", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -455,7 +455,7 @@ function sendToUserHandler() {
     document
       .querySelector(".insufficient-fund-error")
       .classList.add("invisible");
-    fetch(process.env.URL + "/wallet/send-to-user", {
+    fetch( "/wallet/send-to-user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -60,9 +60,9 @@ function credentailInputEvent(field) {
 
 function getRequestUrl() {
   if (associate == "admin") {
-    return process.env.URL + "/admin/forgot_password";
+    return  "/admin/forgot_password";
   } else {
-    return process.env.URL + "/forgot_password";
+    return  "/forgot_password";
   }
 }
 

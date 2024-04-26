@@ -294,7 +294,7 @@ exports.post_forgotPassword = async (req, res, next) => {
     );
 
     if (credentail.email) {
-      const link = process.env.URL + "/reset_password/" + newToken.key;
+      const link =  "/reset_password/" + newToken.key;
       sendPasswordResetMail(userName, link, credentail.email);
     }
   } catch (error) {
@@ -784,7 +784,7 @@ exports.get_referals = async (req, res, next) => {
       );
       referalCode = user.referalCode;
     }
-    const referalLink = process.env.URL + "/signin?ref=" + referalCode;
+    const referalLink =  "/signin?ref=" + referalCode;
     res.send({ isSuccess: true, referalCode, referalLink });
   } catch (error) {}
 };

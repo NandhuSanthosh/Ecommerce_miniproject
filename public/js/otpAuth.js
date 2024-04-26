@@ -14,7 +14,7 @@ backBtn.addEventListener("click", (e) => {
 });
 
 function redirectPage() {
-  const baseUrl = process.env.URL + "/";
+  const baseUrl =  "/";
   const logout = "/?bthp=true";
   let route;
   console.log(associate, superSet);
@@ -55,9 +55,9 @@ async function requestOtp() {
 
 function getRequestOtpUrl() {
   if (associate == "user") {
-    return process.env.URL + "/request-otp";
+    return  "/request-otp";
   } else if (associate == "admin") {
-    return process.env.URL + "/admin/request-otp";
+    return  "/admin/request-otp";
   }
 }
 
@@ -89,13 +89,13 @@ function sendOtpVerificationRequest() {
 function getOtpVerificationUrls() {
   if (associate == "admin") {
     return {
-      requestUrl: process.env.URL + "/admin/verify-otp?superSet=" + superSet,
-      successUrl: process.env.URL + "/admin/",
+      requestUrl:  "/admin/verify-otp?superSet=" + superSet,
+      successUrl:  "/admin/",
     };
   } else if (associate == "user") {
     return {
-      requestUrl: process.env.URL + "/verify-otp?superSet=" + superSet,
-      successUrl: process.env.URL + "/",
+      requestUrl:  "/verify-otp?superSet=" + superSet,
+      successUrl:  "/",
     };
   }
 }

@@ -84,7 +84,7 @@ class RenderHandlers {
     return async () => {
       // fetch details
       const { data } = await fetchData(
-        process.env.URL + "/admin/orders/complete_order_details/" + order._id
+         "/admin/orders/complete_order_details/" + order._id
       );
       if (data) {
         this.populateModalOrder(data);
@@ -110,7 +110,7 @@ class RenderHandlers {
         showModel("You didn't change the value of the extimated date.");
       } else {
         fetch(
-          process.env.URL + "/admin/orders/update_estimated_delivery_date?id=" +
+           "/admin/orders/update_estimated_delivery_date?id=" +
             order._id +
             "&newExtimatedDate=" +
             selectedDateObj.toISOString(),
@@ -234,7 +234,7 @@ class RenderHandlers {
 
     if (this.orderStates.length == 0) {
       const { data } = await fetchData(
-        process.env.URL + "/admin/orders/get_orderstages"
+         "/admin/orders/get_orderstages"
       );
       this.orderStates = data;
     }
@@ -329,7 +329,7 @@ class RenderHandlers {
   updateStateHandler(x, orderId, reason) {
     return () => {
       let url =
-      process.env.URL + "/admin/orders/update_status?id=" +
+       "/admin/orders/update_status?id=" +
         orderId +
         "&status=" +
         x;
@@ -525,7 +525,7 @@ class RenderHandlers {
   searchOrderHandler() {
     const key = orderSearchInput.value;
     const url =
-      process.env.URL + "/admin/orders/search_order?searchKey=" + key;
+       "/admin/orders/search_order?searchKey=" + key;
     this.dataFetchApiEndPoint = url;
     fetch(url)
       .then((response) => response.json())
