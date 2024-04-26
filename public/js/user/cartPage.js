@@ -19,7 +19,7 @@ function createTile(product, quantity, index) {
                     <div class="image_container d-flex">
                         <img src="${
                           product.images[0]
-                        }" class="cart-image" alt="">
+                        }" class="cart-image" alt="img">
                     </div>
                     <div class="details px-3 pt-3">
                         <div class="product-name">

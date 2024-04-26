@@ -409,7 +409,7 @@ class RenderHandlers {
             <div class="product d-flex gap-2 mb-2">
                 <div class="image-order-modal border">
                     <img class="" width="60px" src="${product.product.images[0]}"
-                        alt="">
+                        alt="img">
                 </div>
                 <div class="name">
                     <a href="${process.env.URL}/product_details/${product.product._id}"
@@ -428,7 +428,7 @@ class RenderHandlers {
                               product.product.images
                                 ? product.product.images[0]
                                 : ""
-                            }" alt="">
+                            }" alt="img">
                         </div>
                         <div class="name-container responsive-text minimize">${
                           product.productName

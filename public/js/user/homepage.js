@@ -69,8 +69,8 @@ function createProductTileOne(product) {
   const template = `<a href="${
      "/product_details/" + product._id
   }" class="product_link">
-            <div class="product-image-container">
-                <img width="100%" src="${product.images[0]}" alt="">
+            <div class="product-image-container" style="height:400px">
+                <img width="100%" height="400px" src="${product.images[0]}" alt="product_image">
             </div>
             <div class="details-container p-3">
                 <div class="details-row-one"></div>

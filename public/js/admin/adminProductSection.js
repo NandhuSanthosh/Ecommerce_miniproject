@@ -566,7 +566,7 @@ class ProductHandlers {
     const imageCont = document.createElement("div");
     imageCont.classList.add("m-2", "rounded-border", "overflow-hidden");
     imageCont.innerHTML = `
-        <img src="${src}" class="w-100"/>
+        <img src="${src}" class="w-100" alt="img"/>
         <button class="btn btn-danger">Delete</button>`;
     let button = imageCont.querySelector("button");
     button.classList.add("m-1");
