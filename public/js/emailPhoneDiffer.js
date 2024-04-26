@@ -4,7 +4,7 @@ let countryCodes;
 async function getAllCountryCode() {
   if (!countryCodes) {
     countryCodes = await fetch(
-      "http://nandhu.shop/utility/countryCodes"
+      process.env.URL + "/utility/countryCodes"
     ).then((data) => data.json());
   }
   return countryCodes;

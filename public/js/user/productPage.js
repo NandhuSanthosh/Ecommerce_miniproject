@@ -6,7 +6,7 @@ document
 
 function addToWishListHandler() {
   fetch(
-    "http://nandhu.shop/wishlist/add_to_wishList?productId=" + product._id
+    process.env.URL + "/wishlist/add_to_wishList?productId=" + product._id
   )
     .then((response) => {
       if (response.redirected) {
@@ -63,7 +63,7 @@ function buyEventListener() {
 
   console.log(body);
 
-  fetch("http://nandhu.shop/order/post_checkout", {
+  fetch(process.env.URL + "/order/post_checkout", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -110,7 +110,7 @@ function addToCartEventHandler() {
   const productId = product._id;
 
   // request
-  fetch("http://nandhu.shop/add_routes", {
+  fetch(process.env.URL + "/add_routes", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

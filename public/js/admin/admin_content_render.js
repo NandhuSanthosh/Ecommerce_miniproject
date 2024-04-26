@@ -1,6 +1,6 @@
 const userTableBody = document.getElementById("userTableBody");
 const userDetailModalCloseButton = document.getElementById("modalCloseBtn");
-const baseUrl = "http://nandhu.shop/";
+const baseUrl = process.env.URL + "/";
 
 function removeExcessiveEventListeners(blockUser) {
   var old_element = blockUser;

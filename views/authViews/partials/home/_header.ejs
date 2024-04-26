@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light w-100">
         <div class="container">
             <div class="row w-100 align-items-center justify-content-between">
-                <a class="navbar-brand col-2" href="http://nandhu.shop/">
+                <a class="navbar-brand col-2" href="/">
                     <img src="/accets/userHeaderLogo.jpeg" height="40px" alt="">
                 </a>
 
@@ -30,15 +30,15 @@
                     <div class="collapse navbar-collapse col" id="navbarSupportedContent">
                         <ul class="navbar-nav mr-auto">
                             <li class="nav-item active">
-                                <a class="nav-link align-items-center" href="http://nandhu.shop/order/get_orders"><span
+                                <a class="nav-link align-items-center" href="/order/get_orders"><span
                                         class="mt-half nav-button">Orders</span></span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link d-flex" href="http://nandhu.shop/get_cart"><span
+                                <a class="nav-link d-flex" href="/get_cart"><span
                                         class="mt-half nav-button">Carts</span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link d-flex" href="http://nandhu.shop/wish_list"><span
+                                <a class="nav-link d-flex" href="/wish_list"><span
                                         class="mt-half nav-button">WishList</span></a>
                             </li>
                             <li class="nav-item dropdown">
@@ -48,11 +48,11 @@
                                 </a>
 
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item nav-button" href="http://nandhu.shop/settings">Settings</a>
-                                    <a class="dropdown-item nav-button" href="http://nandhu.shop/wallet">Wallet</a>
+                                    <a class="dropdown-item nav-button" href="/settings">Settings</a>
+                                    <a class="dropdown-item nav-button" href="/wallet">Wallet</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item nav-button"
-                                        href="http://nandhu.shop/logout">Logout/Login</a>
+                                        href="/logout">Logout/Login</a>
                                     <!-- <a class="dropdown-item" href="#">Something else here</a> -->
                                 </div>
                             </li>
@@ -78,6 +78,6 @@
 
 
     function searchProducts() {
-        window.location.assign("http://nandhu.shop/get_product_search_page/" + productSearchInput.value)
+        window.location.assign("/get_product_search_page/" + productSearchInput.value)
     }
 </script>

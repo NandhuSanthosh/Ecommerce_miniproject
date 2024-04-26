@@ -119,13 +119,13 @@ loginBtn?.addEventListener("click", (e) => {
 function getLoginUrl() {
   if (associate == "user") {
     return {
-      reqUrl: "http://nandhu.shop/login",
-      successUrl: "http://nandhu.shop/otp-auth?superSet=login",
+      reqUrl: process.env.URL + "/login",
+      successUrl: process.env.URL + "/otp-auth?superSet=login",
     };
   }
   return {
-    reqUrl: "http://nandhu.shop/admin/login",
-    successUrl: "http://nandhu.shop/admin/otp-auth?superSet=login",
+    reqUrl: process.env.URL + "/admin/login",
+    successUrl: process.env.URL + "/admin/otp-auth?superSet=login",
   };
 }
 
@@ -164,7 +164,7 @@ signupBtn?.addEventListener("click", (e) => {
       console.log(referalCode);
     }
 
-    fetch("http://nandhu.shop/signin", {
+    fetch(process.env.URL + "/signin", {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -175,7 +175,7 @@ signupBtn?.addEventListener("click", (e) => {
       .then((d) => {
         if (d.isSuccess) {
           location.assign(
-            "http://nandhu.shop/otp-Auth?superSet=" + superSet
+            process.env.URL + "/otp-Auth?superSet=" + superSet
           );
         } else {
           showModel(d.errorMessage);

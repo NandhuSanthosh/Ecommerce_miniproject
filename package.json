@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "pm2 start app.js",
-    "stop" : "pm2 stop app.js",
+    "start": "nodemon start app.js",
+    "stop": "pm2 stop app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -25,6 +25,7 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.4",
     "phone": "^3.1.39",
+    "pm2": "^5.3.1",
     "razorpay": "^2.9.2",
     "twilio": "^4.15.0",
     "validator": "^13.11.0"

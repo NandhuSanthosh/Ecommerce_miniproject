@@ -84,7 +84,7 @@ class RenderHandlers {
     return async () => {
       // fetch details
       const { data } = await fetchData(
-        "http://nandhu.shop/admin/orders/complete_order_details/" + order._id
+        process.env.URL + "/admin/orders/complete_order_details/" + order._id
       );
       if (data) {
         this.populateModalOrder(data);
@@ -110,7 +110,7 @@ class RenderHandlers {
         showModel("You didn't change the value of the extimated date.");
       } else {
         fetch(
-          "http://nandhu.shop/admin/orders/update_estimated_delivery_date?id=" +
+          process.env.URL + "/admin/orders/update_estimated_delivery_date?id=" +
             order._id +
             "&newExtimatedDate=" +
             selectedDateObj.toISOString(),
@@ -234,7 +234,7 @@ class RenderHandlers {
 
     if (this.orderStates.length == 0) {
       const { data } = await fetchData(
-        "http://nandhu.shop/admin/orders/get_orderstages"
+        process.env.URL + "/admin/orders/get_orderstages"
       );
       this.orderStates = data;
     }
@@ -329,7 +329,7 @@ class RenderHandlers {
   updateStateHandler(x, orderId, reason) {
     return () => {
       let url =
-        "http://nandhu.shop/admin/orders/update_status?id=" +
+      process.env.URL + "/admin/orders/update_status?id=" +
         orderId +
         "&status=" +
         x;
@@ -412,7 +412,7 @@ class RenderHandlers {
                         alt="">
                 </div>
                 <div class="name">
-                    <a href="http://nandhu.shop/product_details/${product.product._id}"
+                    <a href="${process.env.URL}/product_details/${product.product._id}"
                         class="responsive-text minimize-3">
                         ${product.productName}
                     </a>
@@ -525,7 +525,7 @@ class RenderHandlers {
   searchOrderHandler() {
     const key = orderSearchInput.value;
     const url =
-      "http://nandhu.shop/admin/orders/search_order?searchKey=" + key;
+      process.env.URL + "/admin/orders/search_order?searchKey=" + key;
     this.dataFetchApiEndPoint = url;
     fetch(url)
       .then((response) => response.json())

@@ -105,7 +105,7 @@ function getData(e) {
   const searchKey = productSearchInput.value;
 
   if (searchKey && searchKey != "") {
-    const url = `http://nandhu.shop/get_search_result?searchKey=${searchKey}&p=0`;
+    const url = `${process.env.URL}/get_search_result?searchKey=${searchKey}&p=0`;
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
@@ -248,7 +248,7 @@ function findPayable(a){
 // fetch data from the server based on the filter
 function updateFilter() {
   const searchKey = productSearchInput.value;
-  fetch("http://nandhu.shop/fetch_filtered_result", {
+  fetch(process.env.URL + "/fetch_filtered_result", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -33,7 +33,7 @@ class UserHandlers {
   searchUserHandler() {
     const key = userSearchInput.value;
     console.log(key);
-    const url = "http://nandhu.shop/admin/search_user?searchKey=" + key;
+    const url = process.env.URL + "/admin/search_user?searchKey=" + key;
     this.dataFetchApiEndPoint = url;
     fetch(url)
       .then((response) => response.json())
@@ -189,7 +189,7 @@ class UserHandlers {
         "  " +
         value.credentials.mobile.number;
 
-    fetch("http://nandhu.shop/admin/complete_userDetails/" + value._id)
+    fetch(process.env.URL + "/admin/complete_userDetails/" + value._id)
       .then((response) => response.json())
       .then((data) => {
         if (data.isSuccess) {
@@ -250,7 +250,7 @@ class UserHandlers {
       const status = confirm("Do you want to block this user");
       if (status) {
         // request to block user
-        const url = "http://nandhu.shop/admin/block_user";
+        const url = process.env.URL + "/admin/block_user";
         fetch(url, {
           method: "PATCH",
           headers: {

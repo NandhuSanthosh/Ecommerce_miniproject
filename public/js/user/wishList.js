@@ -73,7 +73,7 @@ function createTile(product) {
 function deleteCartItem(productId) {
   return () => {
     fetch(
-      "http://nandhu.shop/wishlist/remove_from_wishList?productId=" +
+      process.env.URL + "/wishlist/remove_from_wishList?productId=" +
         productId,
       {
         method: "DELETE",
@@ -115,7 +115,7 @@ function loader() {
 }
 
 function populateRecomendations() {
-  fetch("http://nandhu.shop/highlights/get_top_section")
+  fetch(process.env.URL + "/highlights/get_top_section")
     .then((response) => response.json())
     .then((data) => {
       if (data.isSuccess) {
@@ -155,7 +155,7 @@ function createRecomentedProductTile(product) {
         <img src="${product.images[0]}" alt="">
     </div>
     <div class="rec-details-cont col">
-        <a href="http://nandhu.shop/product_details/${product._id}">
+        <a href="${process.env.URL}/product_details/${product._id}">
             <div class="name">${product.name}</div>
         </a>
         <div class="price fw-bold">₹ ${price}</div>

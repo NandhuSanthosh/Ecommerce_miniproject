@@ -122,7 +122,7 @@ class ProductHandlers {
   searchProductHandler() {
     const key = productSearchInput.value;
     console.log(key);
-    const url = "http://nandhu.shop/admin/search_product?searchKey=" + key;
+    const url = process.env.URL + "/admin/search_product?searchKey=" + key;
     this.dataFetchApiEndPoint = url;
     fetch(url)
       .then((response) => response.json())
@@ -156,7 +156,7 @@ class ProductHandlers {
   async getAllCategory() {
     if (!this.category.length)
       this.category = await fetchData(
-        "http://nandhu.shop/admin/get_all_categories"
+        process.env.URL + "/admin/get_all_categories"
       );
     console.log(this.category);
     return this.category;
@@ -185,7 +185,7 @@ class ProductHandlers {
         return;
       }
 
-      const url = "http://nandhu.shop/admin/create_product";
+      const url = process.env.URL + "/admin/create_product";
       fetch(url, {
         method: "POST",
         // headers: {
@@ -281,7 +281,7 @@ class ProductHandlers {
       const { status, value } = this.getAllUpdatedValue(currentValue);
       console.log(value);
       if (status) {
-        const url = "http://nandhu.shop/admin/update_product";
+        const url = process.env.URL + "/admin/update_product";
         const body = {
           id: currentValue._id,
           updateObject: value,
@@ -313,7 +313,7 @@ class ProductHandlers {
   // delete image
   deleteImageEvent(id, src, imageCont) {
     return () => {
-      const url = "http://nandhu.shop/admin/delete_image/" + id;
+      const url = process.env.URL + "/admin/delete_image/" + id;
       fetch(url, {
         method: "PATCH",
         headers: {
@@ -340,7 +340,7 @@ class ProductHandlers {
   deleteProductEvent(id) {
     // request to delete
     return () => {
-      const url = "http://nandhu.shop/admin/delete_product/" + id;
+      const url = process.env.URL + "/admin/delete_product/" + id;
       fetch(url, {
         method: "DELETE",
       })
@@ -525,7 +525,7 @@ class ProductHandlers {
       const croppedCanvas = this.cropperArray[0].getCroppedCanvas();
       croppedCanvas?.toBlob((blob) => {
         formData.append("image", blob, "croppedImage.png"); // "croppedImage.png" is the desired filename
-        const url = "http://nandhu.shop/admin/add_image/" + id;
+        const url = process.env.URL + "/admin/add_image/" + id;
         fetch(url, {
           method: "PATCH",
           body: formData,

@@ -93,7 +93,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://unpkg.com/jspdf-invoice-template@1.4.0/dist/index.js"></script>
 <script>
-  fetch("http://nandhu.shop/admin/get_dashboard_details")
+  fetch(process.env.URL + "/admin/get_dashboard_details")
     .then((response) => response.json())
     .then((data) => {
       if (data.isSuccess) {
@@ -150,7 +150,7 @@
   function monthlyFilterHandler() {
     console.log(this.value);
     fetch(
-      "http://nandhu.shop/admin/dashmoard_monthy_chart?month=" +
+      process.env.URL + "/admin/dashmoard_monthy_chart?month=" +
       monthlyFilter.value +
       "&year=" +
       yearlyFilter.value
@@ -203,7 +203,7 @@
   function yearlyFilterHander() {
     console.log("here");
     fetch(
-      "http://nandhu.shop/admin/dashmoard_monthy_chart?&year=" +
+      process.env.URL + "/admin/dashmoard_monthy_chart?&year=" +
       yearlyFilter.value
     )
       .then((response) => response.json())
@@ -282,9 +282,9 @@
       let url;
       if (filterType.value == "yearly") {
         period = reportPeriodYear;
-        url = `http://nandhu.shop/admin/get_report_data?year=${reportPeriodYear}`;
+        url = `${process.env.URL}/admin/get_report_data?year=${reportPeriodYear}`;
       } else {
-        url = `http://nandhu.shop/admin/get_report_data?month=${reportPeriodMonth}&year=${reportPeriodYear}`;
+        url = `${process.env.URL}/admin/get_report_data?month=${reportPeriodMonth}&year=${reportPeriodYear}`;
         period = monthsWithDays[monthlyFilter.value - 1].month;
       }
 
@@ -327,7 +327,7 @@
           orientationLandscape: false,
           compress: true,
           logo: {
-            src: "http://nandhu.shop/accets/userHeaderLogo.jpeg",
+            src: process.env.URL + "/accets/userHeaderLogo.jpeg",
             type: "PNG", //optional, when src= data:uri (nodejs case)
             width: 30.33, //aspect ratio = width/height
             height: 20.66,

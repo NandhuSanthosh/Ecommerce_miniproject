@@ -298,7 +298,7 @@ exports.post_forgotPassword = async (req, res, next) => {
     const newToken = await forgotPasswordTokensModel.create_new_token(
       credentail.email
     );
-    const link = "http://nandhu.shop/admin/reset_password/" + newToken.key;
+    const link = process.env.URL + "/admin/reset_password/" + newToken.key;
     sendPasswordResetMail(userName, link, credentail.email);
     res.send({ isSuccess: true });
   } catch (error) {

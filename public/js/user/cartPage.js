@@ -195,7 +195,7 @@ function updateProductListDelete(productId) {
 }
 
 function requestCartUpdate(productId, quantity) {
-  return fetch("http://nandhu.shop/add_routes", {
+  return fetch(process.env.URL + "/add_routes", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -305,7 +305,7 @@ proceedToPayBtn.addEventListener("click", () => {
   };
   console.log(body);
 
-  fetch("http://nandhu.shop/order/post_checkout", {
+  fetch(process.env.URL + "/order/post_checkout", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
